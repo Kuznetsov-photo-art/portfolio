@@ -169,6 +169,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .a-item:hover img{transform:scale(1.04)}
 .a-item .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
 .a-item:hover .cap{opacity:1}
+.a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
 @media(hover:none){.a-item .cap{opacity:1}}
@@ -367,7 +368,7 @@ const I18N = {
   'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 60–70% моих задач проходят через Claude и ChatGPT — исследования, тексты, структура токенов, прототипы в коде. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды',
   'c.title':'Есть задача?<br><em>Напишите.</em>','c.copy':'копировать','c.copied':'скопировано',
   'f.rights':'Все права защищены','f.privacy':'Политика конфиденциальности','f.terms':'Условия использования',
-  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','wip':'в работе','soon':'Скоро','focus':'направление',
+  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','wip':'в работе','soon':'Скоро','focus':'направление',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
  },
  en:{
@@ -387,7 +388,7 @@ const I18N = {
   'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 60–70% of my work runs through Claude and ChatGPT — research, copy, token architecture, prototypes in code. I see this as the core skill of a designer right now and build team processes around it',
   'c.title':'Have a project?<br><em>Say hello.</em>','c.copy':'copy','c.copied':'copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy policy','f.terms':'Terms of use',
-  'f.what':'what I do','view':'view','open':'open','wip':'in progress','soon':'Soon','focus':'focus',
+  'f.what':'what I do','view':'view','open':'open','case':'case','wip':'in progress','soon':'Soon','focus':'focus',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
  }
 };
@@ -402,7 +403,7 @@ const CASES = [
 ];
 const ARCH = [
  {k:'vtb',ru:'Дизайн-система ВТБ Бизнес',en:'VTB Business design system',y:'2022',u:'https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes'},
- {k:'obzhora',ru:'Обжора — счётчик калорий',en:'Obzhora — calorie counter app',y:'2020',u:'https://www.behance.net/gallery/159386701/obzhora'},
+ {k:'obzhora',ru:'Обжора — счётчик калорий',en:'Obzhora — calorie counter app',y:'2020',u:'https://www.behance.net/gallery/159386701/obzhora',c:'/cases/obzhora/'},
  {k:'vasko',ru:'Vasko.ru — редизайн',en:'Vasko.ru — redesign',y:'2019',u:'https://www.behance.net/gallery/155967497/Vaskoru'},
  {k:'beeline',ru:'Билайн — главная, тендер',en:'Beeline — main page, tender',y:'2019',u:'https://www.behance.net/gallery/156989569/bilajn'},
  {k:'yotaarena',ru:'Yota Arena — сайт',en:'Yota Arena — website',y:'2019',u:'https://www.behance.net/gallery/77123721/sajt-YotaArena'},
@@ -457,9 +458,9 @@ function render(){
       <span class="th">${c.k&&COVERS[c.k]?`<img src="${COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
   document.getElementById('arch').innerHTML = ARCH.map(a=>`
-    <a class="a-item" href="${a.u}" target="_blank" rel="noopener" data-cur="${d.open}">
+    <a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}">
       <img src="${COVERS[a.k]}" alt="${a[lang]}" loading="lazy" width="800" height="625">
-      <div class="cap"><b>${a[lang]}</b><span>${a.y} ↗</span></div>
+      <div class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></div>
     </a>`).join('');
   document.getElementById('fwords').innerHTML = FOCUS.map((f,i)=>`<div class="w ${i===0?'on':'next'}">${f[lang].w}</div>`).join('');
   focusUpdate && focusUpdate(true);
@@ -635,6 +636,12 @@ function bindCursor(){
 })();
 
 render();
+// anchor from another page (/#archive): re-jump once lists are rendered and fonts loaded
+(()=>{
+  const t=location.hash&&document.getElementById(location.hash.slice(1)); if(!t) return;
+  const jump=()=>t.scrollIntoView({behavior:'instant'});
+  requestAnimationFrame(jump); addEventListener('load',jump,{once:true});
+})();
 </script>
 
 </body>
