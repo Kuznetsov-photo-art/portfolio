@@ -842,16 +842,17 @@ function aboutStats(){
   function build(){
     const r=wrap.getBoundingClientRect(); dpr=Math.min(devicePixelRatio||1,2); W=r.width; H=r.height; if(!W||!H) return;
     c.width=W*dpr; c.height=H*dpr; x.setTransform(dpr,0,0,dpr,0,0);
-    const S=Math.max(3,Math.round(W/120)); /* ~120 dots across */ const cols=Math.floor(W/S), rows=Math.floor(H/S);
+    const S=Math.max(3,Math.round(W/140)); /* ~140 dots across */ const cols=Math.floor(W/S), rows=Math.floor(H/S);
     const o=document.createElement('canvas'); o.width=cols; o.height=rows; const ox=o.getContext('2d'); const nw=img.naturalWidth, nh=img.naturalHeight, dh=rows*.94, dw=dh*nw/nh; ox.drawImage(img,(cols-dw)/2,rows-dh,dw,dh); /* whole photo fits the circle: head not cut, a bit further away */
-    const d=ox.getImageData(0,0,cols,rows).data; dots=[];
+    const d=ox.getImageData(0,0,cols,rows).data; dots=[]; const Ys=(rows-dh+dh*.78)*S, xL=(cols-dw)/2*S, xR=W-xL; /* shoulder line and side edges of the photo */
     for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){ const l=d[(j*cols+i)*4]/255; const hx=i*S+S/2, hy=j*S+S/2;
-      const cx=i*S+S/2-W/2, cy=j*S+S/2-H/2, rr=Math.sqrt(cx*cx+cy*cy)/(W/2), R0=.72;
-      if(rr>1) continue;
-      const tEdge=rr<R0?0:(rr-R0)/(1-R0); /* 0 inside → 1 at the rim: dots shrink and thin out */
+      const cx=hx-W/2, cy=hy-H*.44, rr=Math.sqrt(cx*cx+cy*cy)/(W*.44), R0=.72, body=hy>Ys; /* circle sits on the shoulders */
+      const cl=v=>Math.min(1,Math.max(0,v)), tC=rr<R0?0:cl((rr-R0)/(1-R0)); /* circle: 0 inside → 1 at the rim */
+      const tB=Math.max(cl((Ys+H*.05-hy)/(H*.1)), cl((hy-H*.82)/(H*.18)), cl(1-Math.min(hx-xL,xR-hx)/(W*.14))); /* shoulders: blend in below the line, fade at the bottom and the sides */
+      const tEdge=Math.min(tC,tB); if(tEdge>=1) continue;
       let k=1-tEdge;
       if(d[(j*cols+i)*4+3]<128){ /* backdrop: only a light scatter of fine dots near the rim */
-        if(rr<R0*.85||Math.random()>.32*(1-tEdge)) continue;
+        if(body||rr>1||rr<R0*.85||Math.random()>.32*(1-tEdge)) continue;
         dots.push({sc:1,hx,hy,l:.42*(1-tEdge)+.06,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*.7}); continue; }
       if(tEdge>0&&Math.random()<tEdge*.85) continue;
       dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*(.45+.55*k)}); }
@@ -872,7 +873,7 @@ function aboutStats(){
         const v=p.sc?p.l:(light?1-p.l:p.l); /* scatter dots keep their small size in both themes */ const rad=p.s*.52*Math.pow(v,.85); if(rad<.35) continue;
         if(p.sc){ sp.moveTo(p.x+rad,p.y); sp.arc(p.x,p.y,rad,0,6.283); } else { x.moveTo(p.x+rad,p.y); x.arc(p.x,p.y,rad,0,6.283); }
       }
-      x.fill(); x.globalAlpha=.38; x.fill(sp); x.globalAlpha=1; /* scatter reads grey, not white */
+      x.fill(); x.globalAlpha=.26; x.fill(sp); x.globalAlpha=1; /* scatter reads grey, not white */
       if(pull>=1&&moving/dots.length<.002&&mx<-1e3) still=true; // settled: stop redrawing until something changes
     }
     if(!rm) requestAnimationFrame(frame);
