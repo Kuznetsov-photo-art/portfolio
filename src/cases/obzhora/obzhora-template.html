@@ -150,13 +150,16 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .type .fam{font-size:clamp(22px,3vw,44px);font-weight:700;margin-top:4px}
 .type .wts{display:flex;gap:28px;margin-top:10px;font-size:clamp(14px,1.4vw,20px);color:var(--ink-2)}
 .type .wts span:nth-child(1){font-weight:300}.type .wts span:nth-child(2){font-weight:400}.type .wts span:nth-child(3){font-weight:500}.type .wts span:nth-child(4){font-weight:700}
-.pal{display:flex;flex-wrap:wrap;gap:10px;margin-top:calc(var(--gutter)*1.2);font-family:'Montserrat Alternates',var(--mono);font-size:12px;font-weight:500}
-.pal span{padding:9px 18px;border-radius:999px;border:2px solid var(--c);color:var(--c);white-space:nowrap}
-.pal span.g{border-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(90deg,var(--c),var(--c2)) border-box;color:var(--c)}
-.pal span.g b{font-weight:500;color:var(--c2)}
-/* neutrals: the colour itself can vanish on the page bg, so show it as a swatch and keep the label readable */
-.pal span.n{color:var(--ink-2);border-color:var(--line-2);display:inline-flex;align-items:center;gap:8px}
-.pal span.n::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--line-2)}
+.kit{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--gutter);align-items:center;margin-top:calc(var(--gutter)*1.2)}
+@media(max-width:860px){.kit{grid-template-columns:1fr}}
+/* palette sits right of the type specimen, one row per colour family */
+.pal .row{display:flex;flex-wrap:wrap;gap:10px}
+.pal{display:grid;gap:10px;align-content:center;font-family:'Montserrat Alternates',var(--mono);font-size:12px;font-weight:500}
+.pal span{padding:8px 14px;border-radius:999px;border:2px solid var(--line-2);color:var(--ink-2);white-space:nowrap;display:inline-block}
+/* one label colour for every chip, the colour itself lives in the dot (gradient chips get a gradient dot) */
+.pal span::before{content:'';display:inline-block;vertical-align:-1px;margin-right:8px;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--line-2)}
+.pal span.g::before{background:linear-gradient(135deg,var(--c),var(--c2))}
+.pal span.g b{font-weight:500;color:inherit}
 
 /* ---------- intro ---------- */
 .intro{padding:calc(var(--gutter)*2) 0;border-top:1px solid var(--line)}
@@ -187,7 +190,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .sec p.t+p.t{margin-top:12px}
 
 /* stage with floating phones */
-.stage{position:relative;overflow-x:clip;overflow-y:visible;height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
+.stage{position:relative;overflow:visible;width:calc(100% - var(--phw));--phw:calc(clamp(150px,19vw,300px)*1.3);height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
 .stage .fl img{width:100%}
 .stage .cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center}
 .stage .cap i{width:60px;height:1px;background:var(--line-2)}
@@ -428,15 +431,9 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
     <div class="sec-head"><span class="n">08</span><h2 class="r">UI‑кит<br> и типографика</h2><span class="m">Design system</span></div>
     <p class="t r">Дизайн‑система и база компонентов есть: кнопки, поля, чипсы, листы, модалки. Montserrat Alternates в четырёх начертаниях и зелёный градиент как единственный акцент</p>
   </div>
-  <div class="wrap" style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--gutter);align-items:center;margin-top:calc(var(--gutter)*1.2)">
+  <div class="wrap kit">
     <div class="type r"><div class="aa">Aa</div><div class="fam">Montserrat Alternates</div><div class="wts"><span>Light</span><span>Regular</span><span>Medium</span><span>Bold</span></div></div>
-    <div class="fl" style="position:relative;left:auto;top:auto;width:min(100%,420px);justify-self:end" data-sp="-.12" data-rot="-1"><div class="amenu"><span class="c fill-b" style="--x:0%;--y:42%"><img src="{{ic:i66}}" alt=""></span><span class="c line" style="--x:24%;--y:10%"><img src="{{ic:i49}}" alt=""></span><span class="c fill-g" style="--x:52%;--y:12%"><img src="{{ic:i71}}" alt=""></span><span class="c line" style="--x:78%;--y:40%"><img src="{{ic:i62}}" alt=""></span><span class="c fill-x" style="--x:40%;--y:62%"><img src="{{ic:i01}}" alt=""></span></div></div>
-  </div>
-  <div class="wrap pal r">
-    <span class="g" style="--c:#6FD25F;--c2:#39DD9E">#6FD25F → <b>#39DD9E</b></span><span style="--c:#08D586">#08D586</span><span class="g" style="--c:#00CB18;--c2:#08D586">#00CB18 → <b>#08D586</b></span>
-    <span class="n" style="--c:#18181A">#18181A</span><span class="n" style="--c:#47484F">#47484F</span><span class="n" style="--c:#7E818D">#7E818D</span><span class="n" style="--c:#D2D3DB">#D2D3DB</span><span class="n" style="--c:#F3F4F5">#F3F4F5</span><span class="n" style="--c:#FFFFFF">#FFFFFF</span>
-    <span class="g" style="--c:#FF5151;--c2:#CB0808">#FF5151 → <b>#CB0808</b></span><span style="--c:#FE7171">#FE7171</span><span class="g" style="--c:#DE2525;--c2:#B50C0C">#DE2525 → <b>#B50C0C</b></span>
-    <span style="--c:#5DB8F5">#5DB8F5</span><span style="--c:#3F7CBA">#3F7CBA</span><span class="g" style="--c:#FEDF71;--c2:#F2E143">#FEDF71 → <b>#F2E143</b></span>
+    <div class="pal r"><div class="row"><span class="g" style="--c:#6FD25F;--c2:#39DD9E">#6FD25F → <b>#39DD9E</b></span><span style="--c:#08D586">#08D586</span><span class="g" style="--c:#00CB18;--c2:#08D586">#00CB18 → <b>#08D586</b></span></div><div class="row"><span style="--c:#18181A">#18181A</span><span style="--c:#47484F">#47484F</span><span style="--c:#7E818D">#7E818D</span><span style="--c:#D2D3DB">#D2D3DB</span><span style="--c:#F3F4F5">#F3F4F5</span><span style="--c:#FFFFFF">#FFFFFF</span></div><div class="row"><span class="g" style="--c:#FF5151;--c2:#CB0808">#FF5151 → <b>#CB0808</b></span><span style="--c:#FE7171">#FE7171</span><span class="g" style="--c:#DE2525;--c2:#B50C0C">#DE2525 → <b>#B50C0C</b></span></div><div class="row"><span style="--c:#5DB8F5">#5DB8F5</span><span style="--c:#3F7CBA">#3F7CBA</span><span class="g" style="--c:#FEDF71;--c2:#F2E143">#FEDF71 → <b>#F2E143</b></span></div></div>
   </div>
 </section>
 
