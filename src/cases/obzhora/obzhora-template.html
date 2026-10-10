@@ -52,6 +52,7 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .nav a:hover::after{right:0}
 .nav .c{display:flex;gap:10px;align-items:center}
 .nav .c i{width:8px;height:8px;background:currentColor;display:inline-block}
+.nav .c .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
 .nav .ctr{display:flex;gap:22px}
 
 /* ---------- hero ---------- */
@@ -220,7 +221,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 <div class="prog"><i id="prog"></i></div>
 
 <nav class="nav">
-  <a href="/" class="c" data-back><i></i>← На главную</a>
+  <a href="/" class="c" data-back><b class="ar">←</b>На главную</a>
   <div class="ctr"><span>Обжора</span><span style="opacity:.6">01 / 12</span></div>
   <div class="ctr"><button class="tgl" id="tgl" aria-label="Переключить тему"><span>Dark</span><i></i><span>Light</span></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance ↗</a></div>
 </nav>
