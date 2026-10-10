@@ -32,8 +32,8 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:auto}
-html{overflow-x:hidden}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .8s cubic-bezier(.2,.8,.2,1),color .8s}
+html{overflow-x:clip} /* clip, not hidden: hidden on html+body makes body a scroll container and breaks position:sticky (pinned track) */
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;transition:background .8s cubic-bezier(.2,.8,.2,1),color .8s}
 a{color:inherit;text-decoration:none}
 img,svg{max-width:100%;display:block}
 h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0;letter-spacing:-.03em}
@@ -174,6 +174,12 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .specs div:last-child{border-right:0}
 .specs b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,4.6vw,72px);letter-spacing:-.05em;line-height:1}
 .specs span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+/* metrics: odometer roll-in (digits spin 0→9 and settle, "+" pops in last) */
+.specs b .od{display:inline-block;height:1em;overflow:hidden;vertical-align:top}
+.specs b .od i{display:block;font-style:normal;transform:translateY(0);transition:transform var(--t,1.6s) cubic-bezier(.16,1,.3,1) var(--dl,0s)}
+.specs b .od i span{display:block;height:1em;line-height:1}
+.specs b .sf{display:inline-block;opacity:0;transform:translateY(.25em) scale(.6);transition:opacity .5s,transform .7s cubic-bezier(.34,1.56,.64,1);transition-delay:var(--dl,0s)}
+.specs b.go .sf{opacity:1;transform:none}
 
 /* ---------- sections ---------- */
 .sec{position:relative;padding:calc(var(--gutter)*2.5) 0;border-top:1px solid var(--line)}
@@ -310,7 +316,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 01 ONBOARDING ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">01</span><h2 class="r">Регистрация<br>и вход</h2><span class="m">Onboarding</span></div>
+    <div class="sec-head"><span class="n">01</span><h2 class="r">Регистрация<br> и вход</h2><span class="m">Onboarding</span></div>
     <p class="t r">При регистрации тебе предлагается ввести свои данные, параметры роста и веса — и желаемый вес. Если аккаунт уже есть, то просто вход</p>
   </div>
   <div class="wrap stage">
@@ -326,7 +332,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 02 ICONS ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">02</span><h2 class="r">83+ иконки,<br>нарисованные с нуля</h2><span class="m">Iconography</span></div>
+    <div class="sec-head"><span class="n">02</span><h2 class="r">83+ иконки,<br> нарисованные с нуля</h2><span class="m">Iconography</span></div>
     <p class="t r">Все иконки построены в боксах 24×24 px, stroke 1 px. Ресайзятся от 16 до 48 px без потери формы — и одинаково живут в светлой и тёмной теме</p>
   </div>
   <div class="icq">
@@ -344,7 +350,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 03 CHARTS ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">03</span><h2 class="r">Дневные<br>графики</h2><span class="m">Daily chart</span></div>
+    <div class="sec-head"><span class="n">03</span><h2 class="r">Дневные<br> графики</h2><span class="m">Daily chart</span></div>
     <p class="t r">Вноси в график каждый приём жидкости и пищи — и видь день целиком. Самая точная настройка еды: граммы, порции, пресеты</p>
   </div>
   <div class="wrap stage">
@@ -360,7 +366,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 04 MEALS (horizontal) ============ -->
 <section class="sec" style="padding-bottom:0">
   <div class="wrap">
-    <div class="sec-head"><span class="n">04</span><h2 class="r">Пресеты<br>и приёмы пищи</h2><span class="m">Meals</span></div>
+    <div class="sec-head"><span class="n">04</span><h2 class="r">Пресеты<br> и приёмы пищи</h2><span class="m">Meals</span></div>
     <p class="t r">Можно собрать приём пищи из разной еды и блюд и сохранить как шаблон. Голосовой поиск, поиск по штрих‑коду, умный рейтинг еды</p>
   </div>
   <div class="hpin" id="hpin">
@@ -383,7 +389,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 05 MENU / CALENDAR ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">05</span><h2 class="r">Меню добавления<br>и календарь</h2><span class="m">Add menu · Calendar</span></div>
+    <div class="sec-head"><span class="n">05</span><h2 class="r">Меню добавления<br> и календарь</h2><span class="m">Add menu · Calendar</span></div>
     <p class="t r">Быстрый доступ ко всему, что можно внести в день. Быстрый поиск и работа через календарь</p>
   </div>
   <div class="wrap stage">
@@ -399,7 +405,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 06 RECIPES ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">06</span><h2 class="r">Рецепты<br>и избранное</h2><span class="m">Recipes</span></div>
+    <div class="sec-head"><span class="n">06</span><h2 class="r">Рецепты<br> и избранное</h2><span class="m">Recipes</span></div>
     <p class="t r">База рецептов с пищевой ценностью на порцию. Понравилось — в избранное одним тапом</p>
   </div>
   <div class="wrap stage">
@@ -413,7 +419,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 07 TRAINER / DEV ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">07</span><h2 class="r">Личный тренер<br>и «в разработке»</h2><span class="m">Trainer · Skeleton</span></div>
+    <div class="sec-head"><span class="n">07</span><h2 class="r">Личный тренер<br> и «в разработке»</h2><span class="m">Trainer · Skeleton</span></div>
     <p class="t r">Мы придумали, как пользователю заработать: стать тренером внутри приложения. А для разделов, которых ещё нет, — честные скелетоны и состояние «в разработке»</p>
   </div>
   <div class="wrap stage" style="height:clamp(520px,90vh,900px)">
@@ -426,7 +432,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 08 UI KIT ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">08</span><h2 class="r">UI‑кит<br>и типографика</h2><span class="m">Design system</span></div>
+    <div class="sec-head"><span class="n">08</span><h2 class="r">UI‑кит<br> и типографика</h2><span class="m">Design system</span></div>
     <p class="t r">Дизайн‑система и база компонентов есть: кнопки, поля, чипсы, листы, модалки. Montserrat Alternates в четырёх начертаниях и зелёный градиент как единственный акцент</p>
   </div>
   <div class="wrap" style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--gutter);align-items:center;margin-top:calc(var(--gutter)*1.2)">
@@ -444,7 +450,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 09 PROFILE ============ -->
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">09</span><h2 class="r">Профиль<br>и настройки</h2><span class="m">Profile</span></div>
+    <div class="sec-head"><span class="n">09</span><h2 class="r">Профиль<br> и настройки</h2><span class="m">Profile</span></div>
     <p class="t r">Параметры тела, цели, уведомления, единицы измерения — всё в одном месте и без лишних экранов</p>
   </div>
   <div class="wrap stage" style="height:clamp(520px,90vh,900px)">
@@ -457,7 +463,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <!-- ============ 10 DARK ============ -->
 <section class="sec darksec" id="darksec">
   <div class="wrap">
-    <div class="sec-head"><span class="n">10</span><h2 class="r">…и ещё тёмную тему<br>запилили</h2><span class="m">Dark mode</span></div>
+    <div class="sec-head"><span class="n">10</span><h2 class="r">…и ещё тёмную тему<br> запилили</h2><span class="m">Dark mode</span></div>
     <p class="t r">Полный набор экранов в тёмной теме: те же компоненты, те же иконки, тот же зелёный — только фон #000. Переключатель в шапке меняет тему всей страницы — и экраны в макетах перекрашиваются вместе с ней</p>
   </div>
   <div class="wrap stage">
@@ -491,6 +497,28 @@ $$('[data-back]').forEach(a=>a.addEventListener('click',e=>{
   try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
 }));
 const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* metrics odometer */
+(()=>{
+  const bs=$$('.specs b'); if(!bs.length) return;
+  bs.forEach((b,k)=>{
+    const txt=b.textContent; b.setAttribute('aria-label',txt); b.textContent='';
+    const digits=[...txt].filter(c=>/\d/.test(c)).length; let di=0;
+    [...txt].forEach(c=>{
+      if(/\d/.test(c)){
+        const od=document.createElement('span'); od.className='od'; od.setAttribute('aria-hidden','true');
+        const col=document.createElement('i'); const turns=2+(digits-1-di); // lower digits spin longer
+        for(let n=0;n<=turns*10+ +c;n++){const s=document.createElement('span'); s.textContent=n%10; col.append(s);}
+        col.dataset.to=turns*10+ +c; col.style.setProperty('--dl',(k*.12+di*.08)+'s'); col.style.setProperty('--t',(1.4+di*.25)+'s');
+        od.append(col); b.append(od); di++;
+      } else { const s=document.createElement('span'); s.className='sf'; s.textContent=c; s.setAttribute('aria-hidden','true'); s.style.setProperty('--dl',(k*.12+1.3)+'s'); b.append(s); }
+    });
+  });
+  const go=b=>{ b.classList.add('go'); b.querySelectorAll('.od i').forEach(i=>i.style.transform=rm?`translateY(-${i.dataset.to}em)`:`translateY(-${i.dataset.to}em)`); };
+  if(rm){ bs.forEach(b=>{b.querySelectorAll('.od i').forEach(i=>i.style.transition='none'); go(b);}); return; }
+  const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ go(e.target); o.unobserve(e.target); } }),{threshold:.6});
+  bs.forEach(b=>o.observe(b));
+})();
 
 /* cursor */
 const cur=$('#cur'); let cx=innerWidth/2,cy=innerHeight/2,tx=cx,ty=cy;
