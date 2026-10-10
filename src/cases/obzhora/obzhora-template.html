@@ -470,7 +470,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
     <div class="fl phone" style="left:39%;top:20%" data-sp=".28"><div class="ph "><img class="l" src="{{mock:d3}}" alt=""></div></div>
     <div class="fl phone" style="left:59%;top:4%" data-sp="-.22"><div class="ph "><img class="l" src="{{mock:d4}}" alt=""></div></div>
     <div class="fl phone" style="left:79%;top:16%" data-sp=".1"><div class="ph "><img class="l" src="{{mock:d6}}" alt=""></div></div>
-    <div class="fl donut" style="left:30%;top:66%;width:clamp(100px,12vw,200px)" data-sp=".6" data-rot="-1"><img src="{{donut}}" alt=""></div>
+    <div class="fl donut" style="left:30%;top:58%;width:clamp(100px,12vw,200px)" data-sp=".3" data-rot="-1"><img src="{{donut}}" alt=""></div>
   </div>
 </section>
 
@@ -503,7 +503,7 @@ const fitPhones=()=>{
     if(innerWidth<=860||n<2){ st.style.removeProperty('--phw'); st.style.minHeight=''; ph.forEach(p=>p.style.removeProperty('--w')); return; }
     const g=parseFloat(getComputedStyle(st).marginLeft)||56; // stage margin-left = resolved --gutter
     const W=st.parentElement.clientWidth-2*g, gap=24, body=.83;
-    const P=Math.min((W-(n-1)*gap)/(1+body*(n-1)), 400); // image width
+    const P=Math.min((W-(n-1)*gap)/(1+body*(n-1)), 520); // image width
     st.style.setProperty('--phw',P+'px'); st.style.minHeight=Math.round(P*1.82/.8)+'px'; /* phones sit up to ~20% down the stage */
     ph.forEach(p=>p.style.setProperty('--w',(P/1.3)+'px'));
   });
