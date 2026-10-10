@@ -260,17 +260,24 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .sec-head .n{grid-row:1/3;align-self:start;font-size:28px}
   .rules{grid-template-columns:1fr}
   /* phones: two-column grid instead of a free-floating scatter (no overlaps on narrow screens) */
-  .stage{height:auto;width:auto;margin-left:0!important;padding-inline:var(--gutter);display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;align-items:start}
+  .stage,.darksec .stage{height:auto;width:auto;margin-left:0!important;padding-inline:var(--gutter);display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;align-items:start}
   .stage > .fl:not(.phone),.stage .cap{display:none}
   .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
   .stage > .fl.phone:nth-child(even){margin-top:48px}
   .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{--w:calc((100vw - 2*var(--gutter) - 16px)/2/1.3)}
 }
 @media(prefers-reduced-motion:reduce){.fl{transform:none!important}.grain{animation:none}}
+/* back to top: round button bottom-right, shows after one screen of scroll */
+.totop{position:fixed;right:var(--gutter);bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1),background .3s,color .3s,border-color .3s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+@media(hover:hover){.totop:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}.totop:hover svg{transform:translateY(-2px)}}
+@media(max-width:760px){.totop{width:44px;height:44px}}
 </style>
 
 <div class="grain"></div><script>document.body.classList.add("dark")</script>
 <div class="cur" id="cur"></div>
+<button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
 <div class="prog"><i id="prog"></i></div>
 
 <div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -574,7 +581,7 @@ function frame(t){
     for(const f of fls){
       const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; const d=(c-vh/2);
       if(c<-vh||c>vh*2) continue;
-      f.y=-d*f.sp;
+      const lim=Math.min(120,vh*.12); f.y=Math.max(-lim,Math.min(lim,-d*f.sp)); /* capped so floating items never drift into the next section */
       const rot=f.rot?(d*0.03*f.rot):0;
       f.el.style.transform=(f.base||'')+` translate3d(${f.y*f.dx}px,${f.y}px,0) rotate(${rot}deg)`;
     }
@@ -590,5 +597,11 @@ function frame(t){
 // duplicate icon rows for seamless loop
 rows.forEach(r=>{r.el.innerHTML+=r.el.innerHTML; r.w=r.el.scrollWidth/2; if(r.dir<0) r.x=-r.w/2});
 requestAnimationFrame(frame);
+})();
+
+/* back to top */
+(()=>{const b=document.getElementById('totop'); if(!b) return;
+  const upd=()=>b.classList.toggle('on',scrollY>innerHeight); addEventListener('scroll',upd,{passive:true}); upd();
+  b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
 })();
 </script>

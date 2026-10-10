@@ -253,6 +253,12 @@ footer a:hover{color:var(--ink)}
 :root[data-theme="light"] .halo{-webkit-backdrop-filter:brightness(.93) contrast(1.06);backdrop-filter:brightness(.93) contrast(1.06)}
 .halo.on{opacity:1}
 @media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.halo{display:none}}
+/* back to top: round button bottom-right, shows after one screen of scroll */
+.totop{position:fixed;right:var(--gutter);bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1),background .3s,color .3s,border-color .3s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+@media(hover:hover){.totop:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}.totop:hover svg{transform:translateY(-2px)}}
+@media(max-width:760px){.totop{width:44px;height:44px}}
 </style>
 
 <div class="pre" id="pre" aria-hidden="true">
@@ -262,6 +268,7 @@ footer a:hover{color:var(--ink)}
 </div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cur" id="cur"></div>
+<button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
 <div class="halo" id="halo" aria-hidden="true"></div>
 
 <div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -745,6 +752,12 @@ function bindCursor(){
 })();
 
 render();
+
+/* back to top */
+(()=>{const b=document.getElementById('totop'); if(!b) return;
+  const upd=()=>b.classList.toggle('on',scrollY>innerHeight); addEventListener('scroll',upd,{passive:true}); upd();
+  b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+})();
 // scroll position: browser restores it before JS renders the lists, so we keep it ourselves.
 // back from a case → same place; anchor from another page (/#archive) → re-jump once rendered and fonts loaded
 (()=>{
