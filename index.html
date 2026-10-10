@@ -59,7 +59,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 body.loading{overflow:hidden}
 
 /* ---------- nav ---------- */
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px var(--gutter);mix-blend-mode:difference;color:#fff}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff}
 .brand{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
 .brand i{width:8px;height:8px;background:currentColor}
 .links{display:flex;gap:26px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
@@ -74,10 +74,18 @@ body.loading{overflow:hidden}
 .navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
 .navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
 @media(max-width:760px){.navfx{height:84px}}
-@media(max-width:760px){.nav{padding-block:16px}}
+@media(max-width:760px){.nav{height:56px}}
 .ctrls{display:flex;gap:16px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .ctrls button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;letter-spacing:inherit;text-transform:inherit}
 .ctrls .lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px}
+/* theme switch: moon in the knob on dark, sun on light */
+.sw,.ctrls .sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
+.sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:12px;height:12px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+:root[data-theme="light"] .sw .k{transform:translateX(22px)}
+:root[data-theme="light"] .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+:root[data-theme="light"] .sw .sun{opacity:1;transform:none}
 @media(max-width:760px){.links{display:none}}
 
 /* ---------- hero ---------- */
@@ -265,7 +273,7 @@ footer a:hover{color:var(--ink)}
   </nav>
   <div class="ctrls">
     <button class="lang" id="lang" aria-label="Switch language"><b>RU</b> / EN</button>
-    <button id="theme" aria-label="Toggle theme">◐</button>
+    <button class="sw" id="theme" aria-label="Toggle theme"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button>
   </div>
 </header>
 

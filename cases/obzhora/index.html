@@ -55,7 +55,7 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .prog i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(0)}
 
 /* nav */
-.nav{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.nav{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .nav a{position:relative}
 .nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s}
 .nav a:hover::after{right:0}
@@ -127,6 +127,14 @@ body.dark .ph img.l{opacity:0}
 .tgl i{width:28px;height:14px;border:1px solid currentColor;border-radius:99px;position:relative;display:inline-block}
 .tgl i::after{content:'';position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:currentColor;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 body:not(.dark) .tgl i::after{transform:translateX(14px)}
+/* theme switch: moon in the knob on dark, sun on light */
+.sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
+.sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:12px;height:12px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+body:not(.dark) .sw .k{transform:translateX(22px)}
+body:not(.dark) .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+body:not(.dark) .sw .sun{opacity:1;transform:none}
 .hpin .track figure .ph{--w:clamp(180px,22vw,320px)}
 .hpin .track img{filter:none}
 .ph.big{--w:clamp(200px,24vw,400px)}
@@ -212,7 +220,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 .outro .nx a:hover{color:var(--ink)}
 
 @media(max-width:860px){
-  .nav{padding:16px var(--gutter);gap:12px;font-size:10px;letter-spacing:.1em}
+  .nav{height:56px;padding:0 var(--gutter);gap:12px;font-size:10px;letter-spacing:.1em}
   .nav .ctr:first-of-type{display:none}
   .nav .ctr{gap:14px}
   .nav .c i{display:none}
@@ -245,7 +253,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 <nav class="nav">
   <a href="/" class="c" data-back><b class="ar">←</b>На главную</a>
   <div class="ctr"><span>Обжора</span><span style="opacity:.6">01 / 12</span></div>
-  <div class="ctr"><button class="tgl" id="tgl" aria-label="Переключить тему"><span>Dark</span><i></i><span>Light</span></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance<b class="ar2">↗</b></a></div>
+  <div class="ctr"><button class="sw" id="tgl" aria-label="Переключить тему"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance<b class="ar2">↗</b></a></div>
 </nav>
 
 <!-- ============ HERO ============ -->
