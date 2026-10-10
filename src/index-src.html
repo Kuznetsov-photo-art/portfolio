@@ -134,7 +134,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 @media(max-width:640px){.sec-head{grid-template-columns:1fr;gap:10px}.sec-head .rule{display:none}}
 
 /* ---------- work index ---------- */
-.index{border-top:1px solid var(--line)}
+.index .row:last-child{border-bottom:0} /* dividers only between cases: no line above the first or below the last */
 .row{display:grid;grid-template-columns:72px minmax(0,1fr) auto auto 168px;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);position:relative;transition:padding .4s cubic-bezier(.2,.8,.2,1)}
 .row:hover{padding-left:12px}
 .row .no{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3)}

@@ -38,18 +38,27 @@ a{color:inherit}
 .mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 html[lang="ru"] [lang="en"], html[lang="en"] [lang="ru"]{display:none!important}
 
-.nav{position:sticky;top:0;z-index:50;height:62px;padding-inline:var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;height:62px;padding-inline:var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;mix-blend-mode:difference;color:#fff} /* same header as the home page: difference blend over a progressive blur + fade */
+.navfx{position:fixed;z-index:49;inset:0 0 auto 0;height:108px;pointer-events:none}
+.navfx i,.navfx::after{position:absolute;inset:0}
+.navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
+.navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
+.navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
+.navfx::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:240px;background:var(--bg)}
+@media(max-width:760px){.navfx{height:84px}}
 .nav a{text-decoration:none}
 .nav .r{display:flex;align-items:center;gap:20px}
 .nav .back{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.nav .lang{color:rgba(255,255,255,.55)}.nav .lang b{color:#fff}
 .nav .back .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)} /* same back link as in the case header */
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:var(--ink-3);cursor:pointer}
 /* theme switch — same as on the home page */
 .sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
 .sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-.sw svg{grid-area:1/1;width:14px;height:14px;fill:none;stroke:var(--bg);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:14px;height:14px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
 .sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
-.sw .moon path,.sw .sun circle{fill:var(--bg)} /* icon takes the page background, so it shows on the knob in both themes */
+.sw .moon path,.sw .sun circle{fill:#000}
 :root[data-theme="light"] .sw .k{transform:translateX(22px)}
 :root[data-theme="light"] .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
 :root[data-theme="light"] .sw .sun{opacity:1;transform:none}
@@ -83,6 +92,7 @@ footer a:hover{color:var(--ink)}
 </style>
 </head>
 <body>
+<div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="nav">
   <a class="back" href="/" data-back><b class="ar">←</b><span lang="ru">На главную</span><span lang="en">Home</span></a>
   <div class="r">
