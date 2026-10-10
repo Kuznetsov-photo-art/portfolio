@@ -181,11 +181,11 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .sec-head .n{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3)}
 .sec-head h2{font-size:clamp(34px,6vw,96px);font-weight:300;letter-spacing:-.05em;line-height:.95}
 .sec-head .m{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right}
-.sec p.t{color:var(--ink-2);max-width:52ch;margin:0}
+.sec p.t{color:var(--ink-2);max-width:52ch;margin:0;position:relative;z-index:3} /* phones drift up behind the text */
 .sec p.t+p.t{margin-top:12px}
 
 /* stage with floating phones */
-.stage{position:relative;overflow:hidden;height:clamp(560px,100vh,980px);margin-top:calc(var(--gutter)*1.2);margin-bottom:10vh}
+.stage{position:relative;overflow-x:clip;overflow-y:visible;height:clamp(560px,100vh,980px);margin-top:calc(var(--gutter)*1.2);margin-bottom:10vh}
 .stage .fl img{width:100%}
 .stage .cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center}
 .stage .cap i{width:60px;height:1px;background:var(--line-2)}
