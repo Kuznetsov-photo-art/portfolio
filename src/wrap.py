@@ -18,6 +18,9 @@ def wrap(src,dst,title=None,desc='',canonical=''):
 <meta property="og:description" content="{desc}">
 {('<link rel="canonical" href="'+canonical+'">') if canonical else ''}
 <meta name="robots" content="index,follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 '''
     head=head.replace('<meta name="viewport" content="width=device-width,initial-scale=1">\n','')
     out=meta+head+'\n</head>\n<body>'+body+'\n</body>\n</html>\n'
