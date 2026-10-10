@@ -249,11 +249,6 @@ footer a:hover{color:var(--ink)}
 .cur{border-radius:50%}
 /* while the label circle is shown it IS the cursor: hide the native arrow so it never covers the label */
 @media(hover:hover) and (pointer:fine){[data-cur],[data-cur] *{cursor:none}}
-/* halo: soft lens that trails the pointer and slightly lifts what's under it */
-.halo{position:fixed;left:0;top:0;z-index:40;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .6s;-webkit-backdrop-filter:brightness(1.22) contrast(1.06);backdrop-filter:brightness(1.22) contrast(1.06);-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
-:root[data-theme="light"] .halo{-webkit-backdrop-filter:brightness(.93) contrast(1.06);backdrop-filter:brightness(.93) contrast(1.06)}
-.halo.on{opacity:1}
-@media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.halo{display:none}}
 /* back to top: round button bottom-right, shows after one screen of scroll */
 .totop{position:fixed;right:var(--gutter);bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1),background .3s,color .3s,border-color .3s}
 .totop.on{opacity:1;transform:none;pointer-events:auto}
@@ -270,7 +265,6 @@ footer a:hover{color:var(--ink)}
 <div class="grain" aria-hidden="true"></div>
 <div class="cur" id="cur"></div>
 <button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
-<div class="halo" id="halo" aria-hidden="true"></div>
 
 <div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="nav">
@@ -632,19 +626,7 @@ const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches;
 if(!FINE) cur.remove();
 let cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy;
 addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
-const halo=document.getElementById('halo'); let hx=0,hy=0,hs=1;
-if(FINE){
-  addEventListener('pointermove',()=>halo.classList.add('on'),{passive:true,once:true});
-  document.documentElement.addEventListener('pointerleave',()=>halo.classList.remove('on'));
-  document.documentElement.addEventListener('pointerenter',()=>halo.classList.add('on'));
-  (function loop(){
-    cx+=(tx-cx)*.25; cy+=(ty-cy)*.25; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;
-    const vx=tx-hx, vy=ty-hy; hx+=vx*.08; hy+=vy*.08;
-    hs+=((1+Math.min(Math.hypot(vx,vy)/900,.35))-hs)*.1; // stretches a little when moving fast
-    halo.style.transform=`translate(${hx}px,${hy}px) scale(${hs.toFixed(3)})`;
-    requestAnimationFrame(loop);
-  })();
-}
+if(FINE)(function loop(){ cx+=(tx-cx)*.25; cy+=(ty-cy)*.25; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
 function bindCursor(){
   if(!FINE) return;
   document.querySelectorAll('.row, .a-item, .c-link, .links a').forEach(el=>{
