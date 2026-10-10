@@ -219,10 +219,10 @@ section{padding-block:clamp(80px,10vw,160px)}
 
 /* ---------- about ---------- */
 .about{display:grid;grid-template-columns:4fr 7fr;gap:56px;align-items:start}
-.about .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.4vw,34px);line-height:1.22;letter-spacing:-.03em}
-.about .text p{color:var(--ink-2);max-width:62ch;margin:0 0 18px}
+.about .lead{margin:0 0 32px;max-width:24em;font-family:var(--display);font-weight:300;font-size:clamp(22px,2.4vw,34px);line-height:1.22;letter-spacing:-.03em}
+.about .text p:not(.lead){color:var(--ink-2);max-width:62ch;margin:0 0 18px}
 .about .text p strong{color:var(--ink);font-weight:600}
-.portrait{width:min(100%,400px);aspect-ratio:1;margin-top:36px;position:relative} /* round avatar of live dots with a soft dissolving edge (no clip, no ring) */
+.portrait{width:min(100%,400px);aspect-ratio:1;margin-top:0;position:relative} /* round avatar of live dots with a soft dissolving edge (no clip, no ring) */
 /* halftone portrait: dots sized by brightness, assemble on enter, scatter around the cursor */
 .portrait.ht canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .portrait.ht .ht-src{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;border-radius:50%;filter:grayscale(1);transition:opacity .6s}
@@ -234,7 +234,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .portrait .rl{inset:auto;left:0;right:0;bottom:-22px;height:1px}
 .portrait .rl .line{left:0;right:0;top:0;height:1px}
 .portrait .rl span{left:50%;top:-7px;transform:translateX(-50%)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;max-width:680px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stat{padding:18px 16px 16px;border-right:1px solid var(--line)}
 .stat:last-child{border-right:0}
 .stat b{font-family:var(--display);font-size:clamp(28px,3vw,44px);font-weight:300;letter-spacing:-.04em;display:block;line-height:1;font-variant-numeric:tabular-nums}
@@ -368,19 +368,19 @@ footer a:hover{color:var(--ink)}
   <div class="sec-head rv"><h2 data-i18n="about.title">Обо мне</h2><div class="rule"></div><span class="mono">§ 04</span></div>
   <div class="about">
     <div class="rv">
-      <p class="lead" data-i18n="about.lead">Продуктовый дизайнер с 14-летним опытом. Начинал с брендинга и полиграфии, последние восемь лет проектирую цифровые продукты в финтехе, медтехе и B2B</p>
       <div class="portrait ht"><canvas id="ht" role="img" aria-label="Андрей Кузнецов"></canvas><img class="ht-src" src="/assets/about/portrait.webp" alt="Андрей Кузнецов" width="720" height="900"></div>
+    </div>
+    <div class="text rv">
+      <p class="lead" data-i18n="about.lead">Продуктовый дизайнер с 14-летним опытом. Начинал с брендинга и полиграфии, последние восемь лет проектирую цифровые продукты в финтехе, медтехе и B2B</p>
+      <p data-i18n-html="about.p1"></p>
+      <p data-i18n-html="about.p2"></p>
+      <p data-i18n-html="about.p3"></p>
+      <div class="skills" id="skills"></div>
       <div class="stats">
         <div class="stat"><b>14</b><span data-i18n="st.years">лет в дизайне</span></div>
         <div class="stat"><b>4</b><span data-i18n="st.ds">дизайн-системы с нуля</span></div>
         <div class="stat"><b>×4</b><span data-i18n="st.dau">рост DAU в YouGile</span></div>
       </div>
-    </div>
-    <div class="text rv">
-      <p data-i18n-html="about.p1"></p>
-      <p data-i18n-html="about.p2"></p>
-      <p data-i18n-html="about.p3"></p>
-      <div class="skills" id="skills"></div>
     </div>
   </div>
   <div class="timeline rv" id="tl"></div>
