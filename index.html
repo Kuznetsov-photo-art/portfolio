@@ -127,7 +127,7 @@ body.loading{overflow:hidden}
 .h-meta{display:grid;gap:8px;justify-items:start}
 .h-meta .mono{display:flex;gap:10px;align-items:center}
 .h-meta .mono::before{content:'';width:18px;height:1px;background:var(--red)}
-@media(max-width:860px){.h-sub{grid-template-columns:1fr}.hero{padding-block:calc(96px + var(--nav-h)) 40px}.spec{position:static;text-align:left;margin-bottom:48px}.rl-left,.rl-top{display:none}}
+@media(max-width:860px){.h-sub{grid-template-columns:1fr}.hero{padding-block:calc(40px + var(--nav-h)) 48px;min-height:auto} /* phones: height follows content, no empty top */.spec{position:static;text-align:left;margin-bottom:48px}.rl-left,.rl-top{display:none}}
 
 /* ---------- marquee (dual, scroll-driven) ---------- */
 .marquee{border-block:1px solid var(--line);padding-block:22px;overflow:hidden;display:grid;gap:6px}
