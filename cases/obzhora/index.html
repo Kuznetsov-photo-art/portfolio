@@ -55,14 +55,24 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .prog i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(0)}
 
 /* nav */
-.nav{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.nav{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .nav a{position:relative}
 .nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s}
 .nav a:hover::after{right:0}
 .nav .c{display:flex;gap:10px;align-items:center}
 .nav .c i{width:8px;height:8px;background:currentColor;display:inline-block}
 .nav .c .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
-.nav .ctr{display:flex;gap:22px}
+.nav .ctr{display:flex;gap:22px;align-items:center}
+.nav .ar2{font-family:var(--body);font-weight:300;font-size:17px;line-height:0;letter-spacing:0;margin-left:2px}
+/* header backdrop: progressive blur (strong at top → none at bottom) + fade into page colour */
+.navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:108px;pointer-events:none}
+.navfx i,.navfx::after{position:absolute;inset:0}
+.navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
+.navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
+.navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
+@media(max-width:760px){.navfx{height:84px}}
+
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:var(--gutter);padding:calc(var(--gutter)*2.4) var(--gutter) var(--gutter);overflow:hidden;isolation:isolate}
@@ -202,7 +212,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 .outro .nx a:hover{color:var(--ink)}
 
 @media(max-width:860px){
-  .nav{padding:14px var(--gutter);gap:12px;font-size:10px;letter-spacing:.1em}
+  .nav{padding:16px var(--gutter);gap:12px;font-size:10px;letter-spacing:.1em}
   .nav .ctr:first-of-type{display:none}
   .nav .ctr{gap:14px}
   .nav .c i{display:none}
@@ -231,10 +241,11 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 <div class="cur" id="cur"></div>
 <div class="prog"><i id="prog"></i></div>
 
+<div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
 <nav class="nav">
   <a href="/" class="c" data-back><b class="ar">←</b>На главную</a>
   <div class="ctr"><span>Обжора</span><span style="opacity:.6">01 / 12</span></div>
-  <div class="ctr"><button class="tgl" id="tgl" aria-label="Переключить тему"><span>Dark</span><i></i><span>Light</span></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance ↗</a></div>
+  <div class="ctr"><button class="tgl" id="tgl" aria-label="Переключить тему"><span>Dark</span><i></i><span>Light</span></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance<b class="ar2">↗</b></a></div>
 </nav>
 
 <!-- ============ HERO ============ -->

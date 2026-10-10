@@ -49,13 +49,22 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 body.loading{overflow:hidden}
 
 /* ---------- nav ---------- */
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px var(--gutter);mix-blend-mode:difference;color:#fff}
-.brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px var(--gutter);mix-blend-mode:difference;color:#fff}
+.brand{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
 .brand i{width:8px;height:8px;background:currentColor}
-.links{display:flex;gap:26px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.links{display:flex;gap:26px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .links a{position:relative}
 .links a::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s}
 .links a:hover::after{right:0}
+/* header backdrop: progressive blur (strong at top → none at bottom) + fade into page colour */
+.navfx{position:fixed;z-index:49;inset:0 0 auto 0;height:108px;pointer-events:none}
+.navfx i,.navfx::after{position:absolute;inset:0}
+.navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
+.navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
+.navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
+@media(max-width:760px){.navfx{height:84px}}
+@media(max-width:760px){.nav{padding-block:16px}}
 .ctrls{display:flex;gap:16px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .ctrls button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;letter-spacing:inherit;text-transform:inherit}
 .ctrls .lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px}
@@ -233,8 +242,9 @@ footer a:hover{color:var(--ink)}
 <div class="grain" aria-hidden="true"></div>
 <div class="cur" id="cur"></div>
 
+<div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="nav">
-  <a class="brand" href="#top"><i></i>Andrew Kuznetsov</a>
+  <a class="brand" href="#top">Andrew Kuznetsov</a>
   <nav class="links">
     <a href="#work" data-i18n="nav.work">Работы</a>
     <a href="#archive" data-i18n="nav.archive">Архив</a>
