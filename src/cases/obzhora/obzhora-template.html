@@ -89,8 +89,7 @@ body.dark .blob{background:radial-gradient(circle at 40% 40%,rgba(59,206,150,.35
 .dn3{right:2%;top:6%;width:24%;z-index:0;--tilt:14deg}
 .dn4{right:8%;bottom:4%;width:14%;filter:blur(1px);z-index:3;--tilt:28deg}
 .hero-ph{left:46%;top:50%;width:auto;transform:translate(-50%,-50%) rotate(-7deg);z-index:2}
-.hero-ph .ph{--w:clamp(200px,24vw,380px)}
-.hero-ph .ph{box-shadow:0 60px 100px -30px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset}
+.hero-ph .ph.big{--w:min(clamp(200px,24vw,380px),calc((100svh - 150px)/2.5))} /* capped by height so the phone clears the header fade */
 .bob{animation:bob var(--d,7s) ease-in-out infinite;animation-delay:var(--dl,0s)}
 @keyframes bob{0%,100%{transform:translate3d(0,0,0) rotate(var(--tilt,0deg))}50%{transform:translate3d(0,-14px,0) rotate(calc(var(--tilt,0deg) + 2deg))}}
 .h-copy{position:relative;z-index:2}
