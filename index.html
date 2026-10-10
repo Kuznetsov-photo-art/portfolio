@@ -636,11 +636,18 @@ function bindCursor(){
 })();
 
 render();
-// anchor from another page (/#archive): re-jump once lists are rendered and fonts loaded
+// scroll position: browser restores it before JS renders the lists, so we keep it ourselves.
+// back from a case → same place; anchor from another page (/#archive) → re-jump once rendered and fonts loaded
 (()=>{
-  const t=location.hash&&document.getElementById(location.hash.slice(1)); if(!t) return;
-  const jump=()=>t.scrollIntoView({behavior:'instant'});
-  requestAnimationFrame(jump); addEventListener('load',jump,{once:true});
+  const K='home-y';
+  addEventListener('pagehide',()=>{try{sessionStorage.setItem(K,String(scrollY))}catch(e){}});
+  const nav=performance.getEntriesByType('navigation')[0];
+  let y=null; try{y=sessionStorage.getItem(K)}catch(e){}
+  let jump=null;
+  if(nav&&nav.type==='back_forward'&&y!=null){ history.scrollRestoration='manual'; jump=()=>scrollTo({top:+y,behavior:'instant'}); }
+  else{ const t=location.hash&&document.getElementById(location.hash.slice(1)); if(t) jump=()=>t.scrollIntoView({behavior:'instant'}); }
+  if(!jump) return;
+  jump(); requestAnimationFrame(jump); addEventListener('load',jump,{once:true});
 })();
 </script>
 

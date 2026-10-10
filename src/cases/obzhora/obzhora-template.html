@@ -220,7 +220,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 <div class="prog"><i id="prog"></i></div>
 
 <nav class="nav">
-  <a href="/" class="c"><i></i>← Index</a>
+  <a href="/" class="c" data-back><i></i>← На главную</a>
   <div class="ctr"><span>Обжора</span><span style="opacity:.6">01 / 12</span></div>
   <div class="ctr"><button class="tgl" id="tgl" aria-label="Переключить тему"><span>Dark</span><i></i><span>Light</span></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance ↗</a></div>
 </nav>
@@ -437,7 +437,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
   <div class="wrap">
     <h2 class="r">Спасибо<br>за внимание</h2>
     <div class="nx">
-      <a href="/#archive">← Все работы</a>
+      <a href="/#archive" data-back>← Все работы</a>
       <span>Обжора · 2020 · iOS</span>
       <a href="https://www.behance.net/gallery/155967497/Vaskoru" target="_blank" rel="noopener">Следующий проект → Vasko.ru ↗</a>
     </div>
@@ -447,6 +447,11 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 <script>
 (()=>{
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+/* back to home: if we came from the home page, go back in history so the browser restores the scroll position */
+$$('[data-back]').forEach(a=>a.addEventListener('click',e=>{
+  try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
+}));
 const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 /* cursor */
