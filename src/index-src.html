@@ -250,6 +250,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .c-link .mono{color:inherit;opacity:.6}
 .copy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none;border:0;padding:0 0 0 8px;margin-left:auto;color:inherit;opacity:.7} /* pinned to the right edge of the mail cell */
 footer{padding:28px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+footer .cp{font-family:var(--body);font-size:1.5em;line-height:0;letter-spacing:0;vertical-align:-.1em} /* © in the mono font is tiny — draw it with the body font at cap height */
 footer nav{display:flex;gap:20px;flex-wrap:wrap}
 footer a:hover{color:var(--ink)}
 
@@ -386,7 +387,7 @@ footer a:hover{color:var(--ink)}
 </section>
 
 <footer>
-  <span>© 2026 Andrew Kuznetsov · <span data-i18n="f.rights">Все права защищены</span></span>
+  <span><span class="cp">©</span> 2026 Andrew Kuznetsov · <span data-i18n="f.rights">Все права защищены</span></span>
   <nav>
     <a href="/privacy/" data-i18n="f.privacy">Конфиденциальность</a>
   </nav>

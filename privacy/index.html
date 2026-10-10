@@ -71,6 +71,7 @@ section a:hover{text-decoration-color:var(--ink)}
 @media(max-width:600px){section{grid-template-columns:1fr}section .n{padding:0 0 8px}}
 
 footer{padding:28px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+footer .cp{font-family:var(--body);font-size:1.5em;line-height:0;letter-spacing:0;vertical-align:-.1em} /* © in the mono font is tiny — draw it with the body font at cap height */
 footer a{text-decoration:none}
 footer a:hover{color:var(--ink)}
 
@@ -177,7 +178,7 @@ footer a:hover{color:var(--ink)}
 </main>
 
 <footer>
-  <span>© 2026 Andrew Kuznetsov · <span lang="ru">Все права защищены</span><span lang="en">All rights reserved</span></span>
+  <span><span class="cp">©</span> 2026 Andrew Kuznetsov · <span lang="ru">Все права защищены</span><span lang="en">All rights reserved</span></span>
   <a href="/"><span lang="ru">На главную</span><span lang="en">Home</span></a>
 </footer>
 
