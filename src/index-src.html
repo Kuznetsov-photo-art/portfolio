@@ -233,6 +233,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .tl .c small{display:block;font-weight:400;color:var(--ink-3);font-size:13px}
 .tl .d{color:var(--ink-2);font-size:15px}
 .tl.now .y{color:var(--ink)}
+.tl{transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}.tl.tl-wait{opacity:0;transform:translateY(24px)} /* timeline rows appear one by one on scroll and stay */
 .skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px} /* separate chips — the shared frame left an empty stub on the last row */
 .skills span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2)}
 @media(max-width:900px){.about{grid-template-columns:1fr;grid-template-areas:'p' 't' 's';grid-template-rows:auto;row-gap:40px}.tl{grid-template-columns:90px 1fr;grid-template-rows:auto auto}.tl .d{grid-column:2}}
@@ -368,7 +369,7 @@ footer a:hover{color:var(--ink)}
       <div class="stat"><b>×4</b><span data-i18n="st.dau">рост DAU в YouGile</span></div>
     </div>
   </div>
-  <div class="timeline rv" id="tl"></div>
+  <div class="timeline" id="tl"></div>
 </section>
 
 <section class="wrap contact" id="contact">
@@ -563,7 +564,7 @@ function render(){
   document.getElementById('skills').innerHTML = SKILLS.map(s=>`<span>${s}</span>`).join('');
   const mqh=(arr)=>[...arr,...arr,...arr].map((s,i)=>`<span class="${i%2?'o':''}">${s}</span>`).join('');
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
-  lockLines(); bindCursor(); setupReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
+  lockLines(); bindCursor(); setupReveal(); tlReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
 }
 document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render();});
 
@@ -583,6 +584,21 @@ document.getElementById('copy').addEventListener('click',async e=>{
 });
 
 /* reveal */
+/* timeline: rows below the fold fade up one after another as they enter; once shown they stay (also across RU/EN re-render) */
+let tlio; const tlSeen=new Set();
+function tlReveal(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  tlio && tlio.disconnect();
+  tlio=new IntersectionObserver(es=>{ let k=0;
+    es.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top).forEach(e=>{
+      const el=e.target, r=el.getBoundingClientRect(); if(!r.height||r.top>innerHeight) return; /* ignore bogus hits while the page is not laid out */ tlio.unobserve(el); tlSeen.add(el.dataset.i); el.style.transitionDelay=(k++*120)+'ms'; el.classList.remove('tl-wait'); });
+  },{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('#tl .tl').forEach((el,i)=>{ el.dataset.i=i;
+    if(tlSeen.has(String(i))||el.getBoundingClientRect().top<innerHeight*.9) return;
+    el.classList.add('tl-wait'); });
+  const go=()=>requestAnimationFrame(()=>document.querySelectorAll('#tl .tl.tl-wait').forEach(el=>tlio.observe(el)));
+  document.readyState==='complete'?go():addEventListener('load',go,{once:true}); /* observe only after load: while loading the page is short and rows look visible */
+}
 let io;
 function setupReveal(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
