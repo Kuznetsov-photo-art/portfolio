@@ -165,6 +165,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .kw{grid-area:1/1;display:flex;white-space:nowrap;font-family:var(--display);line-height:.9;letter-spacing:-.04em;color:var(--ink);overflow:hidden;padding-block:.14em .28em;margin-block:-.14em -.28em} /* room for descenders (у д р) and й inside the clip; negative margin keeps the layout */
 .kw .ch{display:inline-block;font-variation-settings:'wght' var(--w,200);transform:translateY(170%);transition:transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*24ms)}
 .kw.on .ch{transform:none}
+.kw[data-ml]{flex-direction:column;overflow:visible}.kw .ln{display:flex;overflow:hidden;padding-block:.14em .28em;margin-block:-.14em -.28em} /* multi-line word: every line clips its own letters */
 .kw.past .ch{transform:translateY(-170%)} /* 170%: clears descenders and й with the taller clip box */
 .kbottom{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,6vw,120px);align-items:end}
 .kcount{font-family:var(--display);font-weight:200;font-size:clamp(56px,8vw,128px);line-height:.85;letter-spacing:-.05em;display:flex;align-items:flex-start}
@@ -512,7 +513,7 @@ const AROWS=4;
 const FOCUS = [
  {ru:{w:'Дизайн‑системы',t:'Токены, компоненты, документация',p:'Одна библиотека на несколько брендов и тем. Правила, которые читают разработчики, и процесс публикации без сюрпризов',m:'Finam · VTB · YouGile · Lab4U'},en:{w:'Design systems',t:'Tokens, components, documentation',p:'One library across brands and themes. Rules developers actually read, and a publishing process without surprises',m:'Finam · VTB · YouGile · Lab4U'}},
  {ru:{w:'AI‑продукты',t:'Интерфейсы для нейросетевых фич',p:'Чат-консультанты, расшифровки, ассистенты в продукте. Как показать неопределённость и не потерять доверие пользователя',m:'FinamX · Lab4U · YouGile'},en:{w:'AI products',t:'Interfaces for LLM features',p:'Chat advisors, interpretations, in-product assistants. How to show uncertainty without losing the user’s trust',m:'FinamX · Lab4U · YouGile'}},
- {ru:{w:'Продуктовый подход',t:'Исследования, метрики, итерации',p:'CJM, JTBD, CustDev и короткие циклы. От гипотезы до релиза — и обратно к цифрам',m:'DAU ×4 · 8 команд · 0 → 1'},en:{w:'Product approach',t:'Research, metrics, iterations',p:'CJM, JTBD, CustDev and short cycles. From hypothesis to release — and back to the numbers',m:'DAU ×4 · 8 teams · 0 → 1'}},
+ {ru:{w:'Продуктовый\nподход',t:'Исследования, метрики, итерации',p:'CJM, JTBD, CustDev и короткие циклы. От гипотезы до релиза — и обратно к цифрам',m:'DAU ×4 · 8 команд · 0 → 1'},en:{w:'Product\napproach',t:'Research, metrics, iterations',p:'CJM, JTBD, CustDev and short cycles. From hypothesis to release — and back to the numbers',m:'DAU ×4 · 8 teams · 0 → 1'}},
 ];
 const TL = [
  ['2025 —','Финам / Limex','Finam / Limex','Senior AI-Creator','Мультибрендовая DS, AI-платформы для трейдеров РФ и США','Multi-brand DS, AI platforms for traders in RU and US',1],
@@ -532,10 +533,12 @@ try{ const s=localStorage.getItem('lang'); if(s) lang=s; else if(!/^ru/i.test(na
 const root=document.documentElement;
 let focusUpdate=null, focusBuild=null;
 
+/* typography: glue 1–2 letter words to the next word and keep dashes off the line start — no hanging «и», «в», «—» */
+const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
 function render(){
   const d=I18N[lang];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=d[k];});
-  document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=d[k];});
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=NB(d[k]);});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=NB(d[k]);});
   root.lang=lang;
   document.getElementById('lang').innerHTML = lang==='ru' ? '<b>RU</b> / EN' : 'RU / <b>EN</b>';
   // name
@@ -560,7 +563,7 @@ function render(){
     return `<div class="arow" data-dir="${r%2?1:-1}"><div class="atrack">${items.map(a=>tile(a,0)).join('')}${items.map(a=>tile(a,1)).join('')}</div></div>`;}).join('');
   focusBuild && focusBuild();
   document.getElementById('tl').innerHTML = TL.map(t=>`
-    <div class="tl ${t[6]?'now':''}"><span class="y">${t[0]}</span><span class="c">${lang==='ru'?t[1]:t[2]}<small>${t[3]}</small></span><span class="d">${lang==='ru'?t[4]:t[5]}</span></div>`).join('');
+    <div class="tl ${t[6]?'now':''}"><span class="y">${t[0]}</span><span class="c">${lang==='ru'?t[1]:t[2]}<small>${t[3]}</small></span><span class="d">${NB(lang==='ru'?t[4]:t[5])}</span></div>`).join('');
   document.getElementById('skills').innerHTML = SKILLS.map(s=>`<span>${s}</span>`).join('');
   const mqh=(arr)=>[...arr,...arr,...arr].map((s,i)=>`<span class="${i%2?'o':''}">${s}</span>`).join('');
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
@@ -732,23 +735,24 @@ function bindCursor(){
   /* odometer counter: two digit columns */
   function counter(){idx.innerHTML=`<span class="d"><i>${[0,1].map(n=>`<span>${n}</span>`).join('')}</i></span><span class="d"><i>${Array.from({length:10},(_,n)=>`<span>${n}</span>`).join('')}</i></span><small>/${String(N).padStart(2,'0')}</small>`;}
   function setCount(i){const n=String(i+1).padStart(2,'0'); const cols=idx.querySelectorAll('.d i'); if(cols.length<2) return; cols[0].style.transform=`translateY(-${+n[0]*.85}em)`; cols[1].style.transform=`translateY(-${+n[1]*.85}em)`;}
-  function setDesc(i){const f=FOCUS[i][lang]; card.innerHTML=`<h3>${f.t}</h3><p>${f.p}</p><div class="m">${f.m}</div>`; card.classList.remove('swap'); void card.offsetWidth; card.classList.add('swap');}
+  function setDesc(i){const f=FOCUS[i][lang]; card.innerHTML=`<h3>${NB(f.t)}</h3><p>${NB(f.p)}</p><div class="m">${f.m}</div>`; card.classList.remove('swap'); void card.offsetWidth; card.classList.add('swap');}
   /* words: split into letters for the weight wave and the staggered slide */
   focusBuild=function(){
-    words.innerHTML=FOCUS.map((f,k)=>`<div class="kw ${k===0?'on':''}">${[...f[lang].w].map((c,i)=>`<span class="ch" style="--i:${i}">${c===' '?'&nbsp;':c}</span>`).join('')}</div>`).join('');
+    words.innerHTML=FOCUS.map((f,k)=>{ let i=0; const lines=f[lang].w.split('\n'); /* \n in a word = line break */
+      return `<div class="kw ${k===0?'on':''}"${lines.length>1?' data-ml':''}>${lines.map((ln,l)=>`<span class="ln">${[...ln].map(c=>`<span class="ch" data-l="${l}" style="--i:${i++}">${c===' '?'&nbsp;':c}</span>`).join('')}</span>`).join('')}</div>`; }).join('');
     fit(); counter(); lastI=-1; focusUpdate(true);
   };
   function fit(){
     const W=words.clientWidth; if(!W) return;
     [...words.children].forEach(w=>{
-      w.style.fontSize='100px'; const chs=[...w.children], n=chs.length;
+      w.style.fontSize='100px'; const chs=[...w.querySelectorAll('.ch')], n=chs.length, L=w.querySelectorAll('.ln').length;
       // widest state over every wave position (heavy wide letters like «AI» change it a lot)
       let total=0;
       for(let peak=-1.5;peak<=n+1.5;peak+=.5){
         chs.forEach((c,k)=>{const d=k-peak; c.style.setProperty('--w',(200+700*Math.exp(-d*d/3.2)).toFixed(0));});
-        total=Math.max(total,chs.reduce((t,c)=>t+c.getBoundingClientRect().width,0));
+        const lw=Array(L).fill(0); chs.forEach(c=>lw[+c.dataset.l]+=c.getBoundingClientRect().width); total=Math.max(total,...lw); /* widest line */
       }
-      w.style.fontSize=Math.min(100*W/total*.98, innerHeight*.42)+'px';
+      w.style.fontSize=Math.min(100*W/total*.98, innerHeight*.42/Math.max(1,L*.8))+'px';
       chs.forEach(c=>c.style.setProperty('--w',200));
     });
   }
@@ -763,7 +767,7 @@ function bindCursor(){
     const ws=[...words.children];
     if(i!==lastI||force){ ws.forEach((w,k)=>w.className='kw '+(k<i?'past':k===i?'on':'')); if(i!==lastI){setDesc(i);} setCount(i); lastI=i; }
     /* weight wave travels across the active word with scroll */
-    const w=ws[i]; if(w){ const chs=w.children, n=chs.length, peak=lp*(n+3)-1.5;
+    const w=ws[i]; if(w){ const chs=w.querySelectorAll('.ch'), n=chs.length, peak=lp*(n+3)-1.5;
       for(let k=0;k<n;k++){ const d=k-peak; chs[k].style.setProperty('--w',(200+700*Math.exp(-d*d/3.2)).toFixed(0)); } }
     bar.style.setProperty('--p',(prog*100).toFixed(1)+'%');
   };
