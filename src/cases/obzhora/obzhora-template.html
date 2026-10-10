@@ -570,7 +570,7 @@ $$('.dn, .hero-ph').forEach((el,i)=>{const w=el.firstElementChild; w.classList.a
 const drifts=$$('[data-drift]').map(el=>({el,d:+el.dataset.drift}));
 const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:el.scrollWidth/2}));
 const hpin=$('#hpin'), track=$('#track'); const trackPh=track?[...track.querySelectorAll('figure .ph')]:[];
-const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; document.body.classList.add('dark'); const tgl=$('#tgl'); tgl.addEventListener('click',()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual)});
+const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); /* theme is site-wide: same 'theme' key as home and privacy, dark by default */ const tgl=$('#tgl'); tgl.addEventListener('click',()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual); try{localStorage.setItem('theme',manual?'':'light')}catch(e){}});
 let mxn=0,myn=0,lastY=scrollY,vel=0,smv=0;
 
 
