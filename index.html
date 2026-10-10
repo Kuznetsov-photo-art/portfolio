@@ -715,9 +715,13 @@ function bindCursor(){
   function fit(){
     const W=words.clientWidth; if(!W) return;
     [...words.children].forEach(w=>{
-      w.style.fontSize='100px'; const chs=[...w.children], n=chs.length, mid=(n-1)/2;
-      chs.forEach((c,k)=>{const d=k-mid; c.style.setProperty('--w',(200+700*Math.exp(-d*d/3.2)).toFixed(0));}); // widest state = wave in the middle
-      const total=chs.reduce((t,c)=>t+c.getBoundingClientRect().width,0); // letters' own width (the row itself stretches to the column)
+      w.style.fontSize='100px'; const chs=[...w.children], n=chs.length;
+      // widest state over every wave position (heavy wide letters like «AI» change it a lot)
+      let total=0;
+      for(let peak=-1.5;peak<=n+1.5;peak+=.5){
+        chs.forEach((c,k)=>{const d=k-peak; c.style.setProperty('--w',(200+700*Math.exp(-d*d/3.2)).toFixed(0));});
+        total=Math.max(total,chs.reduce((t,c)=>t+c.getBoundingClientRect().width,0));
+      }
       w.style.fontSize=Math.min(100*W/total*.98, innerHeight*.42)+'px';
       chs.forEach(c=>c.style.setProperty('--w',200));
     });
