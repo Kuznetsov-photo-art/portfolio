@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});
+await p.goto('file:///home/claude/portfolio/cases/obzhora/obzhora-case.html',{waitUntil:'domcontentloaded',timeout:60000});
+await p.waitForTimeout(2500);
+const S='/tmp/claude-0/-home-claude/9cb87570-c146-5b9a-9fb9-fdbe54368d2e/scratchpad/';
+await p.screenshot({path:S+'h_light.png',timeout:60000});
+await p.click('#tgl'); await p.waitForTimeout(1200); await p.screenshot({path:S+'h_dark.png',timeout:60000});
+await p.evaluate(()=>scrollTo(0,1700)); await p.waitForTimeout(900); await p.screenshot({path:S+'h_sec1_dark.png',timeout:60000});
+await p.click('#tgl'); await p.evaluate(()=>scrollTo(0,6200)); await p.waitForTimeout(900); await p.screenshot({path:S+'h_track.png',timeout:60000});
+await b.close();})();

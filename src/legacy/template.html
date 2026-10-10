@@ -1,0 +1,646 @@
+<title>Andrew Kuznetsov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700;900&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#0D0A0C; --bg-2:#141013; --bg-3:#1C161A;
+  --ink:#F4EEF0; --ink-2:#B8ACB1; --ink-3:#7D7076;
+  --line:rgba(244,238,240,.10); --line-2:rgba(244,238,240,.18);
+  --acc:#8C1D3F; --acc-2:#E2607F; --acc-ink:#FFF3F5;
+  --glow:rgba(140,29,63,.45);
+  --display:'Unbounded',system-ui,sans-serif;
+  --body:'Golos Text',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gutter:clamp(16px,4vw,56px);
+  --radius:20px;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F6F2F3; --bg-2:#FFFFFF; --bg-3:#EDE6E8;
+  --ink:#17100F; --ink-2:#5A4A4F; --ink-3:#8A7A80;
+  --line:rgba(23,16,15,.10); --line-2:rgba(23,16,15,.2);
+  --acc:#7A1431; --acc-2:#5E0E26; --acc-ink:#FFFFFF;
+  --glow:rgba(122,20,49,.22);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.wrap{padding-inline:var(--gutter);max-width:1520px;margin-inline:auto}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+[hidden]{display:none!important}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px var(--gutter);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 70%,transparent);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px var(--glow)}
+.links{display:flex;gap:26px;font-size:14px;color:var(--ink-2)}
+.links a:hover{color:var(--ink)}
+.ctrls{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);background:transparent;color:var(--ink);border-radius:999px;padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:border-color .2s,background .2s,color .2s}
+.btn:hover{border-color:var(--acc);color:var(--acc-2)}
+.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.btn.primary:hover{background:var(--acc-2);color:var(--acc-ink)}
+.lang b{color:var(--ink)}.lang span{color:var(--ink-3)}
+@media(max-width:760px){.links{display:none}}
+@media(max-width:520px){.btn.primary{display:none}}
+.btn,.tag{white-space:nowrap}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:min(86vh,900px);display:grid;align-items:end;padding-block:120px 64px;overflow:hidden;isolation:isolate}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:.9}
+.hero .fallback{position:absolute;inset:0;z-index:-2;background:radial-gradient(60% 50% at 70% 30%,var(--glow),transparent 70%),radial-gradient(40% 40% at 20% 80%,rgba(226,96,127,.14),transparent 70%)}
+.hero .fade{position:absolute;inset:auto 0 0 0;height:45%;z-index:-1;background:linear-gradient(180deg,transparent,var(--bg))}
+.eyebrow{display:flex;gap:14px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:#37D67A;box-shadow:0 0 0 4px rgba(55,214,122,.18)}
+.h-name{font-size:clamp(44px,9.5vw,152px);font-weight:700;letter-spacing:-.035em;line-height:.92}
+.h-name .thin{font-weight:300;color:var(--ink-2)}
+.h-sub{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:end;margin-top:40px}
+.h-sub p{font-size:clamp(18px,2vw,26px);line-height:1.35;margin:0;max-width:22ch;font-weight:500}
+.h-meta{display:grid;gap:10px;justify-items:start}
+@media(max-width:860px){.h-sub{grid-template-columns:1fr}.hero{padding-block:80px 48px}}
+
+
+/* ---------- hero portrait ---------- */
+.hero{position:relative}
+.hero>.eyebrow,.hero>.h-name,.hero>.h-sub{position:relative;z-index:2}
+.rings{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;opacity:.9}
+.portrait{position:absolute;z-index:1;right:calc(var(--gutter) * -0.6);top:50%;transform:translateY(-52%);width:clamp(340px,44vw,760px);aspect-ratio:1;opacity:.62;mix-blend-mode:screen}
+.portrait canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+:root[data-theme="light"] .portrait{mix-blend-mode:multiply;opacity:.55}
+@media(max-width:860px){.portrait{position:relative;right:auto;top:auto;transform:none;width:min(70vw,340px);margin:0 auto 40px;opacity:.85}.hero{display:flex;flex-direction:column;justify-content:end}}
+
+
+/* ---------- preloader ---------- */
+.pre{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;transition:opacity .7s cubic-bezier(.2,.8,.2,1),visibility .7s}
+.pre.off{opacity:0;visibility:hidden;pointer-events:none}
+.pre canvas{position:absolute;inset:0;width:100%;height:100%}
+.pre .bar{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(env(safe-area-inset-top,0px) + 22px);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.pre .bar b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.pre .line{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(env(safe-area-inset-top,0px) + 48px);height:1px;background:var(--line)}
+.pre .line i{display:block;height:100%;width:0;background:var(--acc-2);transition:width .25s linear}
+body.loading{overflow:hidden}
+
+/* ---------- focus (pinned) ---------- */
+.focus{position:relative;height:320vh;padding:0}
+.focus .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;align-items:center}
+.focus canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.focus .inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;padding-inline:var(--gutter);max-width:1520px;margin-inline:auto;width:100%}
+.focus .words{display:grid}
+.focus .w{grid-area:1/1;font-family:var(--display);font-weight:700;font-size:clamp(44px,8.5vw,136px);letter-spacing:-.04em;line-height:.95;color:var(--ink);opacity:.12;transform:translateY(0) scale(.98);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1),color .5s;will-change:transform}
+.focus .w.on{opacity:1;transform:none}
+.focus .w.past{opacity:0;transform:translateY(-40px) scale(.98)}
+.focus .w.next{opacity:.07;transform:translateY(40px) scale(.98)}
+.focus .w em{font-style:normal;color:var(--acc-2)}
+.focus .idx{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink-3);margin-bottom:26px;display:flex;gap:18px;align-items:center}
+.focus .idx i{display:block;width:120px;height:1px;background:var(--line-2);position:relative}
+.focus .idx i::after{content:'';position:absolute;left:0;top:-1px;height:3px;width:var(--p,0%);background:var(--acc-2)}
+.focus .fcard{width:clamp(260px,26vw,380px);background:var(--acc);color:var(--acc-ink);border-radius:var(--radius);padding:26px;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:space-between;transform:rotate(4deg);box-shadow:0 30px 80px var(--glow);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.focus .fcard.k1{transform:rotate(-3deg)}.focus .fcard.k2{transform:rotate(4deg)}.focus .fcard.k3{transform:rotate(-5deg)}
+.focus .fcard h3{font-size:clamp(20px,1.8vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.2;color:inherit}
+.focus .fcard p{margin:0;font-size:14px;line-height:1.45;opacity:.85}
+.focus .fcard .m{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;display:flex;justify-content:space-between}
+@media(max-width:900px){.focus .inner{grid-template-columns:1fr;gap:28px}.focus .fcard{width:min(70vw,300px);aspect-ratio:auto;padding:20px;gap:14px}.focus{height:260vh}}
+@media(prefers-reduced-motion:reduce){.focus .w,.focus .fcard{transition:none}}
+
+/* ---------- marquee ---------- */
+.marquee{border-block:1px solid var(--line);padding-block:18px;overflow:hidden;white-space:nowrap;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marquee .track{display:inline-flex;gap:56px;animation:mq 38s linear infinite;font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.04em;color:var(--ink-2)}
+.marquee .track span::after{content:'·';margin-left:56px;color:var(--acc)}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marquee .track{animation:none}}
+
+/* ---------- sections ---------- */
+section{padding-block:clamp(72px,9vw,140px)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:44px;flex-wrap:wrap}
+.sec-head h2{font-size:clamp(30px,4.4vw,64px);font-weight:500;letter-spacing:-.03em}
+.sec-head .count{font-family:var(--mono);color:var(--acc-2);font-size:13px}
+
+/* ---------- work grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.card{position:relative;grid-column:span 2;border-radius:var(--radius);overflow:hidden;background:var(--bg-2);border:1px solid var(--line);aspect-ratio:4/3;display:flex;flex-direction:column;justify-content:space-between;padding:22px;transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.card.w{grid-column:span 4;aspect-ratio:16/9}
+.card:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.card .bg{position:absolute;inset:0;z-index:0;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.card:hover .bg{transform:scale(1.04)}
+.card .top,.card .bot{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:start;gap:12px}
+.card h3{font-size:clamp(20px,2vw,30px);font-weight:500;letter-spacing:-.02em;max-width:18ch}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(6px)}
+.tag.acc{border-color:var(--acc);color:var(--acc-2)}
+.card .res{font-family:var(--display);font-size:clamp(28px,3.4vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+.card .res small{display:block;font-family:var(--body);font-weight:500;font-size:14px;color:var(--ink-2);margin-top:8px;letter-spacing:0}
+.card .arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;flex:none;transition:background .25s,color .25s,transform .4s}
+.card:hover .arrow{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);transform:rotate(-45deg)}
+/* typographic covers for upcoming cases */
+.cv-1{background:linear-gradient(135deg,#2A0812,#6E1533 60%,#B32A56)}
+.cv-2{background:linear-gradient(135deg,#0B1F1A,#0F4D3A 55%,#1AA37A)}
+.cv-3{background:linear-gradient(135deg,#1A0B24,#4D1A6B 55%,#9C4DFF)}
+.cv-4{background:linear-gradient(135deg,#14110B,#5A3D0F 55%,#E0A030)}
+.cv-5{background:linear-gradient(135deg,#120B1F,#3A1A5E 55%,#7A3FAF)}
+.cv-6{background:linear-gradient(135deg,#1B0D0D,#5A1F1F 55%,#E04B3B)}
+.card .bg::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.14),transparent 55%)}
+.card.soon .top .tag{border-style:dashed}
+:root[data-theme="light"] .card .res,:root[data-theme="light"] .card h3{color:#fff}
+:root[data-theme="light"] .card .res small{color:rgba(255,255,255,.75)}
+:root[data-theme="light"] .card .arrow{color:#fff;border-color:rgba(255,255,255,.4)}
+:root[data-theme="light"] .card .tag{color:#fff;border-color:rgba(255,255,255,.35);background:rgba(0,0,0,.25)}
+@media(max-width:1000px){.card,.card.w{grid-column:span 3}}
+@media(max-width:640px){.card,.card.w{grid-column:span 6;aspect-ratio:4/3}}
+
+/* ---------- archive ---------- */
+.arch{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.a-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2);aspect-ratio:4/3;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.a-item:hover{transform:translateY(-3px)}
+.a-item img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.a-item:hover img{transform:scale(1.05)}
+.a-item .cap{position:absolute;inset:auto 0 0 0;padding:32px 14px 12px;background:linear-gradient(180deg,transparent,rgba(5,6,10,.85));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .4s}
+.a-item:hover .cap{opacity:1;transform:none}
+.a-item .cap b{font-family:var(--body);font-weight:600;font-size:14px}
+.a-item .cap span{font-family:var(--mono);font-size:11px;opacity:.75}
+@media(hover:none){.a-item .cap{opacity:1;transform:none}}
+@media(max-width:1000px){.arch{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.arch{grid-template-columns:repeat(2,1fr)}}
+.a-note{margin-top:22px;color:var(--ink-3);font-size:14px;max-width:70ch}
+
+/* ---------- about ---------- */
+.about{display:grid;grid-template-columns:5fr 7fr;gap:48px;align-items:start}
+.about .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,36px);line-height:1.25;letter-spacing:-.02em}
+.about .text p{color:var(--ink-2);max-width:62ch;margin:0 0 18px}
+.about .text p strong{color:var(--ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;background:var(--bg-2)}
+.stat b{font-family:var(--display);font-size:clamp(28px,3vw,44px);font-weight:700;letter-spacing:-.03em;display:block;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink-3);display:block;margin-top:8px}
+.timeline{margin-top:56px;border-top:1px solid var(--line)}
+.tl{display:grid;grid-template-columns:120px 1fr 1.4fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.tl .y{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.06em}
+.tl .c{font-weight:600}
+.tl .c small{display:block;font-weight:400;color:var(--ink-3);font-size:13px}
+.tl .d{color:var(--ink-2);font-size:15px}
+.tl.now .y{color:var(--acc-2)}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.skills .tag{font-size:12px;padding:8px 12px}
+@media(max-width:900px){.about{grid-template-columns:1fr}.tl{grid-template-columns:90px 1fr;grid-template-rows:auto auto}.tl .d{grid-column:2}}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr}}
+
+/* ---------- contact ---------- */
+.contact{border-top:1px solid var(--line)}
+.contact h2{font-size:clamp(36px,7vw,110px);font-weight:700;letter-spacing:-.04em;line-height:.95}
+.contact h2 em{font-style:normal;color:var(--acc-2)}
+.c-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
+.c-link{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:999px;padding:12px 18px;font-size:15px;transition:border-color .2s,background .2s}
+.c-link:hover{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.c-link .mono{color:var(--ink-3)}
+.copy{font-family:var(--mono);font-size:12px;color:var(--acc-2);cursor:pointer;background:none;border:0;padding:0 0 0 6px}
+footer{padding:32px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+footer nav{display:flex;gap:18px;flex-wrap:wrap}
+footer a:hover{color:var(--ink)}
+
+/* ---------- reveal ---------- */
+.rv.in{animation:rv .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rv{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rv.in{animation:none}}
+
+/* ---------- cursor ---------- */
+.cur{position:fixed;z-index:99;left:0;top:0;pointer-events:none;width:12px;height:12px;border-radius:50%;background:var(--acc);transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .25s,height .25s,background .25s;display:none}
+.cur.big{width:72px;height:72px;background:var(--acc);mix-blend-mode:normal;display:grid;place-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--acc-ink)}
+@media(hover:hover) and (pointer:fine){.cur{display:grid;place-items:center}}
+</style>
+
+<div class="pre" id="pre" aria-hidden="true">
+  <canvas id="prec"></canvas>
+  <div class="bar"><span id="prem">Загружаем токены…</span><b id="prep">0%</b></div>
+  <div class="line"><i id="prel"></i></div>
+</div>
+<div class="cur" id="cur"></div>
+
+<header class="nav">
+  <a class="brand" href="#top"><i></i>ANDREW KUZNETSOV</a>
+  <nav class="links">
+    <a href="#work" data-i18n="nav.work">Работы</a>
+    <a href="#archive" data-i18n="nav.archive">Архив</a>
+    <a href="#about" data-i18n="nav.about">Обо мне</a>
+    <a href="#contact" data-i18n="nav.contact">Контакты</a>
+  </nav>
+  <div class="ctrls">
+    <button class="btn lang" id="lang" aria-label="Switch language"><b>RU</b><span>/</span><span>EN</span></button>
+    <button class="btn" id="theme" aria-label="Toggle theme">◐</button>
+    <a class="btn primary" href="https://t.me/Kuznetsov_designer" target="_blank" rel="noopener" data-i18n="nav.cta">Написать</a>
+  </div>
+</header>
+
+<section class="hero wrap" id="top">
+  <div class="fallback"></div><canvas id="gl"></canvas><div class="fade"></div>
+  <canvas class="rings" id="rings"></canvas>
+  <div class="portrait" id="portrait">
+    <canvas id="pc" width="1000" height="1000" aria-label="Портрет Андрея Кузнецова" role="img"></canvas>
+  </div>
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <span class="mono" data-i18n="hero.status">Open to projects · Moscow → worldwide</span>
+  </div>
+  <h1 class="h-name" data-i18n-html="hero.name">Андрей<br><span class="thin">Кузнецов</span></h1>
+  <div class="h-sub">
+    <p data-i18n="hero.tag">Создаю продукты и дизайн-системы — вместе с AI, а не вместо него.</p>
+    <div class="h-meta">
+      <span class="mono" data-i18n="hero.role">Lead Product Designer · AI & Design Systems</span>
+      <span class="mono" data-i18n="hero.exp">14 лет · Сбер · ВТБ · Финам · Lab4U · YouGile</span>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<section class="focus" id="focus" aria-label="Направления">
+  <div class="stick">
+    <canvas id="fgrid"></canvas>
+    <div class="inner">
+      <div>
+        <div class="idx"><span id="fidx">01 / 03</span><i id="fbar"></i><span data-i18n="f.what">чем занимаюсь</span></div>
+        <div class="words" id="fwords"></div>
+      </div>
+      <div class="fcard k1" id="fcard"></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="wrap" id="work">
+  <div class="sec-head rv">
+    <h2 data-i18n="work.title">Избранные кейсы</h2>
+    <span class="count" data-i18n="work.note">06 — материалы из Figma, в работе</span>
+  </div>
+  <div class="grid" id="cases"></div>
+</section>
+
+<section class="wrap" id="archive">
+  <div class="sec-head rv">
+    <h2 data-i18n="arch.title">Архив 2017–2022</h2>
+    <a class="btn" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener">Behance ↗</a>
+  </div>
+  <div class="arch" id="arch"></div>
+  <p class="a-note rv" data-i18n="arch.note">Ранние работы: брендинг, лендинги, промо и первые продуктовые интерфейсы. Импортированы с Behance, каждая ведёт на оригинальную публикацию.</p>
+</section>
+
+<section class="wrap" id="about">
+  <div class="sec-head rv"><h2 data-i18n="about.title">Обо мне</h2></div>
+  <div class="about">
+    <div class="rv">
+      <p class="lead" data-i18n="about.lead">Продуктовый дизайнер с 14-летним опытом. Начинал с брендинга и полиграфии, последние восемь лет проектирую цифровые продукты в финтехе, медтехе и B2B.</p>
+      <div class="stats">
+        <div class="stat"><b>14</b><span data-i18n="st.years">лет в дизайне</span></div>
+        <div class="stat"><b>4</b><span data-i18n="st.ds">дизайн-системы с нуля</span></div>
+        <div class="stat"><b>×4</b><span data-i18n="st.dau">рост DAU в YouGile</span></div>
+      </div>
+    </div>
+    <div class="text rv">
+      <p data-i18n-html="about.p1"></p>
+      <p data-i18n-html="about.p2"></p>
+      <p data-i18n-html="about.p3"></p>
+      <div class="skills" id="skills"></div>
+    </div>
+  </div>
+  <div class="timeline rv" id="tl"></div>
+</section>
+
+<section class="wrap contact" id="contact">
+  <h2 class="rv" data-i18n-html="c.title">Есть задача?<br><em>Напишите.</em></h2>
+  <div class="c-row rv">
+    <a class="c-link" href="https://t.me/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">TG</span>@Kuznetsov_designer</a>
+    <span class="c-link"><span class="mono">MAIL</span><span id="mail">kuznetsov-photo.art@yandex.ru</span><button class="copy" id="copy" data-i18n="c.copy">копировать</button></span>
+    <a class="c-link" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">BE</span>Behance</a>
+    <a class="c-link" href="https://www.linkedin.com/in/andrew-kuznetsov-9a84791a4/" target="_blank" rel="noopener"><span class="mono">IN</span>LinkedIn</a>
+    <a class="c-link" href="https://career.habr.com/andrew-kuznetsov-1991" target="_blank" rel="noopener"><span class="mono">HABR</span>Habr Career</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Andrew Kuznetsov. <span data-i18n="f.rights">Все права защищены.</span></span>
+  <nav>
+    <a href="#" data-i18n="f.privacy">Политика конфиденциальности</a>
+    <a href="#" data-i18n="f.terms">Условия использования</a>
+    <a href="#" data-i18n="f.cookies">Cookies</a>
+  </nav>
+</footer>
+
+<script>
+const COVERS = __COVERS__;
+const I18N = {
+ ru:{
+  'nav.work':'Работы','nav.archive':'Архив','nav.about':'Обо мне','nav.contact':'Контакты','nav.cta':'Написать',
+  'hero.status':'Открыт к проектам · Москва → весь мир',
+  'hero.name':'Андрей<br><span class="thin">Кузнецов</span>',
+  'hero.tag':'Создаю продукты и дизайн-системы — вместе с AI, а не вместо него.',
+  'hero.role':'Lead Product Designer · AI & Design Systems',
+  'hero.exp':'14 лет · Сбер · ВТБ · Финам · Lab4U · YouGile',
+  'work.title':'Избранные кейсы','work.note':'06 — материалы из Figma, в работе',
+  'arch.title':'Архив 2017–2022',
+  'arch.note':'Ранние работы: брендинг, лендинги, промо и первые продуктовые интерфейсы. Импортированы с Behance, каждая ведёт на оригинальную публикацию.',
+  'about.title':'Обо мне',
+  'about.lead':'Продуктовый дизайнер с 14-летним опытом. Начинал с брендинга и полиграфии, последние восемь лет проектирую цифровые продукты в финтехе, медтехе и B2B.',
+  'st.years':'лет в дизайне','st.ds':'дизайн-системы с нуля','st.dau':'рост DAU в YouGile',
+  'about.p1':'В <strong>Сбере</strong> перевёл все дизайн-системы со Sketch на Figma и с нуля сделал СберСпасибо для Бизнеса. В <strong>ВТБ</strong> вёл дизайн восьми продуктовых команд и дизайн-систему бизнес-блока банка. В <strong>YouGile</strong> за два года команда вырастила DAU в четыре раза.',
+  'about.p2':'В <strong>Lab4U</strong> построил дизайн-систему, спроектировал кросс-платформенный сервис по заказу анализов и сделал первый в России сервис AI-расшифровок анализов. Сейчас в <strong>Финаме</strong> строю мультибрендовую дизайн-систему для FinamX и Limex и AI-платформы для трейдеров в России и США.',
+  'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 60–70% моих задач проходят через Claude и ChatGPT — исследования, тексты, структура токенов, прототипы в коде. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды.',
+  'c.title':'Есть задача?<br><em>Напишите.</em>','c.copy':'копировать','c.copied':'скопировано',
+  'f.rights':'Все права защищены.','f.privacy':'Политика конфиденциальности','f.terms':'Условия использования','f.cookies':'Cookies',
+  'soon':'в работе','view':'смотреть','open':'открыть',
+  'f.what':'чем занимаюсь',
+  'pre.1':'Загружаем токены…','pre.2':'Собираем компоненты…','pre.3':'Публикуем библиотеку…',
+ },
+ en:{
+  'nav.work':'Work','nav.archive':'Archive','nav.about':'About','nav.contact':'Contact','nav.cta':'Get in touch',
+  'hero.status':'Open to projects · Moscow → worldwide',
+  'hero.name':'Andrew<br><span class="thin">Kuznetsov</span>',
+  'hero.tag':'I design products and design systems — with AI, not instead of it.',
+  'hero.role':'Lead Product Designer · AI & Design Systems',
+  'hero.exp':'14 years · Sber · VTB · Finam · Lab4U · YouGile',
+  'work.title':'Selected work','work.note':'06 — sourced from Figma, in progress',
+  'arch.title':'Archive 2017–2022',
+  'arch.note':'Earlier work: branding, landing pages, promo and first product interfaces. Imported from Behance; each opens the original publication.',
+  'about.title':'About',
+  'about.lead':'Product designer with 14 years of experience. I started in branding and print; for the last eight years I have designed digital products in fintech, healthtech and B2B.',
+  'st.years':'years in design','st.ds':'design systems from scratch','st.dau':'DAU growth at YouGile',
+  'about.p1':'At <strong>Sber</strong> I moved every design system from Sketch to Figma and built SberSpasibo for Business from scratch. At <strong>VTB</strong> I led design across eight product teams and owned the business-banking design system. At <strong>YouGile</strong> the team grew DAU 4× in two years.',
+  'about.p2':'At <strong>Lab4U</strong> I built the design system, designed a cross-platform lab-test ordering service and shipped Russia’s first AI lab-results interpretation service. Today at <strong>Finam</strong> I’m building a multi-brand design system for FinamX and Limex and AI platforms for traders in Russia and the US.',
+  'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 60–70% of my work runs through Claude and ChatGPT — research, copy, token architecture, prototypes in code. I see this as the core skill of a designer right now and build team processes around it.',
+  'c.title':'Have a project?<br><em>Say hello.</em>','c.copy':'copy','c.copied':'copied',
+  'f.rights':'All rights reserved.','f.privacy':'Privacy policy','f.terms':'Terms of use','f.cookies':'Cookies',
+  'soon':'in progress','view':'view','open':'open',
+  'f.what':'what I do',
+  'pre.1':'Loading tokens…','pre.2':'Assembling components…','pre.3':'Publishing library…',
+ }
+};
+const CASES = [
+ {cls:'cv-1 w',ru:{t:'FinamX & Limex — мультибрендовая дизайн-система',r:'2 бренда × 2 темы',s:'одна библиотека, четыре темы'},en:{t:'FinamX & Limex — multi-brand design system',r:'2 brands × 2 themes',s:'one library, four themes'},tags:['Design System','Fintech'],y:'2025'},
+ {cls:'cv-2',ru:{t:'YouGile — редизайн и DS с нуля',r:'DAU ×4',s:'за два года'},en:{t:'YouGile — redesign & DS from scratch',r:'DAU ×4',s:'in two years'},tags:['B2B','SaaS','AI'],y:'2023–25'},
+ {cls:'cv-3',ru:{t:'Lab4U — AI-расшифровка анализов',r:'#1',s:'первый в России сервис'},en:{t:'Lab4U — AI lab-results interpretation',r:'#1',s:'first in Russia'},tags:['AI','Healthtech','Mobile'],y:'2023–'},
+ {cls:'cv-4',ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8',s:'продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8',s:'product teams'},tags:['Design System','Banking'],y:'2020–23'},
+ {cls:'cv-5 w',ru:{t:'FinamX / Limex — AI-платформа для трейдеров',r:'RU + US',s:'два рынка, одна платформа'},en:{t:'FinamX / Limex — AI platform for traders',r:'RU + US',s:'two markets, one platform'},tags:['AI','Fintech','Web'],y:'2025–'},
+ {cls:'cv-6',ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1',s:'продукт и миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1',s:'product and full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20'},
+];
+const ARCH = [
+ {k:'vtb',ru:'Дизайн-система ВТБ Бизнес',en:'VTB Business design system',y:'2022',u:'https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes'},
+ {k:'obzhora',ru:'Обжора — счётчик калорий',en:'Obzhora — calorie counter app',y:'2020',u:'https://www.behance.net/gallery/159386701/obzhora'},
+ {k:'vasko',ru:'Vasko.ru — редизайн',en:'Vasko.ru — redesign',y:'2019',u:'https://www.behance.net/gallery/155967497/Vaskoru'},
+ {k:'beeline',ru:'Билайн — главная, тендер',en:'Beeline — main page, tender',y:'2019',u:'https://www.behance.net/gallery/156989569/bilajn'},
+ {k:'yotaarena',ru:'Yota Arena — сайт',en:'Yota Arena — website',y:'2019',u:'https://www.behance.net/gallery/77123721/sajt-YotaArena'},
+ {k:'cyberloft',ru:'CyberLoft — сайт клуба',en:'CyberLoft — club website',y:'2019',u:'https://www.behance.net/gallery/77080369/kompjuternyj-klub-CyberLoft'},
+ {k:'primexbt',ru:'PrimeXBT — крипто-платформа',en:'PrimeXBT — crypto platform',y:'2019',u:'https://www.behance.net/gallery/77075465/Crypto-platform-PrimeXBT'},
+ {k:'rubetek',ru:'Rubetek — Smart House',en:'Rubetek — Smart House',y:'2019',u:'https://www.behance.net/gallery/77069041/Smart-House-Rubetek'},
+ {k:'dinastia',ru:'Клиника «Династия»',en:'Dinastia clinic',y:'2019',u:'https://www.behance.net/gallery/77065159/klinika-dinastija'},
+ {k:'rosbank',ru:'Росбанк — рейтинг сотрудников',en:'Rosbank — staff rating system',y:'2018',u:'https://www.behance.net/gallery/69499827/pao-rosbank'},
+ {k:'koferent',ru:'KOFE-RENT — лендинг',en:'KOFE-RENT — landing page',y:'2018',u:'https://www.behance.net/gallery/70250513/KOFE-RENT'},
+ {k:'craftman',ru:'Бар «Крафтмен» — айдентика',en:'Craftman bar — identity',y:'2017',u:'https://www.behance.net/gallery/57468743/bar-CRAFTMAN-(g-moskva)'},
+];
+const TL = [
+ ['2025 —','Финам / Limex','Finam / Limex','Senior AI-Creator','Мультибрендовая DS, AI-платформы для трейдеров РФ и США','Multi-brand DS, AI platforms for traders in RU and US',1],
+ ['2023 —','Lab4U','Lab4U','Lead Product Designer','AI-расшифровка анализов, ЛК, DS, приложение 2.0; курирую команду дизайна','AI lab-results, account, DS, app 2.0; curating the design team',1],
+ ['2023 – 2025','YouGile','YouGile','Lead UX/UI Designer','DAU ×4, голосовые + AI-расшифровка, DS с нуля','DAU ×4, voice + AI transcription, DS from scratch',0],
+ ['2022 – 2026','iEYE.app','iEYE.app','Lead Product Designer','Ресторанная соцсеть на blockchain, админка, DS, команда','Restaurant social network on blockchain, admin, DS, team',0],
+ ['2020 – 2023','ВТБ','VTB','Lead UX/UI Designer','8 продуктовых команд, DS, UX-паттерны, Storybook','8 product teams, DS, UX patterns, Storybook',0],
+ ['2019 – 2020','Сбер','Sber','Senior UX/UI Designer','СберСпасибо для Бизнеса, переезд Sketch → Figma','SberSpasibo for Business, Sketch → Figma migration',0],
+ ['2018 – 2019','VK · Covesting · Revain · Techmas','VK · Covesting · Revain · Techmas','UX/UI Designer','Ребрендинги, крипто-платформы, cybersport.ru','Rebrandings, crypto platforms, cybersport.ru',0],
+ ['2012 – 2017','Purple Bear','Purple Bear','Graphic Designer','Логотипы, брендбуки, UI-киты, вёрстка','Logos, brand books, UI kits, layout',0],
+];
+const FOCUS = [
+ {ru:{w:'Дизайн-<em>системы</em>',t:'Токены, компоненты, документация',p:'Одна библиотека на несколько брендов и тем. Правила, которые читают разработчики, и процесс публикации без сюрпризов.',m:'Finam · VTB · YouGile · Lab4U'},en:{w:'Design <em>systems</em>',t:'Tokens, components, documentation',p:'One library across brands and themes. Rules developers actually read, and a publishing process without surprises.',m:'Finam · VTB · YouGile · Lab4U'}},
+ {ru:{w:'<em>AI</em>-продукты',t:'Интерфейсы для нейросетевых фич',p:'Чат-консультанты, расшифровки, ассистенты в продукте. Как показать неопределённость и не потерять доверие пользователя.',m:'FinamX · Lab4U · YouGile'},en:{w:'<em>AI</em> products',t:'Interfaces for LLM features',p:'Chat advisors, interpretations, in-product assistants. How to show uncertainty without losing the user\u2019s trust.',m:'FinamX · Lab4U · YouGile'}},
+ {ru:{w:'Продукт<em>.</em>',t:'Исследования, метрики, итерации',p:'CJM, JTBD, CustDev и короткие циклы. От гипотезы до релиза — и обратно к цифрам.',m:'DAU ×4 · 8 команд · 0 → 1'},en:{w:'Product<em>.</em>',t:'Research, metrics, iterations',p:'CJM, JTBD, CustDev and short cycles. From hypothesis to release — and back to the numbers.',m:'DAU ×4 · 8 teams · 0 → 1'}},
+];
+const SKILLS = ['Figma','Design Systems','Tokens & Variables','UX Research','CJM · JTBD','Prototyping','Claude · ChatGPT · Cursor','Branding','Illustration','Adobe CC'];
+const MQ = ['Сбер','ВТБ','Финам','Limex','Lab4U','YouGile','VK','Росбанк','Билайн','PrimeXBT','Rubetek','Yota Arena'];
+
+let lang = 'ru';
+try{ const s=localStorage.getItem('lang'); if(s) lang=s; else if(!/^ru/i.test(navigator.language)) lang='en'; }catch(e){}
+
+function render(){
+  const d=I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=d[k];});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=d[k];});
+  document.documentElement.lang=lang;
+  document.getElementById('lang').innerHTML = lang==='ru' ? '<b>RU</b><span>/</span><span>EN</span>' : '<span>RU</span><span>/</span><b>EN</b>';
+  document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
+    <a class="card soon ${c.cls} rv" href="#work" aria-label="${c[lang].t}">
+      <div class="bg ${c.cls.split(' ')[0]}"></div>
+      <div class="top"><div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="tag acc">${c.y} · ${d.soon}</span></div>
+      <div class="bot"><div><div class="res">${c[lang].r}<small>${c[lang].s}</small></div><h3 style="margin-top:14px">${c[lang].t}</h3></div><span class="arrow">↗</span></div>
+    </a>`).join('');
+  document.getElementById('arch').innerHTML = ARCH.map(a=>`
+    <a class="a-item rv" href="${a.u}" target="_blank" rel="noopener" data-cur="${d.open}">
+      <img src="${COVERS[a.k]}" alt="${a[lang]}" loading="lazy" width="800" height="625">
+      <div class="cap"><b>${a[lang]}</b><span>${a.y} ↗</span></div>
+    </a>`).join('');
+  document.getElementById('tl').innerHTML = TL.map(t=>`
+    <div class="tl ${t[6]?'now':''}"><span class="y">${t[0]}</span><span class="c">${lang==='ru'?t[1]:t[2]}<small>${t[3]}</small></span><span class="d">${lang==='ru'?t[4]:t[5]}</span></div>`).join('');
+  document.getElementById('fwords').innerHTML = FOCUS.map((f,i)=>`<div class="w ${i===0?'on':'next'}">${f[lang].w}</div>`).join('');
+  focusUpdate && focusUpdate(true);
+  document.getElementById('skills').innerHTML = SKILLS.map(s=>`<span class="tag">${s}</span>`).join('');
+  document.getElementById('mq').innerHTML = [...MQ,...MQ].map(s=>`<span>${s}</span>`).join('');
+  bindCursor(); setupReveal();
+}
+document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render();});
+
+/* theme */
+const root=document.documentElement;
+function applyTheme(t){ if(t) root.setAttribute('data-theme',t); else root.removeAttribute('data-theme'); }
+try{ const t=localStorage.getItem('theme'); if(t) applyTheme(t); }catch(e){}
+document.getElementById('theme').addEventListener('click',()=>{
+  const cur=root.getAttribute('data-theme')==='light'?'light':'dark';
+  const next=cur==='light'?'dark':'light'; applyTheme(next==='dark'?null:next);
+  try{localStorage.setItem('theme',next==='dark'?'':'light')}catch(e){}
+});
+
+/* copy mail */
+document.getElementById('copy').addEventListener('click',async e=>{
+  const b=e.currentTarget, m=document.getElementById('mail').textContent;
+  try{ await navigator.clipboard.writeText(m); }catch(err){ const r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+  b.textContent=I18N[lang]['c.copied']; setTimeout(()=>b.textContent=I18N[lang]['c.copy'],1600);
+});
+
+/* reveal on scroll */
+let io;
+function setupReveal(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  io && io.disconnect();
+  io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{rootMargin:'0px 0px -4% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.top>innerHeight) io.observe(el); });
+}
+
+/* cursor */
+const cur=document.getElementById('cur');
+let cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy;
+addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
+(function loop(){ cx+=(tx-cx)*.22; cy+=(ty-cy)*.22; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+function bindCursor(){
+  document.querySelectorAll('.card, .a-item, .c-link, .btn').forEach(el=>{
+    el.addEventListener('pointerenter',()=>{ if(el.classList.contains('card')||el.classList.contains('a-item')){ cur.classList.add('big'); cur.textContent=(el.dataset.cur||I18N[lang].view).toUpperCase(); } else { cur.style.width='28px'; cur.style.height='28px'; } });
+    el.addEventListener('pointerleave',()=>{ cur.classList.remove('big'); cur.textContent=''; cur.style.width=''; cur.style.height=''; });
+  });
+}
+
+/* hero shader */
+(function(){
+  const c=document.getElementById('gl'); const gl=c.getContext('webgl',{antialias:false,alpha:true});
+  if(!gl||matchMedia('(prefers-reduced-motion: reduce)').matches){ c.remove(); return; }
+  const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs=`precision highp float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 c1;uniform vec3 c2;uniform vec3 bg;
+  vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}
+  float snoise(vec2 v){const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);vec2 i=floor(v+dot(v,C.yy));vec2 x0=v-i+dot(i,C.xx);vec2 i1=(x0.x>x0.y)?vec2(1.,0.):vec2(0.,1.);vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;i=mod289(i);vec3 p=permute(permute(i.y+vec3(0.,i1.y,1.))+i.x+vec3(0.,i1.x,1.));vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);m=m*m;m=m*m;vec3 x=2.*fract(p*C.www)-1.;vec3 h=abs(x)-.5;vec3 ox=floor(x+.5);vec3 a0=x-ox;m*=1.79284291400159-.85373472095314*(a0*a0+h*h);vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;return 130.*dot(m,g);}
+  void main(){vec2 uv=gl_FragCoord.xy/r;vec2 p=uv;p.x*=r.x/r.y;vec2 mm=m;mm.x*=r.x/r.y;float d=length(p-mm);
+  float n=snoise(p*1.1+vec2(t*.05,-t*.04));float n2=snoise(p*2.3-vec2(t*.03,t*.06)+n*.6);
+  float f=smoothstep(-.4,.9,n+n2*.5);float ring=exp(-d*2.2)*.35;
+  vec3 col=mix(bg,c1,f*.9);col=mix(col,c2,smoothstep(.55,1.,n2)*.55+ring);
+  float vig=smoothstep(1.4,.2,length(uv-vec2(.7,.4)));col=mix(bg,col,vig);
+  float g=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)*.03;
+  gl_FragColor=vec4(col+g,1.);}`;
+  function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;}
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const U=n=>gl.getUniformLocation(pr,n);
+  let mx=.7,my=.5,tmx=.7,tmy=.5;
+  addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();tmx=(e.clientX-r.left)/r.width;tmy=1-(e.clientY-r.top)/r.height;},{passive:true});
+  function hex(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);}
+  function colors(){const cs=getComputedStyle(root);const light=root.getAttribute('data-theme')==='light';
+    return {bg:hex(light?'#F6F2F3':'#0D0A0C'),c1:hex(light?'#EFCBD5':'#4A0F24'),c2:hex(light?'#7A1431':'#A8244C')};}
+  function size(){const d=Math.min(devicePixelRatio,1.5);c.width=c.clientWidth*d;c.height=c.clientHeight*d;gl.viewport(0,0,c.width,c.height);}
+  size();addEventListener('resize',size);
+  const t0=performance.now();
+  function frame(){const k=colors();mx+=(tmx-mx)*.04;my+=(tmy-my)*.04;
+    gl.uniform2f(U('r'),c.width,c.height);gl.uniform1f(U('t'),(performance.now()-t0)/1000);gl.uniform2f(U('m'),mx,my);
+    gl.uniform3fv(U('c1'),k.c1);gl.uniform3fv(U('c2'),k.c2);gl.uniform3fv(U('bg'),k.bg);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(frame);}
+  frame();
+})();
+
+/* ---------- portrait: hypno rings ---------- */
+(function(){
+  const PHOTO = '__PHOTO__';
+  const cv=document.getElementById('pc'), ctx=cv.getContext('2d');
+  const rc=document.getElementById('rings'), rx=rc.getContext('2d');
+  const hero=document.querySelector('.hero'), port=document.getElementById('portrait');
+  const W=cv.width, N=72, R=W/2, RINGS=34;
+  const img=new Image(); let lum=null;
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let hover=false, speed=1, t0=performance.now();
+  port.addEventListener('pointerenter',()=>hover=true); port.addEventListener('pointerleave',()=>hover=false);
+  function acc(){const l=root.getAttribute('data-theme')==='light';return l?{a:'#7A1431',b:'#E2607F',ink:'#17100F',line:'23,16,15'}:{a:'#FF7A9C',b:'#8C1D3F',ink:'#F4EEF0',line:'244,238,240'};}
+  img.onload=()=>{const s=document.createElement('canvas');s.width=N;s.height=N;const sc=s.getContext('2d');sc.drawImage(img,0,0,N,N);const d=sc.getImageData(0,0,N,N).data;lum=new Float32Array(N*N);for(let i=0;i<N*N;i++)lum[i]=d[i*4]/255;frame();};
+  img.src=PHOTO;
+  function sample(px,py){const cell=W/N;const x=Math.min(N-1,Math.max(0,Math.floor(px/cell))),y=Math.min(N-1,Math.max(0,Math.floor(py/cell)));return lum[y*N+x];}
+  function drawPortrait(t){
+    const c=acc(); ctx.clearRect(0,0,W,W); ctx.save(); ctx.translate(R,R);
+    for(let k=RINGS;k>=1;k--){
+      const r0=(k-1)/RINGS*R, r1=k/RINGS*R, seg=Math.max(14,Math.round(k*6));
+      const rot=rm?k*.15:t*(k%2?.10:-.075)*speed+k*.15;
+      for(let s=0;s<seg;s++){
+        const a0=rot+s/seg*Math.PI*2, a1=a0+Math.PI*2/seg*.86, am=(a0+a1)/2, rr=(r0+r1)/2;
+        const v=sample(R+Math.cos(am)*rr,R+Math.sin(am)*rr);
+        ctx.beginPath();ctx.arc(0,0,r1,a0,a1);ctx.arc(0,0,r0,a1,a0,true);ctx.closePath();
+        ctx.fillStyle=v>.7?c.a:(v>.42?c.ink:c.b);ctx.globalAlpha=.18+v*.82;ctx.fill();
+      }
+    }
+    ctx.globalAlpha=1; ctx.restore();
+  }
+  function sizeRings(){const d=Math.min(devicePixelRatio,1.5);rc.width=rc.clientWidth*d;rc.height=rc.clientHeight*d;}
+  sizeRings(); addEventListener('resize',sizeRings);
+  function drawRings(t){
+    const c=acc(); const w=rc.width,h=rc.height; rx.clearRect(0,0,w,h);
+    const hb=hero.getBoundingClientRect(), pb=port.getBoundingClientRect(); const sc=w/hb.width;
+    const cx=(pb.left-hb.left+pb.width/2)*sc, cy=(pb.top-hb.top+pb.height/2)*sc;
+    const pr=pb.width/2*sc, step=pr/RINGS; const maxR=Math.hypot(Math.max(cx,w-cx),Math.max(cy,h-cy));
+    rx.save(); rx.translate(cx,cy); rx.lineWidth=Math.max(1,sc);
+    for(let k=RINGS+1,r=pr+step; r<maxR; k++, r+=step){
+      const seg=Math.max(14,Math.round(k*6)); const rot=rm?k*.15:t*(k%2?.10:-.075)*speed+k*.15;
+      const fade=Math.max(0,1-(r-pr)/(maxR-pr)); rx.strokeStyle=`rgba(${c.line},${(.03+fade*.08).toFixed(3)})`;
+      rx.beginPath();
+      for(let s=0;s<seg;s++){const a0=rot+s/seg*Math.PI*2;rx.moveTo(Math.cos(a0)*r,Math.sin(a0)*r);rx.arc(0,0,r,a0,a0+Math.PI*2/seg*.86);}
+      rx.stroke();
+    }
+    rx.restore();
+  }
+  function frame(){ if(!lum)return; speed+=((hover?2.6:1)-speed)*.05; const t=(performance.now()-t0)/1000; drawPortrait(t); drawRings(t); if(!rm)requestAnimationFrame(frame); }
+  if(rm){ addEventListener('resize',()=>lum&&frame()); }
+})();
+
+/* ---------- focus section (scroll-pinned) ---------- */
+let focusUpdate=null;
+(function(){
+  const sec=document.getElementById('focus'), words=document.getElementById('fwords'), card=document.getElementById('fcard'), idx=document.getElementById('fidx'), bar=document.getElementById('fbar');
+  const gc=document.getElementById('fgrid'), gx=gc.getContext('2d');
+  let cur=-1, prog=0, cells=null, cols=0, rows=0;
+  function sizeGrid(){const d=Math.min(devicePixelRatio,1.5);gc.width=gc.clientWidth*d;gc.height=gc.clientHeight*d;cols=Math.ceil(gc.width/(72*d));rows=Math.ceil(gc.height/(72*d));cells=new Float32Array(cols*rows);for(let i=0;i<cells.length;i++)cells[i]=Math.random();}
+  sizeGrid(); addEventListener('resize',sizeGrid);
+  function drawGrid(t){
+    const w=gc.width,h=gc.height,cw=w/cols,ch=h/rows; gx.clearRect(0,0,w,h);
+    const light=root.getAttribute('data-theme')==='light'; const base=light?'23,16,15':'244,238,240'; const acc=light?'122,20,49':'226,96,127';
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      const s=cells[y*cols+x]; const wave=Math.sin(t*.6+x*.5+y*.35)*.5+.5;
+      const on=(s<prog*.22)&&(wave>.35);
+      gx.fillStyle=on?`rgba(${acc},${(.25+wave*.35).toFixed(2)})`:`rgba(${base},${(.015+s*.03).toFixed(3)})`;
+      gx.fillRect(x*cw+1,y*ch+1,cw-2,ch-2);
+    }
+  }
+  function setCard(i){const f=FOCUS[i][lang];card.className='fcard k'+(i+1);card.innerHTML=`<div class="m"><span>0${i+1}</span><span>${lang==='ru'?'направление':'focus'}</span></div><div><h3>${f.t}</h3><p style="margin-top:12px">${f.p}</p></div><div class="m"><span>${f.m}</span></div>`;}
+  focusUpdate=function(force){
+    const r=sec.getBoundingClientRect(); const total=sec.offsetHeight-innerHeight; prog=Math.min(1,Math.max(0,-r.top/total));
+    const i=Math.min(FOCUS.length-1,Math.floor(prog*FOCUS.length));
+    if(i!==cur||force){cur=i;[...words.children].forEach((w,k)=>{w.className='w '+(k<i?'past':k>i?'next':'on');});setCard(i);idx.textContent=`0${i+1} / 0${FOCUS.length}`;}
+    bar.style.setProperty('--p',(prog*100).toFixed(1)+'%');
+  };
+  let ticking=false; addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{focusUpdate();ticking=false;});}},{passive:true});
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches; const t0=performance.now();
+  let vis=false; new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(sec);
+  (function loop(){ if(vis)drawGrid((performance.now()-t0)/1000); if(!rm)requestAnimationFrame(loop); })();
+  if(rm) drawGrid(0);
+})();
+
+/* ---------- preloader: pixel monogram ---------- */
+(function(){
+  const pre=document.getElementById('pre'), c=document.getElementById('prec'), x=c.getContext('2d');
+  const msg=document.getElementById('prem'), pct=document.getElementById('prep'), line=document.getElementById('prel');
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen=false; try{ seen=sessionStorage.getItem('pre')==='1'; }catch(e){}
+  if(rm||seen){ pre.remove(); return; }
+  document.body.classList.add('loading');
+  // 5x7 pixel glyphs
+  const G={A:['01110','10001','10001','11111','10001','10001','10001'],K:['10001','10010','10100','11000','10100','10010','10001']};
+  const word=['A','K']; const gw=word.length*6-1, gh=7;
+  let cols,rows,cw,ch,ox,oy,cellsRand;
+  function size(){const d=Math.min(devicePixelRatio,2);c.width=innerWidth*d;c.height=innerHeight*d;cw=Math.min(c.width/22,c.height/14);cols=Math.ceil(c.width/cw);rows=Math.ceil(c.height/cw);ch=cw;ox=Math.floor((cols-gw)/2);oy=Math.floor((rows-gh)/2);cellsRand=new Float32Array(cols*rows);for(let i=0;i<cellsRand.length;i++)cellsRand[i]=Math.random();}
+  size(); addEventListener('resize',size);
+  const mask=new Set(); word.forEach((L,wi)=>G[L].forEach((row,r)=>[...row].forEach((b,cc)=>{if(b==='1')mask.add((oy+r)*1000+(ox+wi*6+cc));})));
+  const order=[...mask].sort(()=>Math.random()-.5);
+  const light=root.getAttribute('data-theme')==='light';
+  function draw(p){
+    x.clearRect(0,0,c.width,c.height);
+    const lit=Math.floor(order.length*p); const litSet=new Set(order.slice(0,lit));
+    for(let r=0;r<rows;r++)for(let q=0;q<cols;q++){
+      const k=r*1000+q, s=cellsRand[r*cols+q];
+      if(litSet.has(k)){x.fillStyle=light?'#8C1D3F':'#C9305A';}
+      else{const a=light?.04+s*.05:.03+s*.05;x.fillStyle=`rgba(${light?'23,16,15':'244,238,240'},${a.toFixed(3)})`;}
+      x.fillRect(q*cw+1,r*ch+1,cw-2,ch-2);
+    }
+  }
+  const t0=performance.now(); const MIN=1900, MAX=4000; let loaded=false;
+  addEventListener('load',()=>loaded=true); if(document.readyState==='complete')loaded=true;
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{});
+  function tick(){
+    const el=performance.now()-t0; let p=Math.min(1,el/MIN); if(p>=1&&!loaded&&el<MAX)p=.96;
+    const e=1-Math.pow(1-p,2.2);
+    draw(e); const pc=Math.round(e*100); pct.textContent=pc+'%'; line.style.width=pc+'%';
+    const d=I18N[lang]; msg.textContent=pc<40?d['pre.1']:pc<80?d['pre.2']:d['pre.3'];
+    if(p>=1){ setTimeout(()=>{pre.classList.add('off');document.body.classList.remove('loading');try{sessionStorage.setItem('pre','1')}catch(e){} setTimeout(()=>pre.remove(),900);},350); return; }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+render();
+</script>

@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});
+await p.goto('file:///home/claude/portfolio/cases/obzhora/obzhora-case.html',{waitUntil:'domcontentloaded',timeout:60000});
+await p.waitForTimeout(2500); const S='/tmp/claude-0/-home-claude/9cb87570-c146-5b9a-9fb9-fdbe54368d2e/scratchpad/';
+const ys=await p.evaluate(()=>[...document.querySelectorAll('.sec')].map(e=>e.offsetTop));
+await p.screenshot({path:S+'v5_hero_dark.png',timeout:60000});
+await p.evaluate(v=>scrollTo(0,v),ys[0]+250); await p.waitForTimeout(900); await p.screenshot({path:S+'v5_s1_dark.png',timeout:60000});
+await p.click('#tgl'); await p.waitForTimeout(1000); await p.screenshot({path:S+'v5_s1_light.png',timeout:60000});
+await p.evaluate(()=>scrollTo(0,0)); await p.waitForTimeout(900); await p.screenshot({path:S+'v5_hero_light.png',timeout:60000});
+await b.close();})();
