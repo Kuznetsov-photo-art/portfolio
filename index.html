@@ -911,7 +911,11 @@ render();
 
 /* back to top */
 (()=>{const b=document.getElementById('totop'); if(!b) return;
-  const upd=()=>b.classList.toggle('on',scrollY>innerHeight); addEventListener('scroll',upd,{passive:true}); upd();
+  /* at the page end the button parks with its centre on the footer's top line instead of covering the links */
+  const line=document.querySelector('footer'); let base=0; const measure=()=>{ b.style.bottom=''; base=parseFloat(getComputedStyle(b).bottom)||0; };
+  const upd=()=>{ b.classList.toggle('on',scrollY>innerHeight);
+    if(line){ const lift=innerHeight-line.getBoundingClientRect().top-b.offsetHeight/2; b.style.bottom=Math.max(base,lift)+'px'; } };
+  measure(); addEventListener('scroll',upd,{passive:true}); addEventListener('resize',()=>{measure();upd();}); upd();
   b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
 })();
 // scroll position: browser restores it before JS renders the lists, so we keep it ourselves.

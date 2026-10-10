@@ -40,10 +40,9 @@ html[lang="ru"] [lang="en"], html[lang="en"] [lang="ru"]{display:none!important}
 
 .nav{position:sticky;top:0;z-index:50;height:62px;padding-inline:var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav a{text-decoration:none}
-.nav .logo{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .nav .r{display:flex;align-items:center;gap:20px}
-.nav .back{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
-.nav .back:hover{color:var(--ink)}
+.nav .back{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.nav .back .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)} /* same back link as in the case header */
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:var(--ink-3);cursor:pointer}
 .lang b{font-weight:400;color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 
@@ -75,9 +74,8 @@ footer a:hover{color:var(--ink)}
 </head>
 <body>
 <header class="nav">
-  <a class="logo" href="/">Andrew Kuznetsov</a>
+  <a class="back" href="/" data-back><b class="ar">←</b><span lang="ru">На главную</span><span lang="en">Home</span></a>
   <div class="r">
-    <a class="back" href="/"><span lang="ru">← На главную</span><span lang="en">← Home</span></a>
     <button class="lang" id="lang" type="button" aria-label="RU / EN"><span class="ru">RU</span> / <span class="en">EN</span></button>
   </div>
 </header>
@@ -184,9 +182,17 @@ const root=document.documentElement, lb=document.getElementById('lang');
 const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>EN</b>'; document.title=l==='ru'?'Конфиденциальность • Andrew Kuznetsov':'Privacy • Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='ru'?'Наверх':'Back to top'); };
 setLang(root.lang==='en'?'en':'ru');
 lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} });
+/* back to home: if we came from the home page, go back in history so it restores the scroll position */
+document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',e=>{
+  try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
+}));
 /* back to top */
 (()=>{const b=document.getElementById('totop');
-  const upd=()=>b.classList.toggle('on',scrollY>innerHeight*.6); addEventListener('scroll',upd,{passive:true}); upd();
+  /* at the page end the button parks with its centre on the footer's top line instead of covering the links */
+  const line=document.querySelector('footer'); let base=0; const measure=()=>{ b.style.bottom=''; base=parseFloat(getComputedStyle(b).bottom)||0; };
+  const upd=()=>{ b.classList.toggle('on',scrollY>innerHeight*.6);
+    if(line){ const lift=innerHeight-line.getBoundingClientRect().top-b.offsetHeight/2; b.style.bottom=Math.max(base,lift)+'px'; } };
+  measure(); addEventListener('scroll',upd,{passive:true}); addEventListener('resize',()=>{measure();upd();}); upd();
   b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
 })();
 </script>
