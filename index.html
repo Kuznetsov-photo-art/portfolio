@@ -123,7 +123,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 
 /* ---------- work index ---------- */
 .index{border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:72px 1fr auto auto;gap:24px;align-items:baseline;padding:26px 0;border-bottom:1px solid var(--line);position:relative;transition:padding .4s cubic-bezier(.2,.8,.2,1)}
+.row{display:grid;grid-template-columns:72px 1fr auto auto 168px;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);position:relative;transition:padding .4s cubic-bezier(.2,.8,.2,1)}
 .row:hover{padding-left:12px}
 .row .no{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3)}
 .row h3{font-size:clamp(22px,3vw,44px);font-weight:300;letter-spacing:-.035em;transition:letter-spacing .4s,font-variation-settings .4s;font-variation-settings:'wght' 300}
@@ -132,12 +132,11 @@ section{padding-block:clamp(80px,10vw,160px)}
 .row .y{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .row .res{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);grid-column:2;margin-top:2px}
 .row.soon .no::after{content:' · WIP';color:var(--ink-3)}
-.peek{position:fixed;z-index:60;left:0;top:0;width:min(34vw,420px);aspect-ratio:4/3;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.9) rotate(-2deg);transition:opacity .25s,transform .4s cubic-bezier(.2,.8,.2,1);overflow:hidden;background:var(--bg-3)}
-.peek.on{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
-.peek img{width:100%;height:100%;object-fit:cover}
-.peek .ph{width:100%;height:100%;display:grid;place-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);background:repeating-linear-gradient(45deg,var(--bg-3) 0 10px,var(--bg-2) 10px 20px)}
-@media(max-width:760px){.row{grid-template-columns:48px 1fr;row-gap:8px}.row .y{grid-column:2}.row .tags{grid-column:2}.peek{display:none}}
-@media(hover:none){.peek{display:none}}
+.row .th{grid-column:5;grid-row:1/3;align-self:center;justify-self:end;width:168px;aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:var(--bg-2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.row .th img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);transition:filter .4s}
+.row:hover .th img{filter:none}
+.row:hover .th{transform:scale(1.03)}
+@media(max-width:760px){.row{grid-template-columns:40px 1fr 80px;gap:16px;row-gap:8px}.row .y{grid-column:2}.row .tags{grid-column:2}.row .res{grid-column:2}.row .th{grid-column:3;grid-row:1/5;width:80px;align-self:start;font-size:9px}.row:hover{padding-left:0}.row.soon .no::after{content:none}}
 
 /* ---------- focus (pinned) ---------- */
 .focus{position:relative;height:320vh;padding:0}
@@ -238,7 +237,6 @@ footer a:hover{color:var(--ink)}
 </div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cur" id="cur"></div>
-<div class="peek" id="peek" aria-hidden="true"></div>
 
 <header class="nav">
   <a class="brand" href="#top"><i></i>Andrew Kuznetsov</a>
@@ -369,7 +367,7 @@ const I18N = {
   'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 60–70% моих задач проходят через Claude и ChatGPT — исследования, тексты, структура токенов, прототипы в коде. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды.',
   'c.title':'Есть задача?<br><em>Напишите.</em>','c.copy':'копировать','c.copied':'скопировано',
   'f.rights':'Все права защищены','f.privacy':'Политика конфиденциальности','f.terms':'Условия использования',
-  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','wip':'в работе','focus':'направление',
+  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','wip':'в работе','soon':'Скоро','focus':'направление',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
  },
  en:{
@@ -389,7 +387,7 @@ const I18N = {
   'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 60–70% of my work runs through Claude and ChatGPT — research, copy, token architecture, prototypes in code. I see this as the core skill of a designer right now and build team processes around it.',
   'c.title':'Have a project?<br><em>Say hello.</em>','c.copy':'copy','c.copied':'copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy policy','f.terms':'Terms of use',
-  'f.what':'what I do','view':'view','open':'open','wip':'in progress','focus':'focus',
+  'f.what':'what I do','view':'view','open':'open','wip':'in progress','soon':'Soon','focus':'focus',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
  }
 };
@@ -456,6 +454,7 @@ function render(){
       <span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span>
       <span class="y">${c.y}</span>
       <span class="res">${c[lang].r}</span>
+      <span class="th">${c.k&&COVERS[c.k]?`<img src="${COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
   document.getElementById('arch').innerHTML = ARCH.map(a=>`
     <a class="a-item" href="${a.u}" target="_blank" rel="noopener" data-cur="${d.open}">
@@ -469,7 +468,7 @@ function render(){
   document.getElementById('skills').innerHTML = SKILLS.map(s=>`<span>${s}</span>`).join('');
   const mqh=(arr)=>[...arr,...arr,...arr].map((s,i)=>`<span class="${i%2?'o':''}">${s}</span>`).join('');
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
-  bindCursor(); bindPeek(); setupReveal(); setupArch(); kinetic();
+  bindCursor(); setupReveal(); setupArch(); kinetic();
 }
 document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render();});
 
@@ -533,16 +532,6 @@ function bindCursor(){
   document.querySelectorAll('.row, .a-item, .c-link, .links a').forEach(el=>{
     el.addEventListener('pointerenter',()=>{ if(el.dataset.cur){ cur.classList.add('big'); cur.textContent=el.dataset.cur.toUpperCase(); } else { cur.style.width='24px'; cur.style.height='24px'; } });
     el.addEventListener('pointerleave',()=>{ cur.classList.remove('big'); cur.textContent=''; cur.style.width=''; cur.style.height=''; });
-  });
-}
-/* floating preview on work index */
-const peek=document.getElementById('peek'); let px=0,py=0,ptx=0,pty=0;
-(function ploop(){ px+=(ptx-px)*.12; py+=(pty-py)*.12; peek.style.left=px+'px'; peek.style.top=py+'px'; requestAnimationFrame(ploop); })();
-function bindPeek(){
-  document.querySelectorAll('.row').forEach(r=>{
-    r.addEventListener('pointerenter',e=>{ const k=r.dataset.k; peek.innerHTML = k&&COVERS[k] ? `<img src="${COVERS[k]}" alt="">` : `<div class="ph">${I18N[lang].wip} · Figma</div>`; peek.classList.add('on'); px=ptx=e.clientX+40; py=pty=e.clientY; });
-    r.addEventListener('pointermove',e=>{ ptx=e.clientX+40; pty=e.clientY; });
-    r.addEventListener('pointerleave',()=>peek.classList.remove('on'));
   });
 }
 
