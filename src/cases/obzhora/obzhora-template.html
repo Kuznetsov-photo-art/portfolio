@@ -154,6 +154,9 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .pal span{padding:9px 18px;border-radius:999px;border:2px solid var(--c);color:var(--c);white-space:nowrap}
 .pal span.g{border-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(90deg,var(--c),var(--c2)) border-box;color:var(--c)}
 .pal span.g b{font-weight:500;color:var(--c2)}
+/* neutrals: the colour itself can vanish on the page bg, so show it as a swatch and keep the label readable */
+.pal span.n{color:var(--ink-2);border-color:var(--line-2);display:inline-flex;align-items:center;gap:8px}
+.pal span.n::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--line-2)}
 
 /* ---------- intro ---------- */
 .intro{padding:calc(var(--gutter)*2) 0;border-top:1px solid var(--line)}
@@ -184,7 +187,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .sec p.t+p.t{margin-top:12px}
 
 /* stage with floating phones */
-.stage{position:relative;overflow-x:clip;overflow-y:visible;height:clamp(560px,100vh,980px);margin-top:calc(var(--gutter)*1.2);margin-bottom:10vh}
+.stage{position:relative;overflow-x:clip;overflow-y:visible;height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
 .stage .fl img{width:100%}
 .stage .cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center}
 .stage .cap i{width:60px;height:1px;background:var(--line-2)}
@@ -212,11 +215,12 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .hpin .track figure:nth-child(even){transform:translateY(8%)}
 .hpin .track figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:16px}
 .hpin .track img{filter:drop-shadow(0 30px 50px rgba(0,0,0,.16))}
+.hpin .big.to{display:grid;grid-template-columns:auto auto;column-gap:.18em;justify-content:start} /* «в» and «график» share one left edge, arrow hangs before them */
 .hpin .big{margin-left:clamp(72px,9vw,180px);flex:none;width:clamp(260px,34vw,560px);font-family:var(--display);font-weight:200;font-size:clamp(40px,7vw,120px);letter-spacing:-.05em;line-height:.9;padding-right:var(--gutter)}
 
 /* dark section */
 .darksec{position:relative}
-.darksec .stage{height:clamp(600px,110vh,1100px)}
+.darksec .stage{height:clamp(560px,90vh,960px)}
 
 /* outro */
 .outro{padding:calc(var(--gutter)*3) 0 calc(var(--gutter)*2);border-top:1px solid var(--line)}
@@ -370,7 +374,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
         <figure><div class="ph "><img class="l" src="{{mock:mealfull_l}}" alt=""><img class="d" src="{{mock:mealfull_d}}" alt=""></div><figcaption>Пищевая ценность</figcaption></figure>
         <figure><div class="ph "><img class="l" src="{{mock:createfood_l}}" alt=""><img class="d" src="{{mock:createfood_d}}" alt=""></div><figcaption>Создать еду</figcaption></figure>
         <figure><div class="ph "><img class="l" src="{{mock:category_l}}" alt=""><img class="d" src="{{mock:category_d}}" alt=""></div><figcaption>Категория</figcaption></figure><figure><div class="ph "><img class="l" src="{{mock:portion_l}}" alt=""><img class="d" src="{{mock:portion_d}}" alt=""></div><figcaption>Порция</figcaption></figure>
-        <div class="big">→ в график</div>
+        <div class="big to"><span class="ar">→</span><span>в<br>график</span></div>
       </div>
     </div>
   </div>
@@ -430,7 +434,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   </div>
   <div class="wrap pal r">
     <span class="g" style="--c:#6FD25F;--c2:#39DD9E">#6FD25F → <b>#39DD9E</b></span><span style="--c:#08D586">#08D586</span><span class="g" style="--c:#00CB18;--c2:#08D586">#00CB18 → <b>#08D586</b></span>
-    <span style="--c:#18181A">#18181A</span><span style="--c:#47484F">#47484F</span><span style="--c:#7E818D">#7E818D</span><span style="--c:#D2D3DB">#D2D3DB</span><span style="--c:#F3F4F5">#F3F4F5</span><span style="--c:#FFFFFF">#FFFFFF</span>
+    <span class="n" style="--c:#18181A">#18181A</span><span class="n" style="--c:#47484F">#47484F</span><span class="n" style="--c:#7E818D">#7E818D</span><span class="n" style="--c:#D2D3DB">#D2D3DB</span><span class="n" style="--c:#F3F4F5">#F3F4F5</span><span class="n" style="--c:#FFFFFF">#FFFFFF</span>
     <span class="g" style="--c:#FF5151;--c2:#CB0808">#FF5151 → <b>#CB0808</b></span><span style="--c:#FE7171">#FE7171</span><span class="g" style="--c:#DE2525;--c2:#B50C0C">#DE2525 → <b>#B50C0C</b></span>
     <span style="--c:#5DB8F5">#5DB8F5</span><span style="--c:#3F7CBA">#3F7CBA</span><span class="g" style="--c:#FEDF71;--c2:#F2E143">#FEDF71 → <b>#F2E143</b></span>
   </div>
