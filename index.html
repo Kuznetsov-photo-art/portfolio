@@ -246,8 +246,8 @@ section{padding-block:clamp(80px,10vw,160px)}
 .tl .c small{display:block;font-weight:400;color:var(--ink-3);font-size:13px}
 .tl .d{color:var(--ink-2);font-size:15px}
 .tl.now .y{color:var(--ink)}
-.skills{display:flex;flex-wrap:wrap;gap:0;margin-top:28px;border:1px solid var(--line)}
-.skills span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--ink-2)}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px} /* separate chips — the shared frame left an empty stub on the last row */
+.skills span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2)}
 @media(max-width:900px){.about{grid-template-columns:1fr}.tl{grid-template-columns:90px 1fr;grid-template-rows:auto auto}.tl .d{grid-column:2}}
 @media(max-width:520px){.stats{grid-template-columns:1fr 1fr 1fr}.stat{padding:14px 10px}}
 
@@ -846,6 +846,7 @@ function aboutStats(){
     const o=document.createElement('canvas'); o.width=cols; o.height=rows; const ox=o.getContext('2d'); ox.drawImage(img,0,0,cols,rows);
     const d=ox.getImageData(0,0,cols,rows).data; dots=[];
     for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){ const l=d[(j*cols+i)*4]/255; const hx=i*S+S/2, hy=j*S+S/2;
+      if(d[(j*cols+i)*4+3]<128) continue; /* transparent backdrop: no dot */
       dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S}); }
     wrap.classList.add('ready'); start=performance.now();
   }
