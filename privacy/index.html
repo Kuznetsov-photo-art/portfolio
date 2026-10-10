@@ -44,6 +44,15 @@ html[lang="ru"] [lang="en"], html[lang="en"] [lang="ru"]{display:none!important}
 .nav .back{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .nav .back .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)} /* same back link as in the case header */
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:var(--ink-3);cursor:pointer}
+/* theme switch — same as on the home page */
+.sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
+.sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:14px;height:14px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+.sw .moon path,.sw .sun circle{fill:#000}
+:root[data-theme="light"] .sw .k{transform:translateX(22px)}
+:root[data-theme="light"] .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+:root[data-theme="light"] .sw .sun{opacity:1;transform:none}
 .lang b{font-weight:400;color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 
 main{max-width:880px;padding:clamp(56px,9vw,128px) var(--gutter) clamp(72px,10vw,140px)}
@@ -77,6 +86,7 @@ footer a:hover{color:var(--ink)}
   <a class="back" href="/" data-back><b class="ar">←</b><span lang="ru">На главную</span><span lang="en">Home</span></a>
   <div class="r">
     <button class="lang" id="lang" type="button" aria-label="RU / EN"><span class="ru">RU</span> / <span class="en">EN</span></button>
+    <button class="sw" id="theme" type="button" aria-label="Toggle theme"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button>
   </div>
 </header>
 
@@ -182,6 +192,12 @@ const root=document.documentElement, lb=document.getElementById('lang');
 const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>EN</b>'; document.title=l==='ru'?'Конфиденциальность • Andrew Kuznetsov':'Privacy • Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='ru'?'Наверх':'Back to top'); };
 setLang(root.lang==='en'?'en':'ru');
 lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} });
+/* theme: same storage as the home page ('' = dark, 'light') */
+document.getElementById('theme').addEventListener('click',()=>{
+  const light=root.getAttribute('data-theme')!=='light';
+  if(light) root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
+  try{localStorage.setItem('theme',light?'light':'')}catch(e){}
+});
 /* back to home: if we came from the home page, go back in history so it restores the scroll position */
 document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',e=>{
   try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
