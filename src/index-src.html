@@ -246,13 +246,13 @@ section{padding-block:clamp(80px,10vw,160px)}
 .c-link{display:inline-flex;align-items:center;gap:12px;padding:16px 20px;font-size:15px;border-right:1px solid var(--line);transition:background .25s,color .25s;flex:1 1 auto}
 .c-link:hover{background:var(--ink);color:var(--bg)}
 .c-link .mono{color:inherit;opacity:.6}
-.copy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none;border:0;padding:0 0 0 8px;color:inherit;opacity:.7}
+.copy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none;border:0;padding:0 0 0 8px;margin-left:auto;color:inherit;opacity:.7} /* pinned to the right edge of the mail cell */
 footer{padding:28px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 footer nav{display:flex;gap:20px;flex-wrap:wrap}
 footer a:hover{color:var(--ink)}
 
 /* ---------- reveal ---------- */
-.rv.in{animation:rv .9s cubic-bezier(.2,.8,.2,1) both}
+.rv.in{animation:rv .9s cubic-bezier(.2,.8,.2,1) both}.rv.rv-wait{opacity:0;transform:translateY(22px)} /* hidden from the start, so the reveal never flashes the block first */
 @keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.rv.in{animation:none}}
 
@@ -603,8 +603,8 @@ let io;
 function setupReveal(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   io && io.disconnect();
-  io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{rootMargin:'0px 0px -4% 0px'});
-  document.querySelectorAll('.rv').forEach(el=>{ if(el.getBoundingClientRect().top>innerHeight) io.observe(el); });
+  io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); en.target.classList.remove('rv-wait'); io.unobserve(en.target);} }),{rootMargin:'0px 0px -4% 0px'});
+  document.querySelectorAll('.rv:not(.in)').forEach(el=>{ if(el.getBoundingClientRect().top>innerHeight){ el.classList.add('rv-wait'); io.observe(el); } });
 }
 /* work titles get bolder on hover: break lines by the bold width up front, so hover never re-wraps the row */
 function lockLines(){
