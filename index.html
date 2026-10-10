@@ -593,6 +593,11 @@ document.getElementById('theme').addEventListener('click',()=>{
   const cur=root.getAttribute('data-theme')==='light'?'light':'dark'; const next=cur==='light'?'dark':'light';
   applyTheme(next==='dark'?null:next); try{localStorage.setItem('theme',next==='dark'?'':'light')}catch(e){}
 });
+/* theme and language are site-wide: re-read them whenever the page is shown — coming back from a case restores this page
+   from the back/forward cache with whatever theme it had, so a choice made on the case would be lost */
+addEventListener('pageshow',()=>{ let t='', l=lang; try{ t=localStorage.getItem('theme')||''; l=localStorage.getItem('lang')||lang; }catch(e){}
+  if((root.getAttribute('data-theme')||'')!==t){ applyTheme(t||null); dispatchEvent(new Event('themechange')); }
+  if(l!==lang){ lang=l; render(); } });
 
 /* copy */
 document.getElementById('copy').addEventListener('click',async e=>{
@@ -906,6 +911,7 @@ function aboutStats(){
   wrap.addEventListener('pointerleave',()=>{mx=my=-1e4; still=false;});
   let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{build(); still=false;},200);});
   document.getElementById('theme').addEventListener('click',()=>setTimeout(()=>{ setCol(); if(rm) frame(); },50));
+  addEventListener('themechange',()=>setTimeout(()=>{ setCol(); if(rm) frame(); },50));
 })();
 
 render();

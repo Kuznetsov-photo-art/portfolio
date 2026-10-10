@@ -209,6 +209,9 @@ document.getElementById('theme').addEventListener('click',()=>{
   if(light) root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
   try{localStorage.setItem('theme',light?'light':'')}catch(e){}
 });
+/* theme and language are site-wide: re-read them when the page is restored from the back/forward cache */
+addEventListener('pageshow',()=>{ try{ const t=localStorage.getItem('theme'); if(t==='light') root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
+  const l=localStorage.getItem('lang')==='en'?'en':'ru'; if(l!==root.lang) setLang(l); }catch(e){} });
 /* back to home: if we came from the home page, go back in history so it restores the scroll position */
 document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',e=>{
   try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
