@@ -175,10 +175,10 @@ section{padding-block:clamp(80px,10vw,160px)}
 .kbar::after{content:'';position:absolute;left:0;top:-1px;height:3px;width:var(--p,0%);background:var(--ink)}
 /* giant word: a weight wave runs across the letters as you scroll (size is fitted to the widest wave state) */
 .kword{display:grid;align-self:center}
-.kw{grid-area:1/1;display:flex;white-space:nowrap;font-family:var(--display);line-height:.9;letter-spacing:-.04em;color:var(--ink);overflow:hidden;padding-block:.06em}
-.kw .ch{display:inline-block;font-variation-settings:'wght' var(--w,200);transform:translateY(140%);transition:transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*24ms)}
+.kw{grid-area:1/1;display:flex;white-space:nowrap;font-family:var(--display);line-height:.9;letter-spacing:-.04em;color:var(--ink);overflow:hidden;padding-block:.14em .28em;margin-block:-.14em -.28em} /* room for descenders (у д р) and й inside the clip; negative margin keeps the layout */
+.kw .ch{display:inline-block;font-variation-settings:'wght' var(--w,200);transform:translateY(170%);transition:transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*24ms)}
 .kw.on .ch{transform:none}
-.kw.past .ch{transform:translateY(-140%)} /* 140%: diacritics (й, ё) reach above the line box */
+.kw.past .ch{transform:translateY(-170%)} /* 170%: clears descenders and й with the taller clip box */
 .kbottom{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,6vw,120px);align-items:end}
 .kcount{font-family:var(--display);font-weight:200;font-size:clamp(56px,8vw,128px);line-height:.85;letter-spacing:-.05em;display:flex;align-items:flex-start}
 .kcount .d{display:inline-block;height:.85em;overflow:hidden}
