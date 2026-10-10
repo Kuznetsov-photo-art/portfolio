@@ -165,8 +165,11 @@ section{padding-block:clamp(80px,10vw,160px)}
 .arch{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
 .a-item{position:relative;overflow:hidden;background:var(--bg);aspect-ratio:4/3}
 .a-item img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-.a-item.in img{filter:grayscale(0)}
 .a-item:hover img{transform:scale(1.04)}
+@media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
+.a-item[hidden]{display:none}
+.a-more{display:block;width:100%;margin-top:1px;padding:22px;background:none;border:1px solid var(--line);color:var(--ink-2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:color .3s,border-color .3s}
+.a-more:hover{color:var(--ink);border-color:var(--line-2)}
 .a-item .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
 .a-item:hover .cap{opacity:1}
 .a-item.case .cap{opacity:1}
@@ -183,7 +186,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .about .text p{color:var(--ink-2);max-width:62ch;margin:0 0 18px}
 .about .text p strong{color:var(--ink);font-weight:600}
 .portrait{width:min(100%,320px);aspect-ratio:1;overflow:hidden;margin-top:36px;position:relative}
-.portrait img{width:100%;height:100%;object-fit:cover}
+.portrait img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .6s}
 .portrait .rl{inset:auto;left:0;right:0;bottom:-22px;height:1px}
 .portrait .rl .line{left:0;right:0;top:0;height:1px}
 .portrait .rl span{left:50%;top:-7px;transform:translateX(-50%)}
@@ -303,6 +306,7 @@ footer a:hover{color:var(--ink)}
     <a class="mono" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener">Behance ↗</a>
   </div>
   <div class="arch" id="arch"></div>
+  <button class="a-more" id="amore" type="button"></button>
   <p class="a-note rv" data-i18n="arch.note">Ранние работы: брендинг, лендинги, промо и первые продуктовые интерфейсы. Импортированы с Behance, каждая ведёт на оригинальную публикацию</p>
 </section>
 
@@ -368,7 +372,7 @@ const I18N = {
   'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 90–95% моей работы идёт через Claude, ChatGPT и Cursor — от исследований и текстов до сборки дизайн-систем и рабочих прототипов. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды',
   'c.title':'Есть задача?<br><em>Напишите.</em>','c.copy':'копировать','c.copied':'скопировано',
   'f.rights':'Все права защищены','f.privacy':'Политика конфиденциальности','f.terms':'Условия использования',
-  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','wip':'в работе','soon':'Скоро','focus':'направление',
+  'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','arch.more':'Показать все {n}','wip':'в работе','soon':'Скоро','focus':'направление',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
  },
  en:{
@@ -388,7 +392,7 @@ const I18N = {
   'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 90–95% of my work runs through Claude, ChatGPT and Cursor — from research and copy to building design systems and working prototypes. I see this as the core skill of a designer right now and build team processes around it',
   'c.title':'Have a project?<br><em>Say hello.</em>','c.copy':'copy','c.copied':'copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy policy','f.terms':'Terms of use',
-  'f.what':'what I do','view':'view','open':'open','case':'case','wip':'in progress','soon':'Soon','focus':'focus',
+  'f.what':'what I do','view':'view','open':'open','case':'case','arch.more':'Show all {n}','wip':'in progress','soon':'Soon','focus':'focus',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
  }
 };
@@ -414,7 +418,57 @@ const ARCH = [
  {k:'rosbank',ru:'Росбанк — рейтинг сотрудников',en:'Rosbank — staff rating system',y:'2018',u:'https://www.behance.net/gallery/69499827/pao-rosbank'},
  {k:'koferent',ru:'KOFE-RENT — лендинг',en:'KOFE-RENT — landing page',y:'2018',u:'https://www.behance.net/gallery/70250513/KOFE-RENT'},
  {k:'craftman',ru:'Бар «Крафтмен» — айдентика',en:'Craftman bar — identity',y:'2017',u:'https://www.behance.net/gallery/57468743/bar-CRAFTMAN-(g-moskva)'},
+// the rest of Behance, covers in /assets/archive (list: src/archive/behance.json)
+ {k:'staple2018',ru:'Staple Vape E-Liquid 2018',en:'Staple Vape E-Liquid 2018',y:'2018',u:'https://www.behance.net/gallery/69504435/Staple-Vape-E-Liquid-2018',i:'/assets/archive/staple2018.webp'},
+ {k:'inlovethailand',ru:'InLoveThailand',en:'InLoveThailand',y:'2018',u:'https://www.behance.net/gallery/67522349/InLoveThailand',i:'/assets/archive/inlovethailand.webp'},
+ {k:'mgts',ru:'ПАО МГТС',en:'MGTS',y:'2018',u:'https://www.behance.net/gallery/65290115/pao-mgts',i:'/assets/archive/mgts.webp'},
+ {k:'agrosnab',ru:'Агроснаб',en:'Agrosnab',y:'2018',u:'https://www.behance.net/gallery/67520829/agrosnab',i:'/assets/archive/agrosnab.webp'},
+ {k:'qplayer',ru:'QPlayer',en:'QPlayer',y:'2018',u:'https://www.behance.net/gallery/65739015/QPlayer',i:'/assets/archive/qplayer.webp'},
+ {k:'techmas',ru:'Techmas',en:'Techmas',y:'2018',u:'https://www.behance.net/gallery/65291147/TECHMAS',i:'/assets/archive/techmas.webp'},
+ {k:'privratnik',ru:'UX/UI «ПривратникЪ»',en:'UX/UI Privratnik',y:'2018',u:'https://www.behance.net/gallery/61724949/UXUI-privratnik',i:'/assets/archive/privratnik.webp'},
+ {k:'culturagraphica',ru:'Cultura Graphica',en:'Cultura Graphica',y:'2018',u:'https://www.behance.net/gallery/65930335/Cultura-Graphica',i:'/assets/archive/culturagraphica.webp'},
+ {k:'eskimotour',ru:'Eskimo Tour',en:'Eskimo Tour',y:'2018',u:'https://www.behance.net/gallery/60633221/ESKIMO-TOUR',i:'/assets/archive/eskimotour.webp'},
+ {k:'stil',ru:'Кафе «Стиль»',en:'Stil cafe',y:'2017',u:'https://www.behance.net/gallery/60068581/kafe-stil',i:'/assets/archive/stil.webp'},
+ {k:'burgerking',ru:'Burger King — Action Plan',en:'Burger King — Action Plan',y:'2018',u:'https://www.behance.net/gallery/64437569/BurgerKing-Action-Plan',i:'/assets/archive/burgerking.webp'},
+ {k:'ridgid',ru:'RIDGID Future Drill',en:'RIDGID Future Drill',y:'2018',u:'https://www.behance.net/gallery/64280273/RIDGID-Future-Drill',i:'/assets/archive/ridgid.webp'},
+ {k:'kupinetbook',ru:'KupiNetbook SPIN',en:'KupiNetbook SPIN',y:'2018',u:'https://www.behance.net/gallery/64442143/KupiNetbook-SPIN',i:'/assets/archive/kupinetbook.webp'},
+ {k:'pruzhina',ru:'Пружина',en:'Pruzhina',y:'2017',u:'https://www.behance.net/gallery/59040997/pruzhina',i:'/assets/archive/pruzhina.webp'},
+ {k:'coldrex',ru:'Coldrex',en:'Coldrex',y:'2017',u:'https://www.behance.net/gallery/59922667/COLDREX',i:'/assets/archive/coldrex.webp'},
+ {k:'casino',ru:'Casino Online',en:'Casino Online',y:'2017',u:'https://www.behance.net/gallery/59892895/Casino-Online',i:'/assets/archive/casino.webp'},
+ {k:'fundinme',ru:'fundin.me',en:'fundin.me',y:'2017',u:'https://www.behance.net/gallery/59885329/fundinme',i:'/assets/archive/fundinme.webp'},
+ {k:'dablbi',ru:'Даблби кофе',en:'Double B coffee',y:'2017',u:'https://www.behance.net/gallery/59708107/dablbi-kofe',i:'/assets/archive/dablbi.webp'},
+ {k:'dinastia2017',ru:'«Династия»',en:'Dinastia',y:'2017',u:'https://www.behance.net/gallery/58979035/dinastija',i:'/assets/archive/dinastia2017.webp'},
+ {k:'secrettoys',ru:'Secret Toys',en:'Secret Toys',y:'2017',u:'https://www.behance.net/gallery/58012889/Secret-Toys',i:'/assets/archive/secrettoys.webp'},
+ {k:'tuman',ru:'Туман',en:'Tuman',y:'2017',u:'https://www.behance.net/gallery/57842839/tuman',i:'/assets/archive/tuman.webp'},
+ {k:'codexmode',ru:'Codex Mode (Барнаул)',en:'Codex Mode (Barnaul)',y:'2017',u:'https://www.behance.net/gallery/57653797/CODEX-MODE-(g-barnaul)',i:'/assets/archive/codexmode.webp'},
+ {k:'conceptart',ru:'Concept-art обработка',en:'Concept-art retouching',y:'2017',u:'https://www.behance.net/gallery/57336251/Concept-Art-obrabotka-(fotografika)',i:'/assets/archive/conceptart.webp'},
+ {k:'samsung',ru:'Samsung',en:'Samsung',y:'2017',u:'https://www.behance.net/gallery/57334737/SAMSUNG',i:'/assets/archive/samsung.webp'},
+ {k:'premialmotors',ru:'Premial Motors (Нижневартовск)',en:'Premial Motors (Nizhnevartovsk)',y:'2017',u:'https://www.behance.net/gallery/56983371/Premial-Motors-(g-nizhnevartovsk)',i:'/assets/archive/premialmotors.webp'},
+ {k:'modnica',ru:'Ателье «Модница»',en:'Modnitsa atelier',y:'2017',u:'https://www.behance.net/gallery/56701949/atele-modnica',i:'/assets/archive/modnica.webp'},
+ {k:'zimnijsad',ru:'Зимний сад (Барнаул)',en:'Zimny Sad (Barnaul)',y:'2017',u:'https://www.behance.net/gallery/56533535/zimnij-sad-(g-barnaul)',i:'/assets/archive/zimnijsad.webp'},
+ {k:'ezvape',ru:'BASE от EZ Vape',en:'BASE by EZ Vape',y:'2017',u:'https://www.behance.net/gallery/56430817/BASE-otEZ-VAPEE-Liquid',i:'/assets/archive/ezvape.webp'},
+ {k:'robotsauce',ru:'Robot Sauce от Staple Vape',en:'Robot Sauce by Staple Vape',y:'2017',u:'https://www.behance.net/gallery/54128621/Robot-Sauce-ot-Staple-Vape-E-Liquid',i:'/assets/archive/robotsauce.webp'},
+ {k:'hunter',ru:'Hunter',en:'Hunter',y:'2017',u:'https://www.behance.net/gallery/53481225/Hunter',i:'/assets/archive/hunter.webp'},
+ {k:'mist',ru:'MIST от Staple Vape',en:'MIST by Staple Vape',y:'2017',u:'https://www.behance.net/gallery/53262773/MIST-otStaple-VapeE-Liquid',i:'/assets/archive/mist.webp'},
+ {k:'edhard',ru:'EDhaRD',en:'EDhaRD',y:'2017',u:'https://www.behance.net/gallery/52849009/EDhaRD',i:'/assets/archive/edhard.webp'},
+ {k:'barnaulrussia',ru:'BarnaulRussia',en:'BarnaulRussia',y:'2017',u:'https://www.behance.net/gallery/52803149/BarnaulRussia',i:'/assets/archive/barnaulrussia.webp'},
+ {k:'vapeup',ru:'Vape Up — интернет-магазин',en:'Vape Up — online shop',y:'2017',u:'https://www.behance.net/gallery/52804813/Online-VapeShop-VAPE-UP',i:'/assets/archive/vapeup.webp'},
+ {k:'milanmen',ru:'Milan Men — барбершоп',en:'Milan Men barber shop',y:'2018',u:'https://www.behance.net/gallery/64442763/MILAN-MEN-barber-shop',i:'/assets/archive/milanmen.webp'},
+ {k:'milan',ru:'Салон красоты «Милан»',en:'Milan beauty salon',y:'2017',u:'https://www.behance.net/gallery/59061469/salon-krasoty-milan',i:'/assets/archive/milan.webp'},
+ {k:'abado',ru:'Abado',en:'Abado',y:'2017',u:'https://www.behance.net/gallery/59041659/Abado',i:'/assets/archive/abado.webp'},
+ {k:'kujagan',ru:'Куяганский МСЗ',en:'Kuyagan creamery',y:'2017',u:'https://www.behance.net/gallery/53065623/kujaganskij-msz',i:'/assets/archive/kujagan.webp'},
+ {k:'exclusive',ru:'Exclusive PhotoStudio',en:'Exclusive PhotoStudio',y:'2017',u:'https://www.behance.net/gallery/52805903/EXCLUSIVE-PhotoStudio',i:'/assets/archive/exclusive.webp'},
+ {k:'bravye',ru:'Бравые ребята',en:'Bravye Rebyata',y:'2017',u:'https://www.behance.net/gallery/52812869/bravye-rebjata',i:'/assets/archive/bravye.webp'},
+ {k:'facetohaze',ru:'FaceToHaze',en:'FaceToHaze',y:'2017',u:'https://www.behance.net/gallery/53097251/FaceToHaze',i:'/assets/archive/facetohaze.webp'},
+ {k:'rusagro',ru:'Русьагро',en:'Rusagro',y:'2017',u:'https://www.behance.net/gallery/59886005/rusagro',i:'/assets/archive/rusagro.webp'},
+ {k:'altion',ru:'Altion',en:'Altion',y:'2017',u:'https://www.behance.net/gallery/53909223/Altion',i:'/assets/archive/altion.webp'},
+ {k:'idealprotein',ru:'Ideal Protein Bar (США)',en:'Ideal Protein Bar (USA)',y:'2017',u:'https://www.behance.net/gallery/52884755/IDEAL-PROTEIN-BAR-(ssha)',i:'/assets/archive/idealprotein.webp'},
+ {k:'kazboiler',ru:'KazBoiler',en:'KazBoiler',y:'2017',u:'https://www.behance.net/gallery/53907983/KazBoiler',i:'/assets/archive/kazboiler.webp'},
+ {k:'shelk',ru:'«Шёлк»',en:'Shelk',y:'2017',u:'https://www.behance.net/gallery/53829833/shelk',i:'/assets/archive/shelk.webp'},
+ {k:'alexxxauto',ru:'AlexxxAUTO',en:'AlexxxAUTO',y:'2017',u:'https://www.behance.net/gallery/60065323/AlexxxAUTO',i:'/assets/archive/alexxxauto.webp'},
+ {k:'mardanova',ru:'Lida Mardanova',en:'Lida Mardanova',y:'2017',u:'https://www.behance.net/gallery/52808779/LIDA-MARDANOVA',i:'/assets/archive/mardanova.webp'},
 ];
+const ARCH_FIRST=12;
 const FOCUS = [
  {ru:{w:'Дизайн-<em>системы</em>',t:'Токены, компоненты, документация',p:'Одна библиотека на несколько брендов и тем. Правила, которые читают разработчики, и процесс публикации без сюрпризов',m:'Finam · VTB · YouGile · Lab4U'},en:{w:'Design <em>systems</em>',t:'Tokens, components, documentation',p:'One library across brands and themes. Rules developers actually read, and a publishing process without surprises',m:'Finam · VTB · YouGile · Lab4U'}},
  {ru:{w:'<em>AI</em>-продукты',t:'Интерфейсы для нейросетевых фич',p:'Чат-консультанты, расшифровки, ассистенты в продукте. Как показать неопределённость и не потерять доверие пользователя',m:'FinamX · Lab4U · YouGile'},en:{w:'<em>AI</em> products',t:'Interfaces for LLM features',p:'Chat advisors, interpretations, in-product assistants. How to show uncertainty without losing the user’s trust',m:'FinamX · Lab4U · YouGile'}},
@@ -457,9 +511,9 @@ function render(){
       <span class="res">${c[lang].r}</span>
       <span class="th">${c.k&&COVERS[c.k]?`<img src="${COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
-  document.getElementById('arch').innerHTML = ARCH.map(a=>`
-    <a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}">
-      <img src="${COVERS[a.k]}" alt="${a[lang]}" loading="lazy" width="800" height="625">
+  document.getElementById('arch').innerHTML = ARCH.map((a,n)=>`
+    <a ${n>=ARCH_FIRST?'hidden ':''}class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}">
+      <img src="${a.i||COVERS[a.k]}" alt="${a[lang]}" loading="lazy" width="800" height="625">
       <div class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></div>
     </a>`).join('');
   document.getElementById('fwords').innerHTML = FOCUS.map((f,i)=>`<div class="w ${i===0?'on':'next'}">${f[lang].w}</div>`).join('');
@@ -496,13 +550,14 @@ function setupReveal(){
   io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{rootMargin:'0px 0px -4% 0px'});
   document.querySelectorAll('.rv').forEach(el=>{ if(el.getBoundingClientRect().top>innerHeight) io.observe(el); });
 }
-/* archive: grayscale -> color on enter */
-let ioA;
+/* archive: first ARCH_FIRST tiles, the rest behind "show all" */
+let archOpen=false;
 function setupArch(){
-  ioA && ioA.disconnect();
-  ioA=new IntersectionObserver(es=>es.forEach((en)=>{ if(en.isIntersecting){ const i=[...en.target.parentElement.children].indexOf(en.target); setTimeout(()=>en.target.classList.add('in'), (i%4)*90); ioA.unobserve(en.target);} }),{threshold:.35});
-  document.querySelectorAll('.a-item').forEach(el=>ioA.observe(el));
+  const b=document.getElementById('amore');
+  b.hidden=archOpen; b.textContent=I18N[lang]['arch.more'].replace('{n}',ARCH.length);
+  if(archOpen) document.querySelectorAll('.a-item[hidden]').forEach(el=>el.hidden=false);
 }
+document.getElementById('amore').addEventListener('click',()=>{archOpen=true; setupArch();});
 
 /* kinetic name: weight follows the cursor */
 function kinetic(){
