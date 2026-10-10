@@ -118,7 +118,7 @@ body.dark .ph img.l{opacity:0}
 .fl .ph{filter:none}
 .fl .ph img{filter:none}
 .stage .fl.phone{width:auto}
-.stage .fl.phone .ph{--w:clamp(150px,19vw,300px)}
+.stage .fl.phone .ph{--w:clamp(140px,17vw,280px)}
 .tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:none;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0}
 .tgl i{width:28px;height:14px;border:1px solid currentColor;border-radius:99px;position:relative;display:inline-block}
 .tgl i::after{content:'';position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:currentColor;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
@@ -190,7 +190,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .sec p.t+p.t{margin-top:12px}
 
 /* stage with floating phones */
-.stage{position:relative;overflow:visible;width:calc(100% - var(--phw));--phw:calc(clamp(150px,19vw,300px)*1.3);height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
+.stage{position:relative;overflow:visible;width:calc(100% - 2*var(--gutter) - var(--phw));margin-left:var(--gutter)!important;--phw:calc(clamp(140px,17vw,280px)*1.3);height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
 .stage .fl img{width:100%}
 .stage .cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center}
 .stage .cap i{width:60px;height:1px;background:var(--line-2)}
@@ -223,6 +223,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 /* dark section */
 .darksec{position:relative}
 .darksec .stage{height:clamp(560px,90vh,960px)}
+.darksec .stage{--phw:calc(clamp(120px,14vw,240px)*1.3)} .darksec .stage .fl.phone .ph{--w:clamp(120px,14vw,240px)} /* five phones in a row need a smaller size to keep air between them */
 
 /* outro */
 .outro{padding:calc(var(--gutter)*3) 0 calc(var(--gutter)*2);border-top:1px solid var(--line)}
@@ -248,8 +249,12 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .sec-head{grid-template-columns:40px 1fr}
   .sec-head .m{display:none}
   .rules{grid-template-columns:1fr}
-  .stage{height:clamp(480px,80vh,700px)}
-  .phone{width:34vw}
+  /* phones: two-column grid instead of a free-floating scatter (no overlaps on narrow screens) */
+  .stage{height:auto;width:auto;margin-left:0!important;padding-inline:var(--gutter);display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;align-items:start}
+  .stage > .fl:not(.phone),.stage .cap{display:none}
+  .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
+  .stage > .fl.phone:nth-child(even){margin-top:48px}
+  .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{--w:calc((100vw - 2*var(--gutter) - 16px)/2/1.3)}
 }
 @media(prefers-reduced-motion:reduce){.fl{transform:none!important}.grain{animation:none}}
 </style>
@@ -486,6 +491,16 @@ $$('[data-back]').forEach(a=>a.addEventListener('click',e=>{
   try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
 }));
 const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* phones in a stage: even spacing, leftmost at the column edge, rightmost ending at the right edge */
+$$('.stage').forEach(st=>{
+  const ph=[...st.querySelectorAll(':scope > .fl.phone')].filter(el=>/left:\s*[\d.]+%|left:0/.test(el.getAttribute('style')||''));
+  if(ph.length<2) return;
+  const L=ph.map(el=>parseFloat(el.style.left)||0), a=Math.min(...L), b=Math.max(...L);
+  if(b-a<1) return;
+  const order=L.map((l,i)=>[l,i]).sort((x,y)=>x[0]-y[0]); // keep their left-to-right order, space them evenly
+  order.forEach(([,i],k)=>ph[i].style.left=(k/(ph.length-1)*100).toFixed(2)+'%');
+});
 
 /* metrics odometer */
 (()=>{
