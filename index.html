@@ -196,6 +196,8 @@ section{padding-block:clamp(80px,10vw,160px)}
 
 /* ---------- archive (the only color) ---------- */
 .arch{margin-inline:calc(50% - 50vw);display:grid;gap:12px;overflow:hidden;padding-block:6px} /* full-bleed rows */
+#work{padding-bottom:clamp(24px,3vw,48px)}
+#archive{padding-top:clamp(24px,3.5vw,56px)} /* follows the work list directly — two full section paddings left a big hole */
 .arow{overflow:hidden}
 .atrack{display:flex;gap:12px;width:max-content;will-change:transform}
 .a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
