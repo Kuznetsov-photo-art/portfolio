@@ -76,6 +76,7 @@ body.loading{overflow:hidden}
 .navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
 @media(max-width:760px){.navfx{height:84px}}
 @media(max-width:760px){.nav{height:56px}:root{--nav-h:56px}}
+.ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square} /* arrow = cap height of the mono label, same as on case pages */
 .ctrls{display:flex;gap:16px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .ctrls button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;letter-spacing:inherit;text-transform:inherit}
 .ctrls .lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px}
@@ -337,7 +338,7 @@ footer a:hover{color:var(--ink)}
 <section class="wrap" id="archive">
   <div class="sec-head rv">
     <h2 data-i18n="arch.title">Архив 2017–2022</h2><div class="rule"></div>
-    <a class="mono" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener">Behance ↗</a>
+    <a class="mono be" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener">Behance<svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a>
   </div>
   <div class="arch" id="arch"></div>
   <button class="a-more" id="amore" type="button"></button>
