@@ -253,8 +253,8 @@ footer a:hover{color:var(--ink)}
 .cur.big{mix-blend-mode:normal;background:color-mix(in srgb,var(--ink) 72%,transparent);color:var(--bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media(hover:hover) and (pointer:fine){.cur,.cur.big{display:grid;place-items:center}}
 @media(hover:none),(pointer:coarse){.cur,.cur.big{display:none!important}}
-/* no square: the custom cursor only appears as the label circle; the native cursor stays */
-.cur:not(.big){opacity:0}
+/* round dot like on case pages (was a square) */
+.cur{border-radius:50%}
 /* halo: soft lens that trails the pointer and slightly lifts what's under it */
 .halo{position:fixed;left:0;top:0;z-index:40;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .6s;-webkit-backdrop-filter:brightness(1.22) contrast(1.06);backdrop-filter:brightness(1.22) contrast(1.06);-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
 :root[data-theme="light"] .halo{-webkit-backdrop-filter:brightness(.93) contrast(1.06);backdrop-filter:brightness(.93) contrast(1.06)}
