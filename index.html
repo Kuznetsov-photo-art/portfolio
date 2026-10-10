@@ -198,7 +198,8 @@ section{padding-block:clamp(80px,10vw,160px)}
 .arch{margin-inline:calc(50% - 50vw);display:grid;gap:12px;overflow:hidden;padding-block:6px} /* full-bleed rows */
 #work{padding-bottom:clamp(36px,4.5vw,72px)}
 #archive{padding-top:clamp(36px,5.25vw,84px);padding-bottom:clamp(52px,6.5vw,104px)}
-#about{padding-top:clamp(52px,6.5vw,104px)} /* archive → about gap ÷1.5 */ /* follows the work list directly — two full section paddings left a big hole */
+#about{padding-block:clamp(52px,6.5vw,104px)} /* gaps around «Обо мне» ÷1.5 */
+#contact{padding-top:clamp(52px,6.5vw,104px)} /* follows the work list directly — two full section paddings left a big hole */
 .arow{overflow:hidden}
 .atrack{display:flex;gap:12px;width:max-content;will-change:transform}
 .a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
