@@ -216,7 +216,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 /* horizontal pinned track */
 .hpin{position:relative;height:300vh}
 .hpin .sticky{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:center}
-.hpin .track{display:flex;gap:clamp(24px,4vw,64px);padding-inline:var(--gutter);will-change:transform;align-items:center}
+.hpin .track{display:flex;gap:0;padding-inline:var(--gutter);will-change:transform;align-items:center}
 .hpin .track figure{margin:0;flex:none;width:calc(clamp(180px,22vw,320px)*1.3)} /* = mockup width, so captions centre under the phone */
 .hpin .track figure:nth-child(even){transform:translateY(8%)}
 .hpin .track figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:-4px;text-align:center}
@@ -555,7 +555,7 @@ const fls=$$('.fl').map(el=>({el,sp:+el.dataset.sp||0,dx:+el.dataset.dx||0,rot:+
 $$('.dn, .hero-ph').forEach((el,i)=>{const w=el.firstElementChild; w.classList.add('bob'); w.style.setProperty('--tilt',getComputedStyle(el).getPropertyValue('--tilt')||'0deg'); w.style.setProperty('--d',(6+i*1.3)+'s'); w.style.setProperty('--dl',(-i*1.7)+'s')});
 const drifts=$$('[data-drift]').map(el=>({el,d:+el.dataset.drift}));
 const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:el.scrollWidth/2}));
-const hpin=$('#hpin'), track=$('#track');
+const hpin=$('#hpin'), track=$('#track'); const trackPh=track?[...track.querySelectorAll('figure .ph')]:[];
 const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; document.body.classList.add('dark'); const tgl=$('#tgl'); tgl.addEventListener('click',()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual)});
 let mxn=0,myn=0,lastY=scrollY,vel=0,smv=0;
 
@@ -574,7 +574,9 @@ function frame(t){
     }
     for(const d of drifts){const r=d.el.getBoundingClientRect();const p=(r.top+r.height/2-vh/2)/vh; d.el.style.transform=`translate3d(${p*d.d*innerWidth - innerWidth*.2}px,0,0)`}
     for(const r of rows){ r.x+= r.dir*(0.6+Math.min(Math.abs(smv),40)*.12); if(r.x>0) r.x-=r.w; if(r.x<-r.w) r.x+=r.w; r.el.style.transform=`translate3d(${r.x}px,0,0)`}
-    if(hpin){const r=hpin.getBoundingClientRect(); const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))); const max=track.scrollWidth-innerWidth+parseFloat(getComputedStyle(track).paddingLeft)*2; track.style.transform=`translate3d(${-p*max}px,0,0)`}
+    if(hpin){const r=hpin.getBoundingClientRect(); const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))); const max=track.scrollWidth-innerWidth+parseFloat(getComputedStyle(track).paddingLeft)*2; track.style.transform=`translate3d(${-p*max}px,0,0)`;
+      /* light parallax: each phone lifts and tilts a little depending on where it is across the screen */
+      if(!rm) trackPh.forEach(el=>{const q=el.getBoundingClientRect(); const d=Math.max(-1,Math.min(1,((q.left+q.width/2)/innerWidth-.5)*2)); el.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0) rotate(${(d*2.2).toFixed(2)}deg)`;});}
   }
   if(darksec){const r=darksec.getBoundingClientRect(); const inDark=r.top<vh*.55 && r.bottom>vh*.6; const on=manual===null?inDark:manual; document.body.classList.toggle('dark',on)}
   requestAnimationFrame(frame);
