@@ -209,10 +209,10 @@ section{padding-block:clamp(80px,10vw,160px)}
 .about .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.4vw,34px);line-height:1.22;letter-spacing:-.03em}
 .about .text p{color:var(--ink-2);max-width:62ch;margin:0 0 18px}
 .about .text p strong{color:var(--ink);font-weight:600}
-.portrait{width:min(100%,380px);aspect-ratio:1;overflow:hidden;margin-top:36px;position:relative;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line-2)} /* round avatar made of live dots */
+.portrait{width:min(100%,400px);aspect-ratio:1;margin-top:36px;position:relative} /* round avatar of live dots with a soft dissolving edge (no clip, no ring) */
 /* halftone portrait: dots sized by brightness, assemble on enter, scatter around the cursor */
 .portrait.ht canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.portrait.ht .ht-src{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 8%;filter:grayscale(1);transition:opacity .6s}
+.portrait.ht .ht-src{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;border-radius:50%;filter:grayscale(1);transition:opacity .6s}
 .portrait.ht.ready .ht-src{opacity:0}
 /* lead paragraph lights up word by word as you read */
 .about .lead .wd{transition:opacity .35s;opacity:.18}
@@ -828,12 +828,18 @@ function aboutStats(){
     const r=wrap.getBoundingClientRect(); dpr=Math.min(devicePixelRatio||1,2); W=r.width; H=r.height; if(!W||!H) return;
     c.width=W*dpr; c.height=H*dpr; x.setTransform(dpr,0,0,dpr,0,0);
     const S=Math.max(3,Math.round(W/96)); /* ~96 dots across */ const cols=Math.floor(W/S), rows=Math.floor(H/S);
-    const o=document.createElement('canvas'); o.width=cols; o.height=rows; const ox=o.getContext('2d'); const nw=img.naturalWidth, nh=img.naturalHeight, side=Math.min(nw,nh); ox.drawImage(img,(nw-side)/2,Math.min(nh-side,nh*.08),side,side,0,0,cols,rows); /* square crop around the head */
+    const o=document.createElement('canvas'); o.width=cols; o.height=rows; const ox=o.getContext('2d'); const nw=img.naturalWidth, nh=img.naturalHeight, dh=rows*.94, dw=dh*nw/nh; ox.drawImage(img,(cols-dw)/2,rows-dh,dw,dh); /* whole photo fits the circle: head not cut, a bit further away */
     const d=ox.getImageData(0,0,cols,rows).data; dots=[];
     for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){ const l=d[(j*cols+i)*4]/255; const hx=i*S+S/2, hy=j*S+S/2;
-      if(d[(j*cols+i)*4+3]<128) continue; /* transparent backdrop: no dot */
-      { const cx=i*S+S/2-W/2, cy=j*S+S/2-H/2, R=W/2-S*.8; if(cx*cx+cy*cy>R*R) continue; } /* inside the circle only */
-      dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S}); }
+      const cx=i*S+S/2-W/2, cy=j*S+S/2-H/2, rr=Math.sqrt(cx*cx+cy*cy)/(W/2), R0=.72;
+      if(rr>1) continue;
+      const tEdge=rr<R0?0:(rr-R0)/(1-R0); /* 0 inside → 1 at the rim: dots shrink and thin out */
+      let k=1-tEdge;
+      if(d[(j*cols+i)*4+3]<128){ /* backdrop: only a light scatter of fine dots near the rim */
+        if(rr<R0*.85||Math.random()>.32*(1-tEdge)) continue;
+        dots.push({sc:1,hx,hy,l:.42*(1-tEdge)+.06,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*.7}); continue; }
+      if(tEdge>0&&Math.random()<tEdge*.85) continue;
+      dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*(.45+.55*k)}); }
     wrap.classList.add('ready'); start=performance.now();
   }
   let col='#fff', still=false;
@@ -848,7 +854,7 @@ function aboutStats(){
         if(d2<4900){ const f=(1-d2/4900)*2.2; const d=Math.sqrt(d2)||1; p.vx+=dx/d*f; p.vy+=dy/d*f; }
         p.vx+=(p.hx-p.x)*.06*pull; p.vy+=(p.hy-p.y)*.06*pull; p.vx*=.82; p.vy*=.82; p.x+=p.vx; p.y+=p.vy;
         moving+=Math.abs(p.vx)+Math.abs(p.vy);
-        const v=light?1-p.l:p.l; const rad=p.s*.52*Math.pow(v,.85); if(rad<.35) continue;
+        const v=p.sc?p.l:(light?1-p.l:p.l); /* scatter dots keep their small size in both themes */ const rad=p.s*.52*Math.pow(v,.85); if(rad<.35) continue;
         x.moveTo(p.x+rad,p.y); x.arc(p.x,p.y,rad,0,6.283);
       }
       x.fill();
