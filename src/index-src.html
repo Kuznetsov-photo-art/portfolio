@@ -712,6 +712,10 @@ function bindCursor(){
     });
   }
   addEventListener('resize',()=>{fit();focusUpdate(true);});
+  /* measure again once Unbounded has actually loaded: measuring the fallback font made the word too wide later */
+  const refit=()=>{fit();focusUpdate(true);};
+  document.fonts&&document.fonts.ready.then(refit); addEventListener('load',refit);
+  document.fonts&&document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',refit);
   focusUpdate=function(force){
     const r=sec.getBoundingClientRect(); const total=sec.offsetHeight-innerHeight; prog=Math.min(1,Math.max(0,-r.top/total));
     const f=prog*N, i=Math.min(N-1,Math.floor(f)), lp=Math.min(1,f-i);
