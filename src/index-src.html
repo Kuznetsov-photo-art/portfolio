@@ -182,22 +182,22 @@ section{padding-block:clamp(80px,10vw,160px)}
 @media(prefers-reduced-motion:reduce){.kw .ch,.kcount .d i{transition:none}.kdesc.swap{animation:none}}
 
 /* ---------- archive (the only color) ---------- */
-.arch{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
-.a-item{position:relative;overflow:hidden;background:var(--bg);aspect-ratio:4/3}
+.arch{margin-inline:calc(50% - 50vw);display:grid;gap:12px;overflow:hidden;padding-block:6px} /* full-bleed rows */
+.arow{overflow:hidden}
+.atrack{display:flex;gap:12px;width:max-content;will-change:transform}
+.a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+@media(hover:hover){.a-item:hover{transform:scale(1.035);z-index:2}}
+@media(prefers-reduced-motion:reduce){.arow{overflow-x:auto}}
 .a-item img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
 .a-item:hover img{transform:scale(1.04)}
 @media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
-.a-item[hidden]{display:none}
-.a-more{display:block;width:100%;margin-top:1px;padding:22px;background:none;border:1px solid var(--line);color:var(--ink-2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:color .3s,border-color .3s}
-.a-more:hover{color:var(--ink);border-color:var(--line-2)}
 .a-item .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
 .a-item:hover .cap{opacity:1}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
 @media(hover:none){.a-item .cap{opacity:1}}
-@media(max-width:1000px){.arch{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:640px){.arch{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.a-item{width:62vw}}
 .a-note{margin-top:22px;color:var(--ink-3);font-size:14px;max-width:70ch}
 
 /* ---------- about ---------- */
@@ -336,7 +336,6 @@ footer a:hover{color:var(--ink)}
     <a class="mono be" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener">Behance<svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a>
   </div>
   <div class="arch" id="arch"></div>
-  <button class="a-more" id="amore" type="button"></button>
   <p class="a-note rv" data-i18n="arch.note">Ранние работы: брендинг, лендинги, промо и первые продуктовые интерфейсы. Импортированы с Behance, каждая ведёт на оригинальную публикацию</p>
 </section>
 
@@ -498,7 +497,7 @@ const ARCH = [
  {k:'alexxxauto',ru:'AlexxxAUTO',en:'AlexxxAUTO',y:'2017',u:'https://www.behance.net/gallery/60065323/AlexxxAUTO',i:'/assets/archive/alexxxauto.webp'},
  {k:'mardanova',ru:'Lida Mardanova',en:'Lida Mardanova',y:'2017',u:'https://www.behance.net/gallery/52808779/LIDA-MARDANOVA',i:'/assets/archive/mardanova.webp'},
 ];
-const ARCH_FIRST=12;
+const AROWS=4;
 const FOCUS = [
  {ru:{w:'Дизайн‑системы',t:'Токены, компоненты, документация',p:'Одна библиотека на несколько брендов и тем. Правила, которые читают разработчики, и процесс публикации без сюрпризов',m:'Finam · VTB · YouGile · Lab4U'},en:{w:'Design systems',t:'Tokens, components, documentation',p:'One library across brands and themes. Rules developers actually read, and a publishing process without surprises',m:'Finam · VTB · YouGile · Lab4U'}},
  {ru:{w:'AI‑продукты',t:'Интерфейсы для нейросетевых фич',p:'Чат-консультанты, расшифровки, ассистенты в продукте. Как показать неопределённость и не потерять доверие пользователя',m:'FinamX · Lab4U · YouGile'},en:{w:'AI products',t:'Interfaces for LLM features',p:'Chat advisors, interpretations, in-product assistants. How to show uncertainty without losing the user’s trust',m:'FinamX · Lab4U · YouGile'}},
@@ -541,11 +540,13 @@ function render(){
       <span class="res">${c[lang].r}</span>
       <span class="th">${c.k&&COVERS[c.k]?`<img src="${COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
-  document.getElementById('arch').innerHTML = ARCH.map((a,n)=>`
-    <a ${n>=ARCH_FIRST?'hidden ':''}class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}">
-      <img src="${a.i||COVERS[a.k]}" alt="${a[lang]}" loading="lazy" width="800" height="625">
+  const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
+      <img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
       <div class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></div>
-    </a>`).join('');
+    </a>`;
+  const per=Math.ceil(ARCH.length/AROWS);
+  document.getElementById('arch').innerHTML = Array.from({length:AROWS},(_,r)=>{const items=ARCH.slice(r*per,(r+1)*per);
+    return `<div class="arow" data-dir="${r%2?1:-1}"><div class="atrack">${items.map(a=>tile(a,0)).join('')}${items.map(a=>tile(a,1)).join('')}</div></div>`;}).join('');
   focusBuild && focusBuild();
   document.getElementById('tl').innerHTML = TL.map(t=>`
     <div class="tl ${t[6]?'now':''}"><span class="y">${t[0]}</span><span class="c">${lang==='ru'?t[1]:t[2]}<small>${t[3]}</small></span><span class="d">${lang==='ru'?t[4]:t[5]}</span></div>`).join('');
@@ -598,14 +599,28 @@ function lockLines(){
 let llT; addEventListener('resize',()=>{clearTimeout(llT); llT=setTimeout(lockLines,150);});
 document.fonts && document.fonts.ready.then(lockLines);
 
-/* archive: first ARCH_FIRST tiles, the rest behind "show all" */
-let archOpen=false;
+/* archive: four endless rows drifting in alternate directions; scroll speed pushes them, hover brakes the row */
+let archRows=[];
 function setupArch(){
-  const b=document.getElementById('amore');
-  b.hidden=archOpen; b.textContent=I18N[lang]['arch.more'].replace('{n}',ARCH.length);
-  if(archOpen) document.querySelectorAll('.a-item[hidden]').forEach(el=>el.hidden=false);
+  archRows=[...document.querySelectorAll('.arow')].map(el=>({el,tr:el.firstElementChild,dir:+el.dataset.dir,x:0,k:1,hover:false}));
+  archRows.forEach((r,i)=>{ r.el.addEventListener('pointerenter',()=>r.hover=true); r.el.addEventListener('pointerleave',()=>r.hover=false); r.x=(r.dir>0?-r.tr.scrollWidth/2:0)-i*170; }); // staggered start so tiles don't line up in columns
 }
-document.getElementById('amore').addEventListener('click',()=>{archOpen=true; setupArch();});
+(()=>{
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let lastY=scrollY, vel=0, vis=false;
+  new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(document.getElementById('archive'));
+  (function loop(){
+    const dy=scrollY-lastY; lastY=scrollY; vel+=(Math.min(60,Math.abs(dy))-vel)*.1;
+    if(vis) archRows.forEach(r=>{
+      r.k+=((r.hover?0:1)-r.k)*.08;
+      const half=r.tr.scrollWidth/2; if(!half) return;
+      r.x+=r.dir*(.45+vel*.35)*r.k;
+      if(r.x<=-half) r.x+=half; if(r.x>0) r.x-=half;
+      r.tr.style.transform=`translate3d(${r.x.toFixed(1)}px,0,0)`;
+    });
+    requestAnimationFrame(loop);
+  })();
+})();
 
 /* kinetic name: weight follows the cursor */
 function kinetic(){
