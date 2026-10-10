@@ -69,7 +69,7 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .nav .pn:first-child:hover{transform:translateX(-3px)}.nav .pn:last-child:hover{transform:translateX(3px)}
 .nav .pn::after{display:none}
 .nav .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
-.nav .ar2{font-family:var(--body);font-weight:300;font-size:17px;line-height:0;letter-spacing:0;margin-left:2px}
+.nav .ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square} /* = cap height of the mono label */
 /* header backdrop: progressive blur (strong at top → none at bottom) + fade into page colour */
 .navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:108px;pointer-events:none}
 .navfx i,.navfx::after{position:absolute;inset:0}
@@ -259,7 +259,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 <nav class="nav">
   <a href="/" class="c" data-back><b class="ar">←</b>На главную</a>
   <div class="ctr pager"><a class="pn" href="https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes" target="_blank" rel="noopener" title="Предыдущий проект: ВТБ Бизнес (Behance)" aria-label="Предыдущий проект"><b class="ar">←</b></a><span>Кейс · Обжора</span><span style="opacity:.6">02 / 60</span><a class="pn" href="https://www.behance.net/gallery/155967497/Vaskoru" target="_blank" rel="noopener" title="Следующий проект: Vasko.ru (Behance)" aria-label="Следующий проект"><b class="ar">→</b></a></div>
-  <div class="ctr"><button class="sw" id="tgl" aria-label="Переключить тему"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance<b class="ar2">↗</b></a></div>
+  <div class="ctr"><button class="sw" id="tgl" aria-label="Переключить тему"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button><a href="https://www.behance.net/gallery/159386701/obzhora" target="_blank" rel="noopener">Behance<svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a></div>
 </nav>
 
 <!-- ============ HERO ============ -->
