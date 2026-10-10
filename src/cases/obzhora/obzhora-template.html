@@ -167,7 +167,8 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch}
 .intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
 .specs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.5)}
-.specs div{padding:22px 0 26px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding-right:20px}
+.specs div{padding:22px 20px 26px clamp(16px,2vw,32px);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.specs div:first-child{padding-left:0} /* first cell lines up with the text above; others keep air from the divider */
 .specs div:last-child{border-right:0}
 .specs b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,4.6vw,72px);letter-spacing:-.05em;line-height:1}
 .specs span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
@@ -246,6 +247,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .intro .g{grid-template-columns:1fr}
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
+  .specs div:nth-child(odd){padding-left:0}
   .h-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px} /* spread across the width instead of a left column */
   .h-copy>.mono{display:none}
   .rl-r{display:none}
