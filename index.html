@@ -255,6 +255,8 @@ footer a:hover{color:var(--ink)}
 @media(hover:none),(pointer:coarse){.cur,.cur.big{display:none!important}}
 /* round dot like on case pages (was a square) */
 .cur{border-radius:50%}
+/* while the label circle is shown it IS the cursor: hide the native arrow so it never covers the label */
+@media(hover:hover) and (pointer:fine){[data-cur],[data-cur] *{cursor:none}}
 /* halo: soft lens that trails the pointer and slightly lifts what's under it */
 .halo{position:fixed;left:0;top:0;z-index:40;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .6s;-webkit-backdrop-filter:brightness(1.22) contrast(1.06);backdrop-filter:brightness(1.22) contrast(1.06);-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
 :root[data-theme="light"] .halo{-webkit-backdrop-filter:brightness(.93) contrast(1.06);backdrop-filter:brightness(.93) contrast(1.06)}
