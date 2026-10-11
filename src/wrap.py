@@ -1,6 +1,6 @@
 import re,os
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
-def wrap(src,dst,title=None,desc='',canonical='',image=''):
+def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc=''):
     s=open(src,encoding='utf-8').read()
     if s.lstrip().startswith('<!doctype'): open(dst,'w',encoding='utf-8').write(s); return
     i=s.index('</style>')+len('</style>')
@@ -17,8 +17,8 @@ def wrap(src,dst,title=None,desc='',canonical='',image=''):
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Andrew Kuznetsov">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:title" content="{t}">
-<meta property="og:description" content="{desc}">
+<meta property="og:title" content="{og_title or t}">
+<meta property="og:description" content="{og_desc or desc}">
 {('<meta property="og:url" content="'+canonical+'">') if canonical else ''}
 {('<meta property="og:image" content="'+image+'">'+chr(10)+'<meta property="og:image:width" content="1200">'+chr(10)+'<meta property="og:image:height" content="630">'+chr(10)+'<meta name="twitter:card" content="summary_large_image">'+chr(10)+'<meta name="twitter:image" content="'+image+'">') if image else ''}
 {('<link rel="canonical" href="'+canonical+'">') if canonical else ''}
@@ -32,6 +32,8 @@ def wrap(src,dst,title=None,desc='',canonical='',image=''):
     open(dst,'w',encoding='utf-8').write(out)
 J=os.path.join
 if os.path.exists(J(R,'src','index-src.html')):
-    wrap(J(R,'src','index-src.html'),J(R,'index.html'),desc='Андрей Кузнецов — Lead Product Designer · AI & Design Systems. Портфолио: продуктовый дизайн, дизайн-системы, AI-инструменты', canonical='https://andrewkuznetsov.com/', image='https://andrewkuznetsov.com/assets/og/og-home.jpg')
-wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','index.html'),desc='Кейс «Обжора» — счётчик калорий для iOS: 60+ экранов, 83+ иконок, тёмная тема. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/obzhora/', image='https://andrewkuznetsov.com/assets/og/og-obzhora.jpg')
+    wrap(J(R,'src','index-src.html'),J(R,'index.html'),desc='Андрей Кузнецов — Lead Product Designer · AI & Design Systems. Портфолио: продуктовый дизайн, дизайн-системы, AI-инструменты', canonical='https://andrewkuznetsov.com/', image='https://andrewkuznetsov.com/assets/og/og-home.jpg',
+     og_title='Портфолио продуктового дизайнера', og_desc='14 лет в дизайне: дизайн-системы, финтех, медтех и AI-продукты. Сбер, ВТБ, YouGile, Lab4U, Финам')
+wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','index.html'),desc='Кейс «Обжора» — счётчик калорий для iOS: 60+ экранов, 83+ иконок, тёмная тема. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/obzhora/', image='https://andrewkuznetsov.com/assets/og/og-obzhora.jpg',
+     og_title='Кейс «Обжора» — счётчик калорий для iOS', og_desc='60+ экранов, 83+ иконок, светлая и тёмная тема — от концепции до UI-кита')
 print('ok')
