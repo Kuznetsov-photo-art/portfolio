@@ -191,10 +191,11 @@ section{padding-block:clamp(80px,10vw,160px)}
 #contact{padding-top:clamp(52px,6.5vw,104px)} /* follows the work list directly — two full section paddings left a big hole */
 .arow{overflow:hidden}
 .atrack{display:flex;gap:12px;width:max-content;will-change:transform}
-.a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;clip-path:inset(0 round 4px);-webkit-mask-image:-webkit-radial-gradient(white,black);transition:transform .6s cubic-bezier(.2,.8,.2,1),clip-path .45s cubic-bezier(.2,.8,.2,1)} /* clip-path keeps the rounded corners while the tile and its image scale on hover (overflow+radius drops them during transforms) */
-@media(hover:hover){.a-item:hover{z-index:2;clip-path:inset(7px round 7px)} /* press effect: the edges sink in through the clip itself, so the corners stay round (a scaled tile loses them in Chrome) */ /* no scale on the tile itself: in Chrome a scaled tile inside the moving track loses its rounded clip — the image zooms instead */}
+.a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;overflow:visible;background:none;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.a-in{position:absolute;inset:0;display:block;overflow:hidden;border-radius:4px;background:var(--bg-2);clip-path:inset(0 round 4px);-webkit-mask-image:-webkit-radial-gradient(white,black);transition:clip-path .45s cubic-bezier(.2,.8,.2,1)} /* the inner layer is clipped and 'pressed'; the link around it keeps the full hover area, so the cursor at the edge no longer flickers */ /* clip-path keeps the rounded corners while the tile and its image scale on hover (overflow+radius drops them during transforms) */
+@media(hover:hover){.a-item:hover{z-index:2}.a-item:hover .a-in{clip-path:inset(7px round 7px)} /* press effect: the edges sink in through the clip itself, so the corners stay round (a scaled tile loses them in Chrome) */ /* no scale on the tile itself: in Chrome a scaled tile inside the moving track loses its rounded clip — the image zooms instead */}
 @media(prefers-reduced-motion:reduce){.arow{overflow-x:auto}}
-.a-item img,.a-item .cap{border-radius:inherit} /* second line of defence: children carry the radius too */
+.a-item img,.a-item .cap{border-radius:inherit}.a-item .cap b{display:block} /* second line of defence: children carry the radius too */
 .a-item img{width:100%;height:100%;object-fit:cover;scale:1.012; /* tiny overscan hides the image edge behind the rounded clip */filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
 .a-item:hover img{transform:scale(1.035)}
 @media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
@@ -561,8 +562,8 @@ function render(){
       <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
-      <img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
-      <div class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></div>
+      <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
+      <span class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>
     </a>`;
   const per=Math.ceil(ARCH.length/AROWS);
   document.getElementById('arch').innerHTML = Array.from({length:AROWS},(_,r)=>{const items=ARCH.slice(r*per,(r+1)*per);
