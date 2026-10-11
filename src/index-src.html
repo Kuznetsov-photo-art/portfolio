@@ -192,11 +192,11 @@ section{padding-block:clamp(80px,10vw,160px)}
 .arow{overflow:hidden}
 .atrack{display:flex;gap:12px;width:max-content;will-change:transform}
 .a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;clip-path:inset(0 round 4px);-webkit-mask-image:-webkit-radial-gradient(white,black);transition:transform .6s cubic-bezier(.2,.8,.2,1)} /* clip-path keeps the rounded corners while the tile and its image scale on hover (overflow+radius drops them during transforms) */
-@media(hover:hover){.a-item:hover{transform:scale(1.035);z-index:2}}
+@media(hover:hover){.a-item:hover{z-index:2} /* no scale on the tile itself: in Chrome a scaled tile inside the moving track loses its rounded clip — the image zooms instead */}
 @media(prefers-reduced-motion:reduce){.arow{overflow-x:auto}}
 .a-item img,.a-item .cap{border-radius:inherit} /* second line of defence: children carry the radius too */
 .a-item img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-.a-item:hover img{transform:scale(1.04)}
+.a-item:hover img{transform:scale(1.07)}
 @media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
 .a-item .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
 .a-item:hover .cap{opacity:1}
