@@ -26,6 +26,12 @@
 html{scroll-behavior:smooth}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 ::view-transition-new(root){z-index:2}
+/* language glitch: sections jitter sideways and texts split into red/cyan channels for ~0.28 s (no size change, nothing reflows) */
+html.glitch section:not(.focus),html.glitch footer{animation:glx .28s steps(1,end) 1}
+html.glitch section :is(h1,h2,h3,p,a,b,span,li,em,strong),html.glitch footer *,html.glitch .nav *{animation:gls .28s steps(1,end) 1}
+@keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
+@keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
+
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
@@ -578,7 +584,7 @@ function render(){
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
   lockLines(); bindCursor(); setupReveal(); tlReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
 }
-/* language switch effect: a light crossfade of the visible text blocks — only opacity changes, nothing reflows */
+/* language switch effect: the language flips instantly, a short glitch runs over the page */
 let langBusy=false;
 function langTargets(){
   const vh=innerHeight, set=new Set(), w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>{
@@ -589,19 +595,11 @@ function langTargets(){
     if(r.bottom<0||r.top>vh||!r.width) continue; set.add(el); }
   return [...set];
 }
-function langSwitch(){ /* light crossfade: texts dim out in 0.11 s, the language flips, they fade back in 0.22 s — no blur, no wave */
-  const flip=()=>{ lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render(); };
-  if(langBusy) return; if(matchMedia('(prefers-reduced-motion: reduce)').matches){ flip(); return; }
-  langBusy=true; const out=langTargets();
-  out.forEach(el=>{ el.style.transition='opacity .11s ease-out'; el.style.opacity='0'; });
-  setTimeout(()=>{
-    out.forEach(el=>{ el.style.transition=''; el.style.opacity=''; });
-    flip(); const inn=langTargets();
-    inn.forEach(el=>{ el.style.transition='none'; el.style.opacity='0'; });
-    void document.body.offsetHeight;
-    inn.forEach(el=>{ el.style.transition='opacity .22s ease-out'; el.style.opacity=''; });
-    setTimeout(()=>{ inn.forEach(el=>{ el.style.transition=''; }); langBusy=false; },260);
-  },120);
+function langSwitch(){ /* instant switch + a quarter-second glitch: RGB split and a horizontal jitter, then everything settles */
+  lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  root.classList.remove('glitch'); void root.offsetWidth; root.classList.add('glitch');
+  clearTimeout(langSwitch.t); langSwitch.t=setTimeout(()=>root.classList.remove('glitch'),300);
 }
 document.getElementById('lang').addEventListener('click',langSwitch);
 

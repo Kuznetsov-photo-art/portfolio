@@ -279,6 +279,8 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 html{background:var(--bg)}
 body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .nav{padding-left:calc(var(--gutter) + env(safe-area-inset-left,0px));padding-right:calc(var(--gutter) + env(safe-area-inset-right,0px))}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
 </style>
 
 <div class="grain"></div><script>document.body.classList.add("dark")</script>
@@ -575,7 +577,13 @@ $$('.dn, .hero-ph').forEach((el,i)=>{const w=el.firstElementChild; w.classList.a
 const drifts=$$('[data-drift]').map(el=>({el,d:+el.dataset.drift}));
 const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:el.scrollWidth/2}));
 const hpin=$('#hpin'), track=$('#track'); const trackPh=track?[...track.querySelectorAll('figure .ph')]:[];
-const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); /* theme is site-wide: same 'theme' key as home and privacy, dark by default */ const tgl=$('#tgl'); tgl.addEventListener('click',()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual); try{localStorage.setItem('theme',manual?'':'light')}catch(e){}});
+const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); /* theme is site-wide: same 'theme' key as home and privacy, dark by default */ /* theme switch: the new theme opens as a circle from the switch (View Transitions API), instant without it or with reduced motion */
+function circleTheme(btn,flip){ if(!document.startViewTransition||matchMedia('(prefers-reduced-motion: reduce)').matches||circleTheme.busy){ if(!circleTheme.busy) flip(); return; }
+  const r=btn.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2, R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+  circleTheme.busy=true; const vt=document.startViewTransition(flip);
+  vt.ready.then(()=>document.documentElement.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:700,easing:'cubic-bezier(.65,0,.35,1)',pseudoElement:'::view-transition-new(root)'}));
+  vt.finished.finally(()=>{circleTheme.busy=false;}); }
+const tgl=$('#tgl'); tgl.addEventListener('click',()=>circleTheme(tgl,()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual); try{localStorage.setItem('theme',manual?'':'light')}catch(e){}}));
 addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); }); /* re-read on back/forward cache restore */
 let mxn=0,myn=0,lastY=scrollY,vel=0,smv=0;
 

@@ -105,6 +105,8 @@ footer a:hover{color:var(--ink)}
 html{background:var(--bg)}
 body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .nav{padding-left:calc(var(--gutter) + env(safe-area-inset-left,0px));padding-right:calc(var(--gutter) + env(safe-area-inset-right,0px))}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
 </style>
 </head>
 <body>
@@ -220,11 +222,17 @@ const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>
 setLang(root.lang==='en'?'en':'ru');
 lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} });
 /* theme: same storage as the home page ('' = dark, 'light') */
-document.getElementById('theme').addEventListener('click',()=>{
+/* theme switch: the new theme opens as a circle from the switch (View Transitions API), instant without it or with reduced motion */
+function circleTheme(btn,flip){ if(!document.startViewTransition||matchMedia('(prefers-reduced-motion: reduce)').matches||circleTheme.busy){ if(!circleTheme.busy) flip(); return; }
+  const r=btn.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2, R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+  circleTheme.busy=true; const vt=document.startViewTransition(flip);
+  vt.ready.then(()=>document.documentElement.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:700,easing:'cubic-bezier(.65,0,.35,1)',pseudoElement:'::view-transition-new(root)'}));
+  vt.finished.finally(()=>{circleTheme.busy=false;}); }
+document.getElementById('theme').addEventListener('click',e=>circleTheme(e.currentTarget,()=>{
   const light=root.getAttribute('data-theme')!=='light';
   if(light) root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
   try{localStorage.setItem('theme',light?'light':'')}catch(e){}
-});
+}));
 /* theme and language are site-wide: re-read them when the page is restored from the back/forward cache */
 addEventListener('pageshow',()=>{ try{ const t=localStorage.getItem('theme'); if(t==='light') root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
   const l=localStorage.getItem('lang')==='en'?'en':'ru'; if(l!==root.lang) setLang(l); }catch(e){} });
