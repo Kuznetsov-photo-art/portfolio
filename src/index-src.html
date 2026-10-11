@@ -576,7 +576,30 @@ function render(){
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
   lockLines(); bindCursor(); setupReveal(); tlReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
 }
-document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render();});
+/* language switch effect: visible texts decode into the new language — characters flicker through random glyphs
+   and settle left to right, in a wave from the top of the screen down */
+let langFxRun=0;
+function langFx(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const run=++langFxRun, vh=innerHeight, G='АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+=/<>';
+  const items=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>{
+    const el=n.parentElement; if(!el||!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+    if(el.closest('script,style,svg,canvas,.pre,[aria-hidden="true"]')) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT; }});
+  let n; while((n=w.nextNode())&&items.length<600){ const r=n.parentElement.getBoundingClientRect();
+    if(r.bottom<0||r.top>vh||r.width===0) continue; items.push({n,final:n.nodeValue,delay:Math.max(0,r.top)/vh*260}); }
+  const D=520, t0=performance.now();
+  (function step(now){
+    if(run!==langFxRun) return; const t=now-t0; let busy=false;
+    for(const it of items){ const q=(t-it.delay)/D; const f=it.final;
+      if(q>=1){ if(it.n.nodeValue!==f) it.n.nodeValue=f; continue; } busy=true;
+      const keep=Math.max(0,Math.floor(f.length*q)); let out=f.slice(0,keep);
+      for(let i=keep;i<f.length;i++){ const ch=f[i]; out+=/[\s\u00a0.,:;!?—–\-·()«»"'/]/.test(ch)?ch:G[(Math.random()*G.length)|0]; }
+      it.n.nodeValue=out; }
+    if(busy) requestAnimationFrame(step);
+  })(t0);
+}
+document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render(); langFx();});
 
 /* theme */
 function applyTheme(t){ if(t) root.setAttribute('data-theme',t); else root.removeAttribute('data-theme'); }
