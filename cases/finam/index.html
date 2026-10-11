@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a10">
+<meta name="description" content="Кейс FinamX & Limex — AI-платформа для трейдеров на два рынка: веб, мобильное приложение и мультибрендовая дизайн-система. Андрей Кузнецов">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Andrew Kuznetsov">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Кейс FinamX & Limex — AI-платформа для трейдеров">
+<meta property="og:description" content="Веб, мобильное приложение и одна дизайн-система на два бренда и две темы">
+<meta property="og:url" content="https://andrewkuznetsov.com/cases/finam/">
+<meta property="og:image" content="https://andrewkuznetsov.com/assets/og/og-finam.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://andrewkuznetsov.com/assets/og/og-finam.jpg">
+<link rel="canonical" href="https://andrewkuznetsov.com/cases/finam/">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>FinamX & Limex — Andrew Kuznetsov</title>
+<link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<script>/* site-wide theme and language, brand of this case — set before paint */
+try{ const d=document.documentElement;
+  if(localStorage.getItem('theme')==='light') d.setAttribute('data-theme','light');
+  d.lang=localStorage.getItem('lang')==='en'?'en':'ru';
+  d.setAttribute('data-brand',sessionStorage.getItem('finam-brand')==='limex'?'limex':'finam'); }catch(e){ document.documentElement.setAttribute('data-brand','finam'); }</script>
+<style>
+/* tokens: DS-WEB (FinamX / Limex) Stable — 2 brands × 2 themes; the whole page is painted with them */
+:root{
+  --bg:#0b0a10; --surface:#14131b; --surface-2:#1c1a26; --text:#f2f0ff; --text-2:#f2f0ff8f; --text-3:#f2f0ff66;
+  --stroke:#f2f0ff14; --stroke-2:#f2f0ff33; --success:#26d962; --negative:#f25555; --warning:#ff944e;
+  --brand:#7055f6; --brand-2:#9580ff; --brand-bg:#7055f61f; --brand-bg-deep:#7055f652; --on-brand:#f6f5ff;
+  --display:'Unbounded',system-ui,sans-serif; --body:'Golos Text',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace; --ds:'Inter',system-ui,sans-serif;
+  --gutter:clamp(16px,4vw,56px); color-scheme:dark;
+}
+:root[data-brand="limex"]{ --brand:#a6f656; --brand-2:#a6f656; --brand-bg:#22c3581f; --brand-bg-deep:#22c35852; --on-brand:#261f48 }
+:root[data-theme="light"]{
+  --bg:#f2f0ff; --surface:#f6f5ff; --surface-2:#fbfaff; --text:#1f1736; --text-2:#1f17368f; --text-3:#1f173652;
+  --stroke:#11006614; --stroke-2:#1100661f; --success:#1fad4e; --negative:#e23c3c; --warning:#ff9b42;
+  --brand:#7938fa; --brand-2:#5933cc; --brand-bg:#8147f51f; --brand-bg-deep:#8147f552; --on-brand:#f6f5ff; color-scheme:light;
+}
+:root[data-theme="light"][data-brand="limex"]{ --brand:#bceb47; --brand-2:#8eda0b; --brand-bg:#a5e05229; --brand-bg-deep:#bceb4766; --on-brand:#1f1736 }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .5s,color .5s}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%;height:auto}
+::selection{background:var(--brand);color:var(--on-brand)}
+:focus-visible{outline:1px solid var(--text);outline-offset:3px}
+html[lang="ru"] [lang="en"], html[lang="en"] [lang="ru"]{display:none!important}
+.wrap{padding-inline:var(--gutter);max-width:1560px;margin-inline:auto}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.b{color:var(--brand);transition:color .5s}
+
+/* header — same as the rest of the site: difference blend over a progressive blur + fade */
+.nav{position:fixed;inset:0 0 auto 0;top:env(safe-area-inset-top,0px);z-index:100;height:62px;padding:0 var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.nav .c{display:flex;gap:10px;align-items:center}
+.nav .c .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
+.nav .r{display:flex;align-items:center;gap:20px}
+.lang{font:inherit;letter-spacing:.1em;background:none;border:0;padding:0;color:rgba(255,255,255,.55);cursor:pointer}
+.lang b{font-weight:500;color:#fff;text-decoration:underline;text-underline-offset:4px}
+.sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
+.sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:14px;height:14px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+.sw .moon path,.sw .sun circle{fill:#000}
+:root[data-theme="light"] .sw .k{transform:translateX(22px)}
+:root[data-theme="light"] .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+:root[data-theme="light"] .sw .sun{opacity:1;transform:none}
+.navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:calc(108px + env(safe-area-inset-top,0px));pointer-events:none} /* in-app browsers (Telegram) overlay their own bar and report it as a top inset: the blur/fade must cover it too */
+.navfx i,.navfx::after{position:absolute;inset:0}
+.navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
+.navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
+.navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
+.navfx::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:240px;background:var(--bg)}
+@media(max-width:760px){.navfx{height:calc(84px + env(safe-area-inset-top,0px))}.nav .hide-m{display:none}}
+
+/* brand switch — the signature of the case */
+.brands{display:inline-flex;padding:4px;border-radius:999px;border:1px solid var(--stroke-2);background:var(--surface);position:relative;font-family:var(--ds);font-weight:600;font-size:15px}
+.brands button{position:relative;z-index:1;border:0;background:none;color:var(--text-2);font:inherit;padding:10px 20px;border-radius:999px;cursor:pointer;transition:color .4s;display:flex;align-items:center;gap:8px}
+.brands button i{width:10px;height:10px;border-radius:50%;display:block}
+.brands button[data-b="finam"] i{background:#7055f6}.brands button[data-b="limex"] i{background:#a6f656}
+.brands .pill{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--brand);transition:transform .5s cubic-bezier(.2,.8,.2,1),width .5s cubic-bezier(.2,.8,.2,1),background .5s}
+:root[data-brand="finam"] .brands button[data-b="finam"],:root[data-brand="limex"] .brands button[data-b="limex"]{color:var(--on-brand)}
+
+/* hero */
+.hero{min-height:100svh;padding-top:120px;padding-bottom:64px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,72px);align-items:center}
+.hero .eyebrow{display:flex;gap:16px;align-items:center;margin-bottom:28px}
+.hero .eyebrow i{flex:1;max-width:120px;height:1px;background:var(--stroke-2)}
+.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(46px,7.2vw,124px);line-height:.92;letter-spacing:-.06em;margin:0}
+.hero h1 b{font-weight:800}
+.hero h1 .amp{color:var(--brand);transition:color .5s}
+.hero .sub{font-size:clamp(18px,1.6vw,22px);color:var(--text-2);margin:28px 0 32px;max-width:30em}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 28px;margin-top:40px;padding-top:24px;border-top:1px solid var(--stroke-2);max-width:560px}
+.specs div{display:flex;flex-direction:column;gap:6px}
+.specs span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.specs b{font-weight:500;font-size:15px}
+.stage{position:relative;aspect-ratio:1.18}
+.stage .desk{position:absolute;inset:6% 0 auto 0;border-radius:14px;overflow:hidden;border:1px solid var(--stroke-2);box-shadow:0 40px 120px -40px #000c}
+.stage .ph{position:absolute;width:30%;bottom:-2%;left:-6%;filter:drop-shadow(0 30px 60px #0009)}
+.stage .glow{position:absolute;width:70%;aspect-ratio:1;border-radius:50%;right:8%;top:8%;background:radial-gradient(circle,var(--brand-bg-deep),transparent 65%);filter:blur(20px);transition:background .6s}
+
+/* sections */
+.sec{padding-block:clamp(72px,10vw,150px);border-top:1px solid var(--stroke)}
+.sh{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,72px);align-items:end;margin-bottom:clamp(40px,5vw,72px)}
+.sh .n{font-family:var(--display);font-weight:200;font-size:clamp(56px,7vw,112px);line-height:.8;letter-spacing:-.06em;color:var(--brand);transition:color .5s}
+.sh h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,3.6vw,56px);line-height:1;letter-spacing:-.045em;margin:14px 0 0}
+.sh p{color:var(--text-2);margin:0;max-width:36em}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--stroke-2);border-bottom:1px solid var(--stroke-2)}
+.facts div{padding:28px 20px 24px;border-right:1px solid var(--stroke)}
+.facts div:last-child{border-right:0}
+.facts b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,3.6vw,56px);line-height:1;letter-spacing:-.05em}
+.facts span{display:block;margin-top:12px;color:var(--text-2);font-size:14px;line-height:1.45}
+.lead2{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.3vw,34px);line-height:1.25;letter-spacing:-.03em;max-width:28em;margin:0 0 56px}
+.lead2 em{font-style:normal;color:var(--brand);transition:color .5s}
+
+/* screens */
+.shot{border-radius:12px;overflow:hidden;border:1px solid var(--stroke-2);background:var(--surface);box-shadow:0 30px 90px -40px #000a}
+.cap{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text-3)}
+.phones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,2vw,28px);align-items:start}
+.phones figure,.duo figure{margin:0}
+.phones img{filter:drop-shadow(0 24px 50px #0008)}
+.duo{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:clamp(16px,2.4vw,36px);align-items:center}
+.duo.rev{grid-template-columns:minmax(0,3fr) minmax(0,7fr)}
+.points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2vw,32px);margin-top:clamp(40px,5vw,64px)}
+.points div{padding-top:18px;border-top:1px solid var(--stroke-2)}
+.points h3{font-family:var(--body);font-weight:600;font-size:17px;margin:0 0 8px;letter-spacing:-.01em}
+.points p{margin:0;color:var(--text-2);font-size:15px;line-height:1.55}
+.float{will-change:transform}
+
+/* level of detail diagram */
+.lod{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:40px}
+.lod div{border:1px solid var(--stroke-2);border-radius:12px;padding:18px;min-height:190px;display:flex;flex-direction:column;justify-content:space-between;background:var(--surface)}
+.lod .m{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text-3)}
+.lod .card{border-radius:6px;background:var(--surface-2);border:1px solid var(--stroke-2);display:flex;flex-direction:column;gap:6px;padding:8px;font-family:var(--ds);font-size:12px;line-height:1.3}
+.lod .chip{align-self:flex-start;font-size:10px;padding:2px 6px;border-radius:4px;background:var(--brand-bg-deep);color:var(--text)}
+.lod .dot{width:16px;height:16px;border-radius:4px;background:var(--surface-2);border:1px solid var(--stroke-2);position:relative}
+.lod .dot::after{content:'';position:absolute;right:-3px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--brand)}
+
+/* design system — live components on real tokens */
+.ds{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(20px,3vw,48px);align-items:start}
+.panel{font-family:var(--ds);border-radius:20px;border:1px solid var(--stroke-2);background:var(--surface);padding:clamp(18px,2.4vw,32px);display:grid;gap:18px;transition:background .5s,border-color .5s}
+.panel .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:600 14px/20px var(--ds);letter-spacing:-.2px;border:0;border-radius:8px;padding:10px 16px;cursor:pointer;transition:background .5s,color .5s}
+.btn.p{background:var(--brand);color:var(--on-brand)}
+.btn.s{background:var(--brand-bg);color:var(--text)}
+.btn.g{background:none;color:var(--text);box-shadow:inset 0 0 0 1px var(--stroke-2)}
+.seg{display:inline-flex;padding:3px;border-radius:9px;background:var(--brand-bg);gap:2px}
+.seg span{font:500 13px/18px var(--ds);padding:6px 12px;border-radius:7px;color:var(--text-2);display:flex;gap:6px;align-items:center}
+.seg span.on{background:var(--surface-2);color:var(--text);box-shadow:0 1px 2px #0003}
+.seg em{font-style:normal;font-size:11px;min-width:18px;height:18px;border-radius:9px;background:var(--negative);color:#fff;display:grid;place-items:center;padding:0 5px}
+.tick{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border-radius:12px;background:var(--surface-2);border:1px solid var(--stroke);padding:14px}
+.tick .lg{width:36px;height:36px;border-radius:50%;background:#21a038;display:grid;place-items:center;color:#fff;font-weight:700;font-size:12px}
+.tick b{font-weight:600;font-size:15px;display:block}
+.tick small{color:var(--text-2);font-size:12px}
+.tick .pr{text-align:right}
+.tick .up{color:var(--success);font-size:12px;font-weight:500}
+.spark{width:100%;height:64px;display:block}
+.spark path{fill:none;stroke:var(--brand);stroke-width:2;transition:stroke .5s}
+.spark .area{fill:var(--brand-bg);stroke:none;transition:fill .5s}
+.alert{border-radius:12px;background:var(--surface-2);border:1px solid var(--stroke);border-left:3px solid var(--negative);padding:12px 14px;font-size:13px;line-height:1.45;color:var(--text)}
+.alert .act{display:flex;justify-content:space-between;margin-top:10px;color:var(--text-2);font-size:12px}
+.ask{display:flex;align-items:center;gap:10px;border-radius:12px;border:1px solid var(--stroke-2);padding:12px 14px;color:var(--text-3);font-size:14px}
+.ask i{margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--brand);display:grid;place-items:center;transition:background .5s}
+.ask i svg{width:14px;height:14px;fill:none;stroke:var(--on-brand);stroke-width:2;stroke-linecap:round}
+.toast{align-self:start;justify-self:center;display:flex;gap:8px;align-items:center;font-size:13px;padding:8px 14px;border-radius:999px;background:var(--text);color:var(--bg)}
+.toast i{width:8px;height:8px;border-radius:50%;background:var(--success)}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mode{border-radius:14px;padding:14px;font-family:var(--ds);font-size:12px;display:grid;gap:10px;border:1px solid #f2f0ff14}
+.mode .t{display:flex;justify-content:space-between;font-weight:600}
+.mode .sw4{display:flex;gap:6px}
+.mode .sw4 i{flex:1;height:34px;border-radius:6px}
+.mode .bt{border-radius:6px;padding:7px;text-align:center;font-weight:600}
+.scale{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:6px}
+.scale div{border-radius:10px;height:72px;padding:8px;display:flex;align-items:flex-end;font:500 11px var(--ds)}
+.mig{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--stroke-2);border:1px solid var(--stroke-2);border-radius:16px;overflow:hidden;margin-top:clamp(40px,5vw,64px)}
+.mig div{background:var(--bg);padding:24px 20px;transition:background .5s}
+.mig b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3vw,44px);letter-spacing:-.05em;line-height:1}
+.mig b s{color:var(--text-3);text-decoration-thickness:1px;font-size:.55em;margin-right:8px}
+.mig span{display:block;margin-top:10px;font-size:14px;color:var(--text-2);line-height:1.45}
+.neutrals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.neutrals div{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--text-2)}
+.neutrals i{height:56px;border-radius:10px;border:1px solid var(--stroke-2);display:flex;align-items:flex-end;padding:6px 8px;font-style:normal}
+.check{columns:2;column-gap:40px;margin:32px 0 0;padding:0;list-style:none;counter-reset:c}
+.check li{break-inside:avoid;padding:12px 0 12px 40px;border-top:1px solid var(--stroke);position:relative;color:var(--text-2);font-size:15px;line-height:1.5}
+.check li::before{counter-increment:c;content:counter(c,decimal-leading-zero);position:absolute;left:0;top:13px;font-family:var(--mono);font-size:11px;color:var(--brand);transition:color .5s}
+.check li b{color:var(--text);font-weight:500}
+
+/* outro */
+.outro{padding-top:clamp(80px,12vw,180px);padding-bottom:calc(var(--gutter)*2);border-top:1px solid var(--stroke)}
+.outro h2{font-family:var(--display);font-weight:300;font-size:clamp(44px,8vw,140px);line-height:.9;letter-spacing:-.06em;margin:0}
+.outro h2 b{font-weight:800}
+.outro .nx{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:56px;padding-top:24px;border-top:1px solid var(--stroke-2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.outro .nx a:hover{color:var(--text)}
+
+/* back to top — same on every page */
+.totop{position:fixed;right:var(--gutter);bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--stroke-2);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--text);display:grid;place-items:center;cursor:pointer;padding:0;opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1),background .3s,color .3s,border-color .3s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+@media(hover:hover){.totop:hover{background:var(--text);color:var(--bg);border-color:var(--text)}}
+
+/* reveal on scroll */
+.rv.rv-wait{opacity:0;transform:translateY(24px)}
+.rv{transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+@media(prefers-reduced-motion:reduce){.rv,.rv.rv-wait{opacity:1;transform:none;transition:none}.float{transform:none!important}}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:100px}
+  .sh,.ds,.duo,.duo.rev{grid-template-columns:1fr}
+  .facts,.mig{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts div:nth-child(2){border-right:0}.facts div:nth-child(-n+2){border-bottom:1px solid var(--stroke)}
+  .phones{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .points{grid-template-columns:1fr}
+  .lod{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .check{columns:1}
+}
+@media(max-width:560px){.specs{grid-template-columns:1fr 1fr}.matrix{grid-template-columns:1fr}.brands button{padding:9px 14px}.totop{width:44px;height:44px}}
+/* viewport-fit=cover: in-app browsers (Telegram) let the page draw under their top bar and report it as a safe-area inset — the header fade then covers it. Keep content out of the side notch in landscape */
+html{background:var(--bg)}
+body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.nav{padding-left:calc(var(--gutter) + env(safe-area-inset-left,0px));padding-right:calc(var(--gutter) + env(safe-area-inset-right,0px))}
+</style>
+</head>
+<body>
+<div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
+<nav class="nav">
+  <a href="/" class="c" data-back><b class="ar">←</b><span lang="ru">На главную</span><span lang="en">Home</span></a>
+  <div class="r">
+    <span class="hide-m"><span lang="ru">Кейс · FinamX & Limex</span><span lang="en">Case · FinamX & Limex</span></span>
+    <button class="lang" id="lang" type="button" aria-label="Switch language"><b>RU</b> / EN</button>
+    <button class="sw" id="theme" type="button" aria-label="Toggle theme"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button>
+  </div>
+</nav>
+<button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
+
+<main>
+<header class="wrap hero">
+  <div>
+    <div class="eyebrow mono"><span lang="ru">Кейс 01</span><span lang="en">Case 01</span><i></i><span>2025 — 2026</span></div>
+    <h1>FinamX<br><span class="amp">&amp;</span> <b>Limex</b></h1>
+    <p class="sub" lang="ru">AI-платформа для трейдеров и инвесторов на два рынка — Россия и США. Веб, мобильное приложение и одна дизайн-система на два бренда</p>
+    <p class="sub" lang="en">An AI platform for traders and investors in two markets, Russia and the US. Web, a mobile app and one design system for two brands</p>
+    <div class="brands" role="group" aria-label="Brand"><span class="pill"></span><button type="button" data-b="finam"><i></i>FinamX</button><button type="button" data-b="limex"><i></i>Limex</button></div>
+    <div class="specs">
+      <div><span lang="ru">Роль</span><span lang="en">Role</span><b>Senior AI-Creator</b></div>
+      <div><span lang="ru">Зона</span><span lang="en">Scope</span><b lang="ru">Веб · мобайл · дизайн-система</b><b lang="en">Web · mobile · design system</b></div>
+      <div><span lang="ru">Команда</span><span lang="en">Team</span><b lang="ru">~50 человек, стартапы на два рынка</b><b lang="en">~50 people, startups for two markets</b></div>
+      <div><span lang="ru">Рынки</span><span lang="en">Markets</span><b lang="ru">FinamX — Россия · Limex — США</b><b lang="en">FinamX — Russia · Limex — US</b></div>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="glow"></div>
+    <div class="desk float" data-k="-0.04"><img src="/cases/finam/img/web-risk-summary.webp" width="1200" height="706" alt="FinamX: сводка рисков в хабе и пространства" fetchpriority="high"></div>
+    <img class="ph float" data-k="0.08" src="/cases/finam/img/m-explore.webp" width="393" height="852" alt="FinamX: лента Explore на телефоне">
+  </div>
+</header>
+
+<section class="wrap sec" id="context">
+  <div class="sh rv">
+    <div><div class="n">00</div><h2 lang="ru">Контекст</h2><h2 lang="en">Context</h2></div>
+    <p lang="ru">Один продукт — два рынка. FinamX работает с российскими биржами и брокерами, Limex — с американскими. После MVP Limex отпочковался в свой репозиторий, и с тех пор каждая задача делается сразу для обоих приложений</p>
+    <p lang="en">One product, two markets. FinamX works with Russian exchanges and brokers, Limex with American ones. After the MVP Limex moved to its own repository, and since then every task ships for both apps at once</p>
+  </div>
+  <div class="facts rv">
+    <div><b class="cnt" data-v="2">2</b><span lang="ru">продукта и рынка на одной кодовой базе</span><span lang="en">products and markets on one codebase</span></div>
+    <div><b>10.05</b><span lang="ru">запуск FinamX в России, 2026</span><span lang="en">FinamX launch in Russia, 2026</span></div>
+    <div><b class="cnt" data-v="70" data-s="%">70%</b><span lang="ru">рекламного трафика — с телефонов, поэтому адаптив к запуску</span><span lang="en">of ad traffic comes from phones, hence an adaptive web at launch</span></div>
+    <div><b>2 × 2</b><span lang="ru">бренда и темы в одной библиотеке DS-WEB</span><span lang="en">brands and themes in one DS-WEB library</span></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="chat">
+  <div class="sh rv">
+    <div><div class="n">01</div><h2 lang="ru">AI-чат в центре продукта</h2><h2 lang="en">AI chat at the core</h2></div>
+    <p lang="ru">Трейдер спрашивает обычными словами — «какие новости произошли за ночь по моему портфелю?» — и получает не текст, а инструмент: подборку новостей по своим тикерам, которую одним нажатием можно положить на доску виджетом</p>
+    <p lang="en">A trader asks in plain words — “what happened overnight with my portfolio?” — and gets a tool rather than text: news for their own tickers that becomes a widget on a board in one tap</p>
+  </div>
+  <figure class="rv" style="margin:0"><div class="shot"><img loading="lazy" src="/cases/finam/img/web-explore-prompt.webp" width="1200" height="706" alt="Чат: новости по портфелю и виджет на доске с фильтрами"></div>
+    <figcaption class="cap"><span lang="ru">Desktop · фильтрация новостей промптом: ответ чата становится виджетом с теми же фильтрами</span><span lang="en">Desktop · filtering news with a prompt: the chat answer becomes a widget with the same filters</span></figcaption></figure>
+  <div class="points rv">
+    <div><h3 lang="ru">Чат знает контекст</h3><h3 lang="en">Context-aware chat</h3><p lang="ru">Портфель, тикеры, доски — чат видит, где находится пользователь, и предлагает действие, а не справку</p><p lang="en">Portfolio, tickers, boards — the chat knows where the user is and offers an action, not a manual</p></div>
+    <div><h3 lang="ru">Голос и файлы</h3><h3 lang="en">Voice and files</h3><p lang="ru">Заметки голосом через speech-to-text, импорт карточек из PDF, CSV и XLSX, карточки прямо из диалога</p><p lang="en">Voice notes via speech-to-text, card import from PDF, CSV and XLSX, cards straight from the dialogue</p></div>
+    <div><h3 lang="ru">Состояния до мелочей</h3><h3 lang="en">Every state covered</h3><p lang="ru">Нет портфеля — подсказка подключить, нет новостей, слишком много новостей, саммари по запросу</p><p lang="en">No portfolio — prompt to connect, no news, too much news, summary on request</p></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="mobile">
+  <div class="sh rv">
+    <div><div class="n">02</div><h2 lang="ru">Тот же продукт в кармане</h2><h2 lang="en">The same product in a pocket</h2></div>
+    <p lang="ru">Больше 70% трафика — с телефонов, поэтому к запуску нужен был не урезанный сайт, а полноценная мобильная версия: Explore, доски с заметками и идеями, AI-чат и Risk Guardian. Компоненты изначально кроссплатформенные — веб и приложение собираются из одной базы</p>
+    <p lang="en">Over 70% of traffic is mobile, so the launch needed a full mobile version, not a trimmed site: Explore, boards with notes and ideas, AI chat and Risk Guardian. Components are cross-platform from day one — web and app share one base</p>
+  </div>
+  <div class="phones rv">
+    <figure class="float" data-k="0.03"><img loading="lazy" src="/cases/finam/img/m-explore.webp" width="393" height="852" alt="Explore"><figcaption class="cap">Explore</figcaption></figure>
+    <figure class="float" data-k="-0.03"><img loading="lazy" src="/cases/finam/img/m-boards-tiles.webp" width="393" height="852" alt="Доски"><figcaption class="cap"><span lang="ru">Доски</span><span lang="en">Boards</span></figcaption></figure>
+    <figure class="float" data-k="0.03"><img loading="lazy" src="/cases/finam/img/m-board-list.webp" width="393" height="852" alt="Доска в режиме ленты"><figcaption class="cap"><span lang="ru">Доска · лента</span><span lang="en">Board · feed</span></figcaption></figure>
+    <figure class="float" data-k="-0.03"><img loading="lazy" src="/cases/finam/img/m-chat-model.webp" width="393" height="852" alt="AI-чат"><figcaption class="cap"><span lang="ru">AI-чат · выбор модели</span><span lang="en">AI chat · model picker</span></figcaption></figure>
+  </div>
+  <div class="points rv">
+    <div><h3 lang="ru">Навигация без лишнего</h3><h3 lang="en">Navigation without noise</h3><p lang="ru">Сначала спрятать незрелое: в меню телефона только «Пространства» и «Чаты», остальное — заглушка «Доступно на компьютере»</p><p lang="en">Hide the immature first: the phone menu has only Spaces and Chats, the rest says “Available on desktop”</p></div>
+    <div><h3 lang="ru">Главная как маршрутизатор</h3><h3 lang="en">Home as a router</h3><p lang="ru">Риски, доски, портфель, стратегии, рутины и новости — одним экраном с понятным следующим шагом</p><p lang="en">Risks, boards, portfolio, strategies, routines and news on one screen with a clear next step</p></div>
+    <div><h3 lang="ru">Ловушки Safari</h3><h3 lang="en">Safari traps</h3><p lang="ru">«Потяни, чтобы обновить», системный свайп «назад», меню копирования — учтены в жестах заранее</p><p lang="en">Pull-to-refresh, the system back swipe, the copy menu — handled in the gestures upfront</p></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="board">
+  <div class="sh rv">
+    <div><div class="n">03</div><h2 lang="ru">Бесконечная доска на маленьком экране</h2><h2 lang="en">An infinite board on a small screen</h2></div>
+    <p lang="ru">На десктопе доска — это холст с десятками карточек. На телефоне она открывалась на зуме 0,1: поле нечитаемых заглушек с контрастом 1,16 : 1. Я разобрал доску по слоям — жесты, плотность, состояния, поиск — с замерами на стенде и сверкой макета с кодом</p>
+    <p lang="en">On desktop a board is a canvas with dozens of cards. On a phone it opened at 0.1 zoom: a field of unreadable placeholders with 1.16 : 1 contrast. I took the board apart layer by layer — gestures, density, states, search — measuring on the staging build and checking the mockups against the code</p>
+  </div>
+  <div class="duo rv">
+    <div class="phones" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <figure><img loading="lazy" src="/cases/finam/img/m-board-canvas.webp" width="393" height="852" alt="Карточка выбрана на холсте"><figcaption class="cap"><span lang="ru">Холст · карточка выбрана</span><span lang="en">Canvas · card selected</span></figcaption></figure>
+      <figure><img loading="lazy" src="/cases/finam/img/m-card-fundamental.webp" width="393" height="852" alt="Экран карточки"><figcaption class="cap"><span lang="ru">Экран карточки</span><span lang="en">Card screen</span></figcaption></figure>
+    </div>
+    <div class="points" style="grid-template-columns:1fr;margin-top:0">
+      <div><h3 lang="ru">Карта жестов</h3><h3 lang="en">Gesture map</h3><p lang="ru">Один палец ведёт холст, два масштабируют, долгое нажатие 500 мс берёт карточку, порог сдвига <span style="white-space:nowrap">10–12 pt</span></p><p lang="en">One finger pans, two zoom, a 500 ms long press lifts a card, <span style="white-space:nowrap">10–12 pt</span> drag threshold</p></div>
+      <div><h3 lang="ru">Одна плашка вместо семи</h3><h3 lang="en">One state block instead of seven</h3><p lang="ru">Пусто, загрузка, ошибка, устарело, нет доступа — в трёх размерах S, M, L. Ошибка больше не выглядит как пустота</p><p lang="en">Empty, loading, error, stale, no access — in three sizes S, M, L. An error no longer looks like emptiness</p></div>
+      <div><h3 lang="ru">Доска и лента</h3><h3 lang="en">Board and feed</h3><p lang="ru">Холст для связей и пространства, лента для чтения и поиска. 18 типов карточек сведены в 4 группы фильтра</p><p lang="en">Canvas for links and space, feed for reading and search. 18 card types folded into 4 filter groups</p></div>
+    </div>
+  </div>
+  <div class="lod rv">
+    <div><span class="m">&lt; 44 pt</span><span class="dot"></span><span lang="ru">Метка без текста</span><span lang="en">Marker, no text</span></div>
+    <div><span class="m">44–120 pt</span><span class="card" style="width:70%"><b>SBER</b></span><span lang="ru">Иконка и заголовок в строку</span><span lang="en">Icon and one-line title</span></div>
+    <div><span class="m">120–260 pt</span><span class="card"><span class="chip">Идея</span><b>Идея по Сберу</b></span><span lang="ru">Заголовок в две строки и тикер</span><span lang="en">Two-line title and ticker</span></div>
+    <div><span class="m">&gt; 260 pt</span><span class="card"><span class="chip">Заметка</span><b>Идея по ВТБ</b><span style="color:var(--text-2)">Допэмиссия на 84,7 млрд ₽ — крупнейшая на рынке за два года</span></span><span lang="ru">Карточка целиком</span><span lang="en">Full card</span></div>
+  </div>
+  <p class="cap" lang="ru">Уровень детализации выбирается по видимому размеру карточки, а не по зуму — контраст заглушек вырос с 1,16 : 1 до ~3,2 : 1</p>
+  <p class="cap" lang="en">The level of detail depends on the card's visible size, not the zoom — placeholder contrast went from 1.16 : 1 to ~3.2 : 1</p>
+</section>
+
+<section class="wrap sec" id="risk">
+  <div class="sh rv">
+    <div><div class="n">04</div><h2 lang="ru">Риски как разговор</h2><h2 lang="en">Risks as a conversation</h2></div>
+    <p lang="ru">Алерт о риске легко пропустить, если он живёт в отдельном разделе. Риски переехали в общий inbox рядом с чатами: сводка с делением на критичное и некритичное, объяснение с конкретными цифрами и следующий шаг — положить на доску или обсудить с агентом</p>
+    <p lang="en">A risk alert is easy to miss in a separate section. Risks moved to the shared inbox next to chats: a summary split into critical and non-critical, an explanation with real numbers, and a next step — put it on a board or discuss it with the agent</p>
+  </div>
+  <div class="duo rv" style="align-items:start">
+    <div><figure style="margin:0"><div class="shot"><img loading="lazy" src="/cases/finam/img/web-risk-agent.webp" width="1200" height="706" alt="Обсуждение риска с агентом"></div><figcaption class="cap"><span lang="ru">Desktop · папка «Риск-мониторинг»: обсуждение риска с агентом</span><span lang="en">Desktop · Risk monitoring folder: discussing a risk with the agent</span></figcaption></figure>
+    <div class="points" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div><h3 lang="ru">Живая сводка</h3><h3 lang="en">A live summary</h3><p lang="ru">Критичное — красным, некритичное — жёлтым, «рисков нет» — спокойным зелёным. Устаревший крит уходит из среза, и это видно</p><p lang="en">Critical in red, minor in yellow, “no risks” in calm green. A stale critical leaves the slice, visibly</p></div>
+      <div><h3 lang="ru">Объяснение, а не строка таблицы</h3><h3 lang="en">An explanation, not a table row</h3><p lang="ru">Лимит и факт в одной фразе: «позиция занимает 71% капитала при лимите 20%» — и что с этим делать</p><p lang="en">Limit and fact in one sentence: “the position takes 71% of capital with a 20% limit” — and what to do about it</p></div>
+      <div><h3 lang="ru">Следующий шаг рядом</h3><h3 lang="en">The next step at hand</h3><p lang="ru">Положить риск на доску или обсудить с агентом — прямо из сводки, без похода в отдельный раздел</p><p lang="en">Put the risk on a board or discuss it with the agent — right from the summary, no separate section</p></div>
+      <div><h3 lang="ru">Настройки там же</h3><h3 lang="en">Settings in place</h3><p lang="ru">Профиль риска открывается из той же папки: поля с подписями, сброс к значениям по умолчанию</p><p lang="en">The risk profile opens from the same folder: labelled fields, reset to defaults</p></div>
+    </div></div>
+    <figure class="float" data-k="0.05"><img loading="lazy" src="/cases/finam/img/m-rg-set.webp" width="393" height="1158" alt="Risk Guardian на телефоне" style="filter:drop-shadow(0 24px 50px #0008)"><figcaption class="cap">Risk Guardian · mobile</figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap sec" id="ds">
+  <div class="sh rv">
+    <div><div class="n">05</div><h2 lang="ru">Одна система на два бренда</h2><h2 lang="en">One system, two brands</h2></div>
+    <p lang="ru">DS-WEB — общая библиотека FinamX и Limex. Имена токенов у брендов одинаковые, Limex отличается только своими значениями. Компоненты ниже собраны прямо на её токенах — переключите бренд и тему в шапке</p>
+    <p lang="en">DS-WEB is the shared library of FinamX and Limex. Token names are the same for both brands, Limex only overrides values. The components below are built on its tokens — switch the brand and the theme in the header</p>
+  </div>
+  <div class="ds rv">
+    <div class="panel" aria-label="Live components">
+      <div class="row" style="justify-content:space-between">
+        <div class="brands" role="group" aria-label="Brand"><span class="pill"></span><button type="button" data-b="finam"><i></i>FinamX</button><button type="button" data-b="limex"><i></i>Limex</button></div>
+        <span class="mono" lang="ru">тема — в шапке</span><span class="mono" lang="en">theme — in the header</span>
+      </div>
+      <div class="seg"><span class="on" lang="ru">Все</span><span class="on" lang="en">All</span><span><span lang="ru">Критические</span><span lang="en">Critical</span><em>4</em></span><span lang="ru">Некритические</span><span lang="en">Minor</span></div>
+      <div class="tick"><span class="lg">S</span><div><b>SBER</b><small lang="ru">Сбербанк · MOEX</small><small lang="en">Sberbank · MOEX</small></div><div class="pr"><b>312,45 ₽</b><span class="up">+1,24%</span></div></div>
+      <svg class="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true"><path class="area" d="M0 50 L25 46 L50 48 L75 38 L100 41 L125 30 L150 34 L175 24 L200 27 L225 16 L250 20 L275 10 L300 12 L300 64 L0 64Z"/><path d="M0 50 L25 46 L50 48 L75 38 L100 41 L125 30 L150 34 L175 24 L200 27 L225 16 L250 20 L275 10 L300 12"/></svg>
+      <div class="alert"><span lang="ru">Позиция SBER занимает 71% капитала — выше лимита в 20%. Высокая концентрация риска в одном активе</span><span lang="en">SBER takes 71% of capital — above the 20% limit. High risk concentration in one asset</span><div class="act"><span lang="ru">Обсудить с агентом</span><span lang="en">Discuss with agent</span><span lang="ru">На доску</span><span lang="en">To board</span></div></div>
+      <div class="row"><button class="btn p" type="button" lang="ru">Купить</button><button class="btn p" type="button" lang="en">Buy</button><button class="btn s" type="button" lang="ru">Продать</button><button class="btn s" type="button" lang="en">Sell</button><button class="btn g" type="button" lang="ru">Отмена</button><button class="btn g" type="button" lang="en">Cancel</button></div>
+      <div class="ask"><span lang="ru">Спросите что угодно</span><span lang="en">Ask anything</span><i><svg viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5"/></svg></i></div>
+      <div class="toast"><i></i><span lang="ru">Добавлено на доску</span><span lang="en">Added to board</span></div>
+    </div>
+    <div>
+      <p class="mono" style="margin:0 0 14px"><span lang="ru">Четыре режима одной библиотеки</span><span lang="en">Four modes of one library</span></p>
+      <div class="matrix">
+        <div class="mode" style="background:#0b0a10;color:#f2f0ff"><div class="t">FinamX<span style="opacity:.56">Dark</span></div><div class="sw4"><i style="background:#7055f6"></i><i style="background:#9580ff"></i><i style="background:#22212c"></i><i style="background:#f2f0ff"></i></div><div class="bt" style="background:#7055f6;color:#f6f5ff">Button</div></div>
+        <div class="mode" style="background:#f2f0ff;color:#1f1736;border-color:#11006614"><div class="t">FinamX<span style="opacity:.56">Light</span></div><div class="sw4"><i style="background:#7938fa"></i><i style="background:#5933cc"></i><i style="background:#fbfaff;box-shadow:inset 0 0 0 1px #1100661f"></i><i style="background:#1f1736"></i></div><div class="bt" style="background:#7938fa;color:#f6f5ff">Button</div></div>
+        <div class="mode" style="background:#0b0a10;color:#f2f0ff"><div class="t">Limex<span style="opacity:.56">Dark</span></div><div class="sw4"><i style="background:#a6f656"></i><i style="background:#22c35852"></i><i style="background:#22212c"></i><i style="background:#f2f0ff"></i></div><div class="bt" style="background:#a6f656;color:#261f48">Button</div></div>
+        <div class="mode" style="background:#f2f0ff;color:#1f1736;border-color:#11006614"><div class="t">Limex<span style="opacity:.56">Light</span></div><div class="sw4"><i style="background:#bceb47"></i><i style="background:#8eda0b"></i><i style="background:#fbfaff;box-shadow:inset 0 0 0 1px #1100661f"></i><i style="background:#1f1736"></i></div><div class="bt" style="background:#bceb47;color:#1f1736">Button</div></div>
+      </div>
+      <p class="mono" style="margin:28px 0 8px"><span lang="ru">Фирменный цвет — шкала, а не одно значение</span><span lang="en">Brand colour is a scale, not one value</span></p>
+      <div class="scale" id="scale"></div>
+      <p class="mono" style="margin:28px 0 0"><span lang="ru">Нейтрали с фиолетовым подтоном</span><span lang="en">Neutrals with a violet undertone</span></p>
+      <div class="neutrals">
+        <div><i style="background:#040405;color:#f2f0ff8f">#040405</i>→<i style="background:#0b0a10;color:#f2f0ff">#0b0a10</i></div>
+        <div><i style="background:#ffffff;color:#1f17368f">#ffffff</i>→<i style="background:#fbfaff;color:#1f1736">#fbfaff</i></div>
+      </div>
+    </div>
+  </div>
+  <div class="mig rv">
+    <div><b><s>194</s>230</b><span lang="ru">базовых цветов в Color Base после переезда</span><span lang="en">base colours in Color Base after the move</span></div>
+    <div><b><s>56</s>71</b><span lang="ru">токенов темы в коллекциях Finam и Limex</span><span lang="en">theme tokens in the Finam and Limex collections</span></div>
+    <div><b>+51 / −15</b><span lang="ru">токенов добавлено и удалено, ещё 22 серых помечены к удалению</span><span lang="en">tokens added and removed, 22 more greys marked for removal</span></div>
+    <div><b class="cnt" data-v="54">54</b><span lang="ru">значения перекрашены — примитивы перегенерированы целиком</span><span lang="en">values recoloured — primitives regenerated as a whole</span></div>
+  </div>
+  <p class="lead2 rv" style="margin-top:clamp(48px,6vw,80px)" lang="ru">Переезд со старой библиотеки на DS-WEB — это не «поменять цвета». Это <em>аудит, единые имена, перепривязка компонентов на переменные и передача разработке</em> без ручных подстановок</p>
+  <p class="lead2 rv" style="margin-top:clamp(48px,6vw,80px)" lang="en">Moving from the old library to DS-WEB is not “changing colours”. It is <em>an audit, consistent naming, rebinding components to variables and a hand-off</em> without manual overrides</p>
+  <ol class="check rv" lang="ru">
+    <li><b>Перегенерировать примитивы целиком</b> — 54 значения изменились, 51 токен добавлен</li>
+    <li><b>Нейтрали больше не чисто чёрный и белый</b> — тянет за собой все alpha-ступени</li>
+    <li><b>Purple, Green и Lime перекрашены полностью</b>, включая брендовые ступени</li>
+    <li><b>Alpha со ступенью в имени</b> — …/Alpha/500/A12 вместо …/Alpha/A12</li>
+    <li><b>Brand/Base → Brand/High</b>, добавлены Medium, Low и Nano</li>
+    <li><b>Colors/Other/цвет → Base, BG, Faded</b> у каждого цвета</li>
+    <li><b>Старая серая группа</b> — новые применения запрещены, переводим на Purple</li>
+    <li><b>Сверка с каноном в проде</b> FinamX и Limex — экран, компонент, ожидаемый токен</li>
+  </ol>
+  <ol class="check rv" lang="en">
+    <li><b>Regenerate primitives as a whole</b> — 54 values changed, 51 tokens added</li>
+    <li><b>Neutrals are no longer pure black and white</b> — all alpha steps follow</li>
+    <li><b>Purple, Green and Lime fully recoloured</b>, brand steps included</li>
+    <li><b>Alpha names carry the step</b> — …/Alpha/500/A12 instead of …/Alpha/A12</li>
+    <li><b>Brand/Base → Brand/High</b>, plus Medium, Low and Nano</li>
+    <li><b>Colors/Other/colour → Base, BG, Faded</b> for every colour</li>
+    <li><b>The old grey group</b> — no new uses, migrating to Purple</li>
+    <li><b>Check against the canon in production</b> for FinamX and Limex — screen, component, expected token</li>
+  </ol>
+</section>
+
+<section class="wrap sec" id="process">
+  <div class="sh rv">
+    <div><div class="n">06</div><h2 lang="ru">Как устроена работа</h2><h2 lang="en">How the work is done</h2></div>
+    <p lang="ru">Роль AI-Creator — это дизайн, который доходит до кода. 90–95% работы идёт через Claude, ChatGPT и Cursor: от исследований и постановок до сборки токенов и прототипов</p>
+    <p lang="en">The AI-Creator role is design that reaches the code. 90–95% of the work goes through Claude, ChatGPT and Cursor: from research and specs to building tokens and prototypes</p>
+  </div>
+  <div class="points rv" style="margin-top:0">
+    <div><h3 lang="ru">Постановки с замерами</h3><h3 lang="en">Specs with measurements</h3><p lang="ru">Задачи для разработки — с цифрами со стенда: контраст, зоны касания, пороги жестов, расхождения макета и кода</p><p lang="en">Dev tasks come with numbers from staging: contrast, touch targets, gesture thresholds, mockup-vs-code gaps</p></div>
+    <div><h3 lang="ru">Исследования</h3><h3 lang="en">Research</h3><p lang="ru">Figma-прототип для клиентского исследования, концепты по CJM и 12 UX-интервью, по итогам которых правился интерфейс</p><p lang="en">A Figma prototype for customer research, CJM concepts and 12 UX interviews that shaped interface fixes</p></div>
+    <div><h3 lang="ru">Передача без потерь</h3><h3 lang="en">Lossless hand-off</h3><p lang="ru">Сводка изменений токенов с чек-листом, выгрузка в JSON, демо для разработки и сверка с каноном в проде</p><p lang="en">A token changelog with a checklist, a JSON export, a demo for developers and a check against the canon in production</p></div>
+  </div>
+</section>
+
+<section class="wrap outro">
+  <h2 class="rv"><span lang="ru">Спасибо<br><b>за внимание</b></span><span lang="en">Thanks<br><b>for watching</b></span></h2>
+  <div class="nx">
+    <a href="/#work" data-back><span lang="ru">← Все кейсы</span><span lang="en">← All cases</span></a>
+    <span>FinamX & Limex · 2025–2026</span>
+    <a href="/cases/obzhora/"><span lang="ru">Следующий проект → Обжора</span><span lang="en">Next project → Obzhora</span></a>
+  </div>
+</section>
+</main>
+
+<script>
+const root=document.documentElement;
+/* typography: glue 1–2 letter words to the next word, keep dashes off the line start */
+const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2 '); return s.replace(/ ([—–])/g,' $1'); };
+(function walk(n){ for(const c of n.childNodes){ if(c.nodeType===3) c.nodeValue=NB(c.nodeValue); else if(c.nodeType===1&&!/^(SCRIPT|STYLE|svg)$/i.test(c.tagName)) walk(c); } })(document.querySelector('main'));
+
+/* language — site-wide */
+const lb=document.getElementById('lang');
+function setLang(l){ root.lang=l; lb.innerHTML=l==='en'?'RU / <b>EN</b>':'<b>RU</b> / EN'; document.title=l==='en'?'FinamX & Limex — Andrew Kuznetsov':'FinamX & Limex — Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='en'?'Back to top':'Наверх'); placePills(); }
+lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} });
+/* theme — site-wide, dark by default */
+document.getElementById('theme').addEventListener('click',()=>{ const light=root.getAttribute('data-theme')!=='light';
+  if(light) root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme'); try{localStorage.setItem('theme',light?'light':'')}catch(e){} drawScale(); });
+/* brand — FinamX by default, remembered for this visit */
+const SCALE={finam:{dark:['#7055f6','#9580ff','#9580ff','#9580ff'],light:['#7938fa','#5933cc','#5933cc','#5933cc']},limex:{dark:['#a6f656','#a6f656','#a6f656','#a6f656'],light:['#bceb47','#8eda0b','#88cc00','#76c705']}};
+function drawScale(){ const b=root.getAttribute('data-brand'), t=root.getAttribute('data-theme')==='light'?'light':'dark', on=(b==='limex')?'#1f1736':'#f6f5ff';
+  document.getElementById('scale').innerHTML=['High','Medium','Low','Nano'].map((n,i)=>`<div style="background:${SCALE[b][t][i]};color:${on}">${n}<br>${SCALE[b][t][i]}</div>`).join(''); }
+function placePills(){ document.querySelectorAll('.brands').forEach(g=>{ const on=g.querySelector(`button[data-b="${root.getAttribute('data-brand')}"]`), p=g.querySelector('.pill'); if(!on||!p) return; p.style.width=on.offsetWidth+'px'; p.style.transform=`translateX(${on.offsetLeft-4}px)`; }); }
+document.querySelectorAll('.brands button').forEach(b=>b.addEventListener('click',()=>{ root.setAttribute('data-brand',b.dataset.b); try{sessionStorage.setItem('finam-brand',b.dataset.b)}catch(e){} placePills(); drawScale(); }));
+setLang(root.lang==='en'?'en':'ru'); drawScale();
+document.fonts&&document.fonts.ready.then(placePills); addEventListener('resize',placePills);
+/* theme and language may change on another page — re-read when restored from the back/forward cache */
+addEventListener('pageshow',()=>{ try{ if(localStorage.getItem('theme')==='light') root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
+  const l=localStorage.getItem('lang')==='en'?'en':'ru'; if(l!==root.lang) setLang(l); drawScale(); }catch(e){} });
+/* back to home: if we came from the home page, go back in history so it restores the scroll position */
+document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',e=>{
+  try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
+}));
+/* reveal blocks below the fold */
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!rm){ const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.remove('rv-wait'); io.unobserve(en.target);} }),{rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>{ if(el.getBoundingClientRect().top>innerHeight){ el.classList.add('rv-wait'); io.observe(el);} }); }
+/* count-up */
+const co=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) return; co.unobserve(e.target); const el=e.target, v=+el.dataset.v, s=el.dataset.s||''; if(rm){el.textContent=v+s;return;}
+  const t0=performance.now(); (function st(t){ const q=Math.min(1,(t-t0)/1300), k=1-Math.pow(1-q,4); el.textContent=Math.round(v*k)+s; if(q<1) requestAnimationFrame(st); })(t0); }),{threshold:.6});
+document.querySelectorAll('.cnt').forEach(el=>co.observe(el));
+/* soft scroll parallax for floating screens (scroll only, never the mouse) */
+const fl=[...document.querySelectorAll('.float')];
+function par(){ if(rm) return; const vh=innerHeight; fl.forEach(el=>{ const r=el.getBoundingClientRect(); const d=(r.top+r.height/2-vh/2); el.style.transform=`translate3d(0,${(d*+el.dataset.k).toFixed(1)}px,0)`; }); }
+addEventListener('scroll',()=>requestAnimationFrame(par),{passive:true}); par();
+/* back to top: parks with its centre on the outro line at the end */
+(()=>{const b=document.getElementById('totop'); const line=document.querySelector('.outro .nx'); let base=0; const measure=()=>{ b.style.bottom=''; base=parseFloat(getComputedStyle(b).bottom)||0; };
+  const upd=()=>{ b.classList.toggle('on',scrollY>innerHeight); if(line){ const lift=innerHeight-line.getBoundingClientRect().top-b.offsetHeight/2; b.style.bottom=Math.max(base,lift)+'px'; } };
+  measure(); addEventListener('scroll',upd,{passive:true}); addEventListener('resize',()=>{measure();upd();}); upd();
+  b.addEventListener('click',()=>scrollTo({top:0,behavior:rm?'auto':'smooth'}));
+})();
+</script>
+<script>/* browser chrome colour follows the theme: Telegram's in-app browser paints its top bar with theme-color, otherwise the page shows through it without the header fade */
+(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(document.documentElement.getAttribute('data-theme')==='light')?'#f2f0ff':'#0b0a10'; };
+  const o=new MutationObserver(f); o.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); o.observe(document.body,{attributes:true,attributeFilter:['class']}); f(); })();</script>
+
+</body>
+</html>
