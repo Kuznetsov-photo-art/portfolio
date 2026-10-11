@@ -46,7 +46,7 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .prog i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(0)}
 
 /* nav */
-.nav{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.nav{position:fixed;inset-inline:0;top:env(safe-area-inset-top,0px);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .nav a{position:relative}
 .nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s}
 .nav a:hover::after{right:0}
@@ -63,13 +63,13 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .nav .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
 .nav .ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square} /* = cap height of the mono label */
 /* header backdrop: progressive blur (strong at top → none at bottom) + fade into page colour */
-.navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:108px;pointer-events:none}
+.navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:calc(108px + env(safe-area-inset-top,0px));pointer-events:none} /* in-app browsers (Telegram) overlay their own bar and report it as a top inset: the blur/fade must cover it too */
 .navfx i,.navfx::after{position:absolute;inset:0}
 .navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
 .navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
 .navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
 .navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
-@media(max-width:760px){.navfx{height:84px}}
+@media(max-width:760px){.navfx{height:calc(84px + env(safe-area-inset-top,0px))}}
 .navfx::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:240px;background:var(--bg)} /* iOS Safari scrolls content under its top bar, above top:0 — keep that strip covered, same colour as the solid top of the fade */
 
 
