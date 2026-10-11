@@ -473,9 +473,10 @@ const CASES = [
  {ru:{t:'Lab4U — AI-расшифровка анализов',r:'первый в России сервис'},en:{t:'Lab4U — AI lab-results interpretation',r:'first in Russia'},tags:['AI','Healthtech','Mobile'],y:'2023'},
  {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb'},
  {ru:{t:'FinamX / Limex — AI-платформа для трейдеров',r:'RU + US · два рынка'},en:{t:'FinamX / Limex — AI platform for traders',r:'RU + US · two markets'},tags:['AI','Fintech','Web'],y:'2025'},
- {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20'},
+ {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp'},
 ];
 const ARCH = [
+ {k:'sber',ru:'Сбер — sCommerce',en:'Sber — sCommerce',y:'2020',u:'https://www.behance.net/gallery/161837373/SBER',i:'/assets/archive/sber.webp'},
  {k:'vtb',ru:'Дизайн-система ВТБ Бизнес',en:'VTB Business design system',y:'2022',u:'https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes'},
  {k:'obzhora',ru:'Обжора — счётчик калорий',en:'Obzhora — calorie counter app',y:'2020',u:'https://www.behance.net/gallery/159386701/obzhora',c:'/cases/obzhora/'},
  {k:'vasko',ru:'Vasko.ru — редизайн',en:'Vasko.ru — redesign',y:'2019',u:'https://www.behance.net/gallery/155967497/Vaskoru'},
@@ -581,7 +582,7 @@ function render(){
       <span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span>
       <span class="y">${c.y}</span>
       <span class="res">${c[lang].r}</span>
-      <span class="th">${c.k&&COVERS[c.k]?`<img src="${COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
+      <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
@@ -893,28 +894,31 @@ function aboutStats(){
       let k=1-tEdge;
       if(d[(j*cols+i)*4+3]<128){ /* backdrop: only a light scatter of fine dots near the rim */
         if(rr<R0*.85||Math.random()>.32*(1-tEdge)) continue;
-        dots.push({sc:1,hx,hy,l:.42*(1-tEdge)+.06,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*.7}); continue; }
+        dots.push({sc:1,hx,hy,l:.42*(1-tEdge)+.06,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*.7,ph:hx*.035+hy*.025+Math.random()*1.2}); continue; }
       if(tEdge>0&&Math.random()<tEdge*.85) continue;
-      dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*(.45+.55*k)}); }
+      dots.push({hx,hy,l,x:rm?hx:Math.random()*W,y:rm?hy:Math.random()*H,vx:0,vy:0,s:S*(.45+.55*k),ph:hx*.035+hy*.025+Math.random()*1.2}); } /* ph: phase of the breathing wave, mostly by position so it rolls across the face */
     wrap.classList.add('ready'); start=performance.now();
   }
   let col='#fff', still=false;
   const setCol=()=>{col=getComputedStyle(document.body).color; still=false;};
+  let tick=0;
   function frame(){
-    if(vis&&dots.length&&!still){
+    tick++;
+    if(vis&&dots.length&&!still&&!(still===null&&tick%2)){ /* still===null: settled and only breathing — ~30 fps is enough */
       const light=document.documentElement.getAttribute('data-theme')==='light';
       const t=(performance.now()-start)/1000, pull=Math.min(1,t/1.6); let moving=0;
+      const amp=rm?0:.2*Math.min(1,Math.max(0,(t-1.6)/1.4)); /* breathing: dots swell and shrink ±20% once the portrait has assembled */
       x.clearRect(0,0,W,H); x.fillStyle=col; x.beginPath(); // one path for all dots — thousands of fills per frame were the bottleneck
       for(const p of dots){
         const dx=p.x-mx, dy=p.y-my, d2=dx*dx+dy*dy;
         if(d2<4900){ const f=(1-d2/4900)*2.2; const d=Math.sqrt(d2)||1; p.vx+=dx/d*f; p.vy+=dy/d*f; }
         p.vx+=(p.hx-p.x)*.06*pull; p.vy+=(p.hy-p.y)*.06*pull; p.vx*=.82; p.vy*=.82; p.x+=p.vx; p.y+=p.vy;
         moving+=Math.abs(p.vx)+Math.abs(p.vy);
-        const v=p.sc?p.l:(light?1-p.l:p.l); /* scatter dots keep their small size in both themes */ const rad=p.s*.52*Math.pow(v,.85); if(rad<.35) continue;
+        const v=p.sc?p.l:(light?1-p.l:p.l); /* scatter dots keep their small size in both themes */ const rad=p.s*.52*Math.pow(v,.85)*(1+amp*Math.sin(t*1.4+p.ph)); if(rad<.35) continue;
         x.moveTo(p.x+rad,p.y); x.arc(p.x,p.y,rad,0,6.283);
       }
       x.fill();
-      if(pull>=1&&moving/dots.length<.002&&mx<-1e3) still=true; // settled: stop redrawing until something changes
+      if(pull>=1&&moving/dots.length<.002&&mx<-1e3) still=rm?true:null; // settled: reduced motion stops redrawing, otherwise keep breathing at half rate
     }
     if(!rm) requestAnimationFrame(frame);
   }
