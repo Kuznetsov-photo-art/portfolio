@@ -107,6 +107,11 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
 .nav{padding-left:calc(var(--gutter) + env(safe-area-inset-left,0px));padding-right:calc(var(--gutter) + env(safe-area-inset-right,0px))}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 ::view-transition-new(root){z-index:2}
+/* language glitch */
+html.glitch main,html.glitch footer{animation:glx .28s steps(1,end) 1}
+html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch footer *,html.glitch .nav *{animation:gls .28s steps(1,end) 1}
+@keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
+@keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
 </style>
 </head>
 <body>
@@ -220,7 +225,10 @@ const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2
 const root=document.documentElement, lb=document.getElementById('lang');
 const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>EN</b>'; document.title=l==='ru'?'Конфиденциальность • Andrew Kuznetsov':'Privacy • Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='ru'?'Наверх':'Back to top'); };
 setLang(root.lang==='en'?'en':'ru');
-lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} });
+function glitch(){ /* language glitch: instant switch, then ~0.28 s RGB split + jitter (same as the home page) */
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; const d=document.documentElement;
+  d.classList.remove('glitch'); void d.offsetWidth; d.classList.add('glitch'); clearTimeout(glitch.t); glitch.t=setTimeout(()=>d.classList.remove('glitch'),300); }
+lb.addEventListener('click',()=>{ const l=root.lang==='ru'?'en':'ru'; setLang(l); try{localStorage.setItem('lang',l)}catch(e){} glitch(); });
 /* theme: same storage as the home page ('' = dark, 'light') */
 /* theme switch: the new theme opens as a circle from the switch (View Transitions API), instant without it or with reduced motion */
 function circleTheme(btn,flip){ if(!document.startViewTransition||matchMedia('(prefers-reduced-motion: reduce)').matches||circleTheme.busy){ if(!circleTheme.busy) flip(); return; }
