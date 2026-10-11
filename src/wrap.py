@@ -12,7 +12,7 @@ def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc=''
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="{theme}">
 <meta name="description" content="{desc}">
 <meta property="og:type" content="website">
