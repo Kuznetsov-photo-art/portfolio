@@ -889,12 +889,16 @@ function aboutStats(){
     }
     if(!rm) requestAnimationFrame(frame);
   }
-  const go=()=>{ setCol(); build(); frame(); };
+  let lastW=0;
+  const go=()=>{ setCol(); build(); lastW=Math.round(wrap.getBoundingClientRect().width); frame(); };
   if(img.complete&&img.naturalWidth) go(); else img.addEventListener('load',go,{once:true});
-  new IntersectionObserver(e=>{ const was=vis; vis=e[0].isIntersecting; if(vis&&!was&&!rm){ dots.forEach(p=>{p.x=Math.random()*W;p.y=Math.random()*H;}); start=performance.now(); still=false; } if(rm&&vis) frame(); },{threshold:.2}).observe(wrap);
-  wrap.addEventListener('pointermove',e=>{const r=wrap.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; still=false;});
-  wrap.addEventListener('pointerleave',()=>{mx=my=-1e4; still=false;});
-  let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{build(); still=false;},200);});
+  let shown=false; /* assemble once, on the first appearance — re-scattering on every return looked like the portrait falling apart while scrolling on phones */
+  new IntersectionObserver(e=>{ const was=vis; vis=e[0].isIntersecting; if(vis&&!was){ still=false; if(!shown&&!rm){ shown=true; dots.forEach(p=>{p.x=Math.random()*W;p.y=Math.random()*H;}); start=performance.now(); } } if(rm&&vis) frame(); },{threshold:.2}).observe(wrap);
+  /* only a real mouse pushes the dots: a finger scrolling the page left a permanent 'hole' where it lifted */
+  wrap.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse') return; const r=wrap.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; still=false;});
+  const off=()=>{mx=my=-1e4; still=false;}; ['pointerleave','pointerup','pointercancel'].forEach(t=>wrap.addEventListener(t,off));
+  /* rebuild only when the width changes: mobile toolbars hiding on scroll change just the height and used to restart the assembly */
+  let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{ const w=Math.round(wrap.getBoundingClientRect().width); if(w===lastW) return; lastW=w; build(); still=false; },200);});
   document.getElementById('theme').addEventListener('click',()=>setTimeout(()=>{ setCol(); if(rm) frame(); },50));
   addEventListener('themechange',()=>setTimeout(()=>{ setCol(); if(rm) frame(); },50));
 })();
