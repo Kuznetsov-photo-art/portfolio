@@ -669,7 +669,8 @@ document.fonts && document.fonts.ready.then(lockLines);
 let archRows=[];
 function setupArch(){
   archRows=[...document.querySelectorAll('.arow')].map(el=>({el,tr:el.firstElementChild,dir:+el.dataset.dir,x:0,k:1,hover:false}));
-  archRows.forEach((r,i)=>{ r.el.addEventListener('pointerenter',()=>r.hover=true); r.el.addEventListener('pointerleave',()=>r.hover=false); r.x=(r.dir>0?-r.tr.scrollWidth/2:0)-i*170; }); // staggered start so tiles don't line up in columns
+  const canHover=matchMedia('(hover:hover) and (pointer:fine)').matches; /* phones and tablets never pause a row */
+  archRows.forEach((r,i)=>{ if(canHover) r.el.addEventListener('pointerenter',e=>{ if(e.pointerType==='mouse') r.hover=true; }); ['pointerleave','pointercancel'].forEach(t=>r.el.addEventListener(t,()=>r.hover=false)); /* only a mouse pauses a row: a finger 'entered' it and never left, so rows froze on phones */ r.x=(r.dir>0?-r.tr.scrollWidth/2:0)-i*170; }); // staggered start so tiles don't line up in columns
 }
 (()=>{
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
