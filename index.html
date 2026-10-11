@@ -601,30 +601,34 @@ function render(){
   document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
   lockLines(); bindCursor(); setupReveal(); tlReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
 }
-/* language switch effect: visible texts decode into the new language — characters flicker through random glyphs
-   and settle left to right, in a wave from the top of the screen down */
-let langFxRun=0;
-function langFx(){
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const run=++langFxRun, vh=innerHeight, G='АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+=/<>';
-  const items=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>{
+/* language switch effect: visible text blocks dissolve into a soft blur, the language flips, and the new texts
+   surface from the blur in a wave from the top — only opacity and blur change, so nothing reflows or jumps */
+let langBusy=false;
+function langTargets(){
+  const vh=innerHeight, set=new Set(), w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>{
     const el=n.parentElement; if(!el||!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-    if(el.closest('script,style,svg,canvas,.pre,[aria-hidden="true"]')) return NodeFilter.FILTER_REJECT;
+    if(el.closest('script,style,svg,canvas,.pre,.kw,[aria-hidden="true"]')) return NodeFilter.FILTER_REJECT;
     return NodeFilter.FILTER_ACCEPT; }});
-  let n; while((n=w.nextNode())&&items.length<600){ const r=n.parentElement.getBoundingClientRect();
-    if(r.bottom<0||r.top>vh||r.width===0) continue; items.push({n,final:n.nodeValue,delay:Math.max(0,r.top)/vh*260}); }
-  const D=520, t0=performance.now();
-  (function step(now){
-    if(run!==langFxRun) return; const t=now-t0; let busy=false;
-    for(const it of items){ const q=(t-it.delay)/D; const f=it.final;
-      if(q>=1){ if(it.n.nodeValue!==f) it.n.nodeValue=f; continue; } busy=true;
-      const keep=Math.max(0,Math.floor(f.length*q)); let out=f.slice(0,keep);
-      for(let i=keep;i<f.length;i++){ const ch=f[i]; out+=/[\s\u00a0.,:;!?—–\-·()«»"'/]/.test(ch)?ch:G[(Math.random()*G.length)|0]; }
-      it.n.nodeValue=out; }
-    if(busy) requestAnimationFrame(step);
-  })(t0);
+  let n; while((n=w.nextNode())&&set.size<400){ let el=n.parentElement; el=el.closest('.lead')||el; const r=el.getBoundingClientRect();
+    if(r.bottom<0||r.top>vh||!r.width) continue; set.add(el); }
+  return [...set];
 }
-document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render(); langFx();});
+function langSwitch(){
+  const flip=()=>{ lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} render(); };
+  if(langBusy) return; if(matchMedia('(prefers-reduced-motion: reduce)').matches){ flip(); return; }
+  langBusy=true; const out=langTargets();
+  out.forEach(el=>{ el.style.transition='opacity .18s ease, filter .18s ease'; el.style.opacity='0'; el.style.filter='blur(6px)'; });
+  setTimeout(()=>{
+    out.forEach(el=>{ el.style.transition=''; el.style.opacity=''; el.style.filter=''; });
+    flip(); const vh=innerHeight, inn=langTargets();
+    inn.forEach(el=>{ el.style.transition='none'; el.style.opacity='0'; el.style.filter='blur(8px)'; });
+    void document.body.offsetHeight;
+    inn.forEach(el=>{ const d=Math.max(0,el.getBoundingClientRect().top)/vh*220;
+      el.style.transition=`opacity .5s cubic-bezier(.2,.8,.2,1) ${d}ms, filter .6s cubic-bezier(.2,.8,.2,1) ${d}ms`; el.style.opacity=''; el.style.filter=''; });
+    setTimeout(()=>{ inn.forEach(el=>{ el.style.transition=''; }); langBusy=false; },900);
+  },190);
+}
+document.getElementById('lang').addEventListener('click',langSwitch);
 
 /* theme */
 function applyTheme(t){ if(t) root.setAttribute('data-theme',t); else root.removeAttribute('data-theme'); }
@@ -637,12 +641,12 @@ function themeFx(ox,oy,color,flip){
   const c=document.createElement('canvas'), dpr=Math.min(devicePixelRatio||1,2), W=innerWidth, H=innerHeight;
   c.width=W*dpr; c.height=H*dpr; c.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483000;pointer-events:none';
   document.body.appendChild(c); const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0); x.fillStyle=color;
-  const S=W<760?12:16, R=S*.76, cols=Math.ceil(W/S)+1, rows=Math.ceil(H/S)+1;
+  const S=W<760?12:16, R=S*.66, /* .66 < .707: dots never merge into a solid fill — at the peak it is a fine raster, the page shows through */ cols=Math.ceil(W/S)+1, rows=Math.ceil(H/S)+1;
   const maxD=Math.max(Math.hypot(ox,oy),Math.hypot(W-ox,oy),Math.hypot(ox,H-oy),Math.hypot(W-ox,H-oy));
-  const band=Math.max(220,maxD*.35), T1=520, T2=620, t0=performance.now(); let flipped=false;
-  const ease=q=>q<.5?2*q*q:1-Math.pow(-2*q+2,2)/2;
+  const band=Math.max(200,maxD*.3), T1=430, T2=560, t0=performance.now(); let flipped=false;
+  const easeIn=q=>q*q*q, easeOut=q=>1-Math.pow(1-q,3); /* cover speeds up to the end, reveal starts at full speed: no lingering solid screen */
   (function step(now){
-    const t=now-t0, cover=t<T1, q=cover?ease(t/T1):ease(Math.min(1,(t-T1)/T2));
+    const t=now-t0, cover=t<T1, q=cover?easeIn(t/T1):easeOut(Math.min(1,(t-T1)/T2));
     if(!cover&&!flipped){ flipped=true; flip(); }
     const front=q*(maxD+band); x.clearRect(0,0,W,H); x.beginPath();
     for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){ const px=i*S, py=j*S, d=Math.hypot(px-ox,py-oy);
