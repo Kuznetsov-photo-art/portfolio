@@ -928,3 +928,6 @@ render();
   jump(); requestAnimationFrame(jump); addEventListener('load',jump,{once:true});
 })();
 </script>
+<script>/* browser chrome colour follows the theme: Telegram's in-app browser paints its top bar with theme-color, otherwise the page shows through it without the header fade */
+(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(document.documentElement.getAttribute('data-theme')==='light')?'#F2F2F2':'#0A0A0A'; };
+  const o=new MutationObserver(f); o.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); o.observe(document.body,{attributes:true,attributeFilter:['class']}); f(); })();</script>

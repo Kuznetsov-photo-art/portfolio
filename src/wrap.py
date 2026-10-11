@@ -1,6 +1,6 @@
 import re,os
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
-def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc=''):
+def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc='',theme='#0a0a0a'):
     s=open(src,encoding='utf-8').read()
     if s.lstrip().startswith('<!doctype'): open(dst,'w',encoding='utf-8').write(s); return
     i=s.index('</style>')+len('</style>')
@@ -13,6 +13,7 @@ def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc=''
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="{theme}">
 <meta name="description" content="{desc}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Andrew Kuznetsov">
@@ -39,5 +40,5 @@ wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','ind
 if os.path.exists(J(R,'src','cases','finam','finam-case.html')):
     os.makedirs(J(R,'cases','finam'),exist_ok=True)
     wrap(J(R,'src','cases','finam','finam-case.html'),J(R,'cases','finam','index.html'),desc='Кейс FinamX & Limex — AI-платформа для трейдеров на два рынка: веб, мобильное приложение и мультибрендовая дизайн-система. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/finam/', image='https://andrewkuznetsov.com/assets/og/og-finam.jpg',
-     og_title='Кейс FinamX & Limex — AI-платформа для трейдеров', og_desc='Веб, мобильное приложение и одна дизайн-система на два бренда и две темы')
+     og_title='Кейс FinamX & Limex — AI-платформа для трейдеров', og_desc='Веб, мобильное приложение и одна дизайн-система на два бренда и две темы', theme='#0b0a10')
 print('ok')

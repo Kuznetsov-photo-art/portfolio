@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0a">
 <meta name="description" content="Андрей Кузнецов — Lead Product Designer · AI & Design Systems. Портфолио: продуктовый дизайн, дизайн-системы, AI-инструменты">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Andrew Kuznetsov">
@@ -952,6 +953,9 @@ render();
   jump(); requestAnimationFrame(jump); addEventListener('load',jump,{once:true});
 })();
 </script>
+<script>/* browser chrome colour follows the theme: Telegram's in-app browser paints its top bar with theme-color, otherwise the page shows through it without the header fade */
+(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(document.documentElement.getAttribute('data-theme')==='light')?'#F2F2F2':'#0A0A0A'; };
+  const o=new MutationObserver(f); o.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); o.observe(document.body,{attributes:true,attributeFilter:['class']}); f(); })();</script>
 
 </body>
 </html>
