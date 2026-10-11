@@ -192,14 +192,14 @@ section{padding-block:clamp(80px,10vw,160px)}
 .arow{overflow:hidden}
 .atrack{display:flex;gap:12px;width:max-content;will-change:transform}
 .a-item{position:relative;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;flex:none;width:clamp(220px,23vw,380px);border-radius:4px;overflow:visible;background:none;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.a-in{position:absolute;inset:0;display:block;overflow:hidden;border-radius:4px;background:var(--bg-2);clip-path:inset(0 round 4px);-webkit-mask-image:-webkit-radial-gradient(white,black);transition:clip-path .45s cubic-bezier(.2,.8,.2,1)} /* the inner layer is clipped and 'pressed'; the link around it keeps the full hover area, so the cursor at the edge no longer flickers */ /* clip-path keeps the rounded corners while the tile and its image scale on hover (overflow+radius drops them during transforms) */
+.a-in{position:absolute;inset:0;display:block;overflow:hidden;border-radius:4px;background:#000;clip-path:inset(0 round 4px);transition:clip-path .45s cubic-bezier(.2,.8,.2,1)} /* the inner layer is clipped and 'pressed'; the link around it keeps the full hover area, so the cursor at the edge no longer flickers */ /* clip-path keeps the rounded corners while the tile and its image scale on hover (overflow+radius drops them during transforms) */
 @media(hover:hover){.a-item:hover{z-index:2}.a-item:hover .a-in{clip-path:inset(7px round 7px)} /* press effect: the edges sink in through the clip itself, so the corners stay round (a scaled tile loses them in Chrome) */ /* no scale on the tile itself: in Chrome a scaled tile inside the moving track loses its rounded clip — the image zooms instead */}
 @media(prefers-reduced-motion:reduce){.arow{overflow-x:auto}}
 .a-item img,.a-item .cap{border-radius:inherit}.a-item .cap b{display:block} /* second line of defence: children carry the radius too */
 .a-item img{width:100%;height:100%;object-fit:cover;scale:1.012; /* tiny overscan hides the image edge behind the rounded clip */filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
 .a-item:hover img{transform:scale(1.035)}
 @media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
-.a-item .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
+.a-item .cap{position:absolute;inset:auto -1px -1px -1px; /* runs 1px past the clip edge: Safari left a light seam under the caption */padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
 .a-item:hover .cap{opacity:1}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
