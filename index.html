@@ -79,12 +79,6 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 .pre .l{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line)}
 .pre .l i{display:block;height:100%;width:0;background:var(--ink)}
 body.loading{overflow:hidden}
-/* HERO2 reel: overlay above the page (below the grain and the cursor) while the intro plays; fades into the hero it lands on */
-.reel{position:fixed;inset:0;z-index:89;background:var(--bg);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
-.reel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.reel.out{opacity:0;pointer-events:none}.reel.out.fast{transition-duration:.45s}
-body.reeling{overflow:hidden}
-body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre — right where the reel's dot is born; the native cursor stays */
 
 /* ---------- nav ---------- */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff}
@@ -328,7 +322,6 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
   <div class="n" id="pren">00</div>
   <div class="l"><i id="prel"></i></div>
 </div>
-<div class="reel" id="reel" aria-hidden="true"><canvas id="reelInk"></canvas><canvas id="reelC"></canvas></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cur" id="cur"></div>
 <button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
@@ -787,10 +780,9 @@ if(FINE){ let curEl=null;
   addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();tmx=(e.clientX-r.left)/r.width;tmy=1-(e.clientY-r.top)/r.height;},{passive:true});
   function size(){const d=Math.min(devicePixelRatio,1.5);c.width=c.clientWidth*d;c.height=c.clientHeight*d;gl.viewport(0,0,c.width,c.height);}
   size();addEventListener('resize',size);
-  const t0=performance.now(); let off=0;
-  window.inkSync=s=>{off=s-(performance.now()-t0)/1000;}; // the HERO2 reel sets the clock so its own ink and this one match at the hand-off
+  const t0=performance.now();
   function frame(){const light=root.getAttribute('data-theme')==='light';mx+=(tmx-mx)*.04;my+=(tmy-my)*.04;
-    gl.uniform2f(U('r'),c.width,c.height);gl.uniform1f(U('t'),(performance.now()-t0)/1000+off);gl.uniform2f(U('m'),mx,my);gl.uniform1f(U('L'),light?1.:0.);
+    gl.uniform2f(U('r'),c.width,c.height);gl.uniform1f(U('t'),(performance.now()-t0)/1000);gl.uniform2f(U('m'),mx,my);gl.uniform1f(U('L'),light?1.:0.);
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4);if(!rm)requestAnimationFrame(frame);}
   frame();
 })();
@@ -862,236 +854,13 @@ if(FINE){ let curEl=null;
   if(rm) drawGrid(0);
 })();
 
-/* HERO2 reel: 15-second intro right after the preloader curtain (first visit in a session only).
-   Draws on a fixed overlay and lands exactly on the hero below: every final position is read from the hero DOM.
-   Lab and versions: branch lab/hero-motion. Any click, scroll, key or touch skips it */
-function startReel(){
-  const box=document.getElementById('reel'); if(!box) return;
-  const C=document.getElementById('reelC'), INKC=document.getElementById('reelInk'), MAIN=C.getContext('2d');
-  const hero=document.querySelector('.hero');
-  let X=MAIN; const T=15;
-  const DISPLAY='Unbounded',BODY="'Golos Text'",MONO="'JetBrains Mono'";
-  const PAL={
-    dark:{bg:'#0A0A0A',ink:'#F2F2F2',ink2:'#A3A3A3',ink3:'#6B6B6B',rgb:'242,242,242',L:0},
-    light:{bg:'#F2F2F2',ink:'#0A0A0A',ink2:'#4A4A4A',ink3:'#8A8A8A',rgb:'10,10,10',L:1}
-  };
-  const TX={ru:{words:['Продукты','Дизайн-системы','× AI'],open:'Открыть',btn:'Кейсы  →',chips:['Токены','Компоненты','Паттерны']},
-            en:{words:['Products','Design systems','× AI'],open:'Open',btn:'Cases  →',chips:['Tokens','Components','Patterns']}};
-  const themeNow=()=>root.getAttribute('data-theme')==='light'?'light':'dark';
-  let K=PAL[themeNow()], S=TX[lang]||TX.ru, curLang=lang, NM=NAME[lang]||NAME.ru;
-  const a=k=>`rgba(${K.rgb},${k})`;
-  const cl=(v,lo=0,hi=1)=>Math.min(hi,Math.max(lo,v)), seg=(t,s,e)=>cl((t-s)/(e-s)), lerp=(p,q,k)=>p+(q-p)*k;
-  const E={o3:t=>1-Math.pow(1-t,3),o5:t=>1-Math.pow(1-t,5),io3:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,
-    back:t=>{const c=1.6,c3=c+1;return 1+c3*Math.pow(t-1,3)+c*Math.pow(t-1,2);}};
-  function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-  const font=(w,px,fam)=>`${w} ${px}px ${fam}`, UP=s=>s.toUpperCase();
-  function spacedW(s,ls){ let w=0; for(const c of s) w+=X.measureText(c).width+ls; return w-ls; }
-  function spaced(s,x,y,ls,align){ const w=spacedW(s,ls); let cx=align==='right'?x-w:align==='center'?x-w/2:x; const sa=X.textAlign; X.textAlign='left';
-    for(const c of s){X.fillText(c,cx,y); cx+=X.measureText(c).width+ls;} X.textAlign=sa; return w; }
-
-  /* ---------- layout read from the hero DOM ---------- */
-  let W,H,DPR,L={};
-  function lines(el){ // visual lines of an element's text: [{text,x,top}]
-    const out=[], tn=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n; const r=document.createRange();
-    while((n=tn.nextNode())){ const s=n.textContent; for(let i=0;i<s.length;i++){ r.setStart(n,i); r.setEnd(n,i+1); const b=r.getClientRects()[0]; if(!b) continue;
-      let ln=out[out.length-1]; if(!ln||Math.abs(b.top-ln.top)>b.height*.5){ if(/\s/.test(s[i])) continue; ln={text:'',x:b.left,top:b.top}; out.push(ln); } ln.text+=s[i]; } }
-    out.forEach(l=>l.text=l.text.replace(/\s+$/,'').replace(/ /g,' ')); return out;
-  }
-  const asc=(f)=>{X.font=f; return X.measureText('Ag').fontBoundingBoxAscent;};
-  function layout(){
-    W=innerWidth; H=innerHeight; const hr=hero.getBoundingClientRect();
-    const lnEls=[...document.querySelectorAll('#hname .ln')], ch0=lnEls.map(l=>l.querySelector('.ch').getBoundingClientRect());
-    const fs=parseFloat(getComputedStyle(document.getElementById('hname')).fontSize);
-    X.font=font(300,fs,DISPLAY); const m=X.measureText('Ag'); const lh=lnEls[0].getBoundingClientRect().height;
-    const nBase=(lh-(m.fontBoundingBoxAscent+m.fontBoundingBoxDescent))/2+m.fontBoundingBoxAscent;
-    const tagEl=document.querySelector('.h-sub p'), tfs=parseFloat(getComputedStyle(tagEl).fontSize);
-    const gl0=document.querySelector('.hero .gridlines').getBoundingClientRect();
-    const rt=document.querySelector('.rl-top').getBoundingClientRect(), rlf=document.querySelector('.rl-left').getBoundingClientRect();
-    L={mob:W<=860, hp:ch0[0].left, fs, lh, tfs, u:cl(Math.min(W/1440,H/860),.45,1.4), heroTop:hr.top, heroH:hr.height,
-      x:ch0.map(r=>r.left), b:lnEls.map(l=>l.getBoundingClientRect().top+nBase),
-      grid:{x:gl0.left,w:gl0.width},
-      rlTop:rt.width?{x:rt.left,y:Math.round(rt.top),w:rt.width,label:document.getElementById('rlw').textContent}:null,
-      rlLeft:rlf.height?{x:Math.round(rlf.left),y:rlf.top,h:rlf.height,label:document.getElementById('rlh').textContent}:null,
-      tag:lines(tagEl), tBase:asc(font(500,tfs,BODY)), tlh:parseFloat(getComputedStyle(tagEl).lineHeight)||tfs*1.3,
-      spec:[...document.querySelectorAll('.spec .mono')].map(e=>{const r=e.getBoundingClientRect(),ls=lines(e)[0]; return {text:UP(e.textContent),left:ls?ls.x:r.left,right:r.right,top:ls?ls.top:r.top,alignRight:getComputedStyle(e.parentNode).textAlign==='right'};}),
-      meta:[...document.querySelectorAll('.h-meta .mono')].map(e=>{const r=e.getBoundingClientRect(); return {x:r.left,top:r.top,h:r.height,lines:lines(e).map(l=>({...l,text:UP(l.text)}))};}),
-      mAsc:asc(font(400,11,MONO))};
-  }
-  function nameRuns(weights){ const runs=[];let i=0;
-    NM.forEach((ln,li)=>{let x=L.x[li];const y=L.b[li];
-      for(const c of ln){const w=weights?weights[i]:300;X.font=font(Math.round(w),L.fs,DISPLAY);const m=X.measureText(c).width;runs.push({c,x,y,w,m});x+=m-L.fs*.05;i++;} });
-    return runs; }
-
-  /* ---------- design-system board ---------- */
-  function comps(){ return L.mob ? [
-    {k:'cursor',x:W*.24,y:H*.3,d:5.0},{k:'button',x:W*.55,y:H*.2,d:5.15},{k:'toggle',x:W*.74,y:H*.32,d:5.3},
-    {k:'chips',x:W*.5,y:H*.44,d:5.45},{k:'type',x:W*.6,y:H*.56,d:5.6},{k:'ruler',x:W*.42,y:H*.7,d:5.75}
-  ] : [
-    {k:'cursor',x:W*.2,y:H*.36,d:5.0},{k:'button',x:W*.45,y:H*.26,d:5.15},{k:'toggle',x:W*.72,y:H*.32,d:5.3},
-    {k:'chips',x:W*.36,y:H*.54,d:5.45},{k:'type',x:W*.74,y:H*.6,d:5.6},{k:'ruler',x:W*.2,y:H*.74,d:5.75}
-  ];}
-  function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);}
-  function drawComp(c,k,knob){
-    if(k<=0) return null; const u=L.u, e=E.back(k); let kx=null;
-    X.save(); X.globalAlpha*=cl(k*2.5); X.translate(c.x,c.y); X.scale(lerp(.55,1,e),lerp(.55,1,e)); X.textAlign='center'; X.textBaseline='middle';
-    if(c.k==='cursor'){ const r=60*u; X.fillStyle=a(.72); X.beginPath(); X.arc(0,0,r,0,7); X.fill(); X.fillStyle=K.bg; X.font=font(400,12*u,MONO); spaced(UP(S.open),0,1,1.6*u,'center');
-      X.fillStyle=K.ink; X.beginPath(); X.arc(r*1.45,-r*1.1,5*u,0,7); X.fill(); }
-    if(c.k==='button'){ const w=230*u,h=68*u; X.strokeStyle=K.ink; X.lineWidth=1.5*u; rr(-w/2,-h/2,w,h,h/2); X.stroke(); X.fillStyle=K.ink; X.font=font(500,22*u,BODY); X.fillText(S.btn,0,1); }
-    if(c.k==='toggle'){ const w=124*u,h=62*u,r=h/2-7*u; X.strokeStyle=K.ink; X.lineWidth=1.5*u; rr(-w/2,-h/2,w,h,h/2); X.stroke();
-      const k2=lerp(-w/2+h/2,w/2-h/2,knob); X.fillStyle=K.ink; X.beginPath(); X.arc(k2,0,r,0,7); X.fill(); kx=c.x+k2; }
-    if(c.k==='chips'){ X.font=font(400,12*u,MONO); const T2=S.chips.map(UP); const ws=T2.map(t=>spacedW(t,1.4*u)+34*u); const tot=ws.reduce((p,q)=>p+q,0)+24*u; let x=-tot/2;
-      T2.forEach((t,i)=>{ X.strokeStyle=a(.4); X.lineWidth=1*u; rr(x,-20*u,ws[i],40*u,20*u); X.stroke(); X.fillStyle=K.ink; spaced(t,x+ws[i]/2,1,1.4*u,'center'); x+=ws[i]+12*u; }); }
-    if(c.k==='type'){ X.fillStyle=K.ink; X.font=font(300,150*u,DISPLAY); X.fillText('Aa',0,0); X.font=font(400,10*u,MONO); X.fillStyle=K.ink2; spaced('UNBOUNDED · 300 · −0.05EM',0,104*u,1.2*u,'center'); }
-    if(c.k==='ruler'){ const S2=[4,8,16,24,32,48]; const tot=S2.reduce((p,q)=>p+q*1.4*u+18*u,0)-18*u; let x=-tot/2;
-      S2.forEach(v=>{ const z=v*1.4*u; X.fillStyle=a(.9); X.fillRect(x,-z/2,z,z); X.fillStyle=K.ink3; X.font=font(400,10*u,MONO); X.fillText(v,x+z/2,48*u); x+=z+18*u; }); }
-    X.restore(); return kx;
-  }
-  function redline(x1,y1,x2,y2,label,k,alpha=1){
-    if(k<=0||alpha<=0) return; X.save(); X.globalAlpha=alpha; X.strokeStyle=a(.55); X.lineWidth=1;
-    const xe=lerp(x1,x2,k), ye=lerp(y1,y2,k), hor=Math.abs(x2-x1)>=Math.abs(y2-y1); x1=Math.round(x1);y1=Math.round(y1);
-    X.beginPath(); X.moveTo(x1+.5,y1+.5); X.lineTo(Math.round(xe)+.5,Math.round(ye)+.5);
-    if(hor){X.moveTo(x1+.5,y1-4);X.lineTo(x1+.5,y1+5); if(k>=1){X.moveTo(Math.round(x2)-.5,y1-4);X.lineTo(Math.round(x2)-.5,y1+5);}}
-    else {X.moveTo(x1-4,y1+.5);X.lineTo(x1+5,y1+.5); if(k>=1){X.moveTo(x1-4,Math.round(y2)-.5);X.lineTo(x1+5,Math.round(y2)-.5);}}
-    X.stroke();
-    if(label!=null&&k>.2){ X.font=font(400,10,MONO); X.textBaseline='middle'; X.textAlign='center'; const tw=spacedW(label,.8);
-      X.translate((x1+xe)/2,(y1+ye)/2); if(!hor) X.rotate(-Math.PI/2);
-      X.fillStyle=K.bg; X.fillRect(-tw/2-4,-7,tw+8,14); X.fillStyle=a(.55); spaced(label,0,0,.8,'center'); }
-    X.restore();
-  }
-  function board(t,alpha){ const u=L.u; let kn=null; X.save(); X.globalAlpha=alpha;
-    const knob=E.io3(seg(t,6.75,7.05))*(1-E.io3(seg(t,7.55,7.85)));
-    const cs=comps(); cs.forEach(c=>{ const kx=drawComp(c,seg(t,c.d,c.d+.55),knob); if(kx!=null) kn=[kx,c.y]; });
-    const b=cs[1], tg=cs[2];
-    if(!L.mob) redline(b.x+115*u+8,b.y-60*u,tg.x-62*u-8,b.y-60*u,`${Math.round(tg.x-62*u-b.x-115*u-16)}`,E.o5(seg(t,6.0,6.5)),alpha);
-    redline(cs[0].x-60*u,cs[0].y+80*u,cs[0].x+60*u,cs[0].y+80*u,'64',E.o5(seg(t,6.15,6.6)),alpha);
-    X.restore(); return kn; }
-
-  /* ---------- particles: board pixels → name pixels ---------- */
-  let PT=[];
-  function sample(draw,step,thr){ const o=document.createElement('canvas'); o.width=Math.ceil(W); o.height=Math.ceil(H);
-    const keep=X; X=o.getContext('2d',{willReadFrequently:true}); draw(); const d=X.getImageData(0,0,o.width,o.height).data; X=keep; const pts=[];
-    for(let y=0;y<o.height;y+=step) for(let x=0;x<o.width;x+=step){ if(d[(y*o.width+x)*4+3]>thr) pts.push([x,y]); } return pts; }
-  function prepare(){
-    const step=Math.max(3,Math.round(L.fs/30));
-    const tgt=sample(()=>{X.fillStyle='#fff'; X.textBaseline='alphabetic'; nameRuns().forEach(r=>{X.font=font(300,L.fs,DISPLAY);X.fillText(r.c,r.x,r.y);});},step,128);
-    const src=sample(()=>comps().forEach(c=>drawComp(c,1,0)),2,60);
-    const R=rng(7), runs=nameRuns(), nx0=L.hp, nw=Math.max(...runs.map(r=>r.x+r.m))-nx0;
-    PT=tgt.map(([tx,ty])=>{ const s=src.length?src[Math.floor(R()*src.length)]:[W/2,H/2]; const dx=tx-s[0],dy=ty-s[1],len=Math.hypot(dx,dy)||1, off=(R()-.5)*len*.8;
-      return {sx:s[0],sy:s[1],tx:tx+step/2,ty:ty+step/2,cx:(s[0]+tx)/2-dy/len*off,cy:(s[1]+ty)/2+dx/len*off,dl:cl((tx-nx0)/nw)*.75+R()*.3,r:step*.47}; });
-  }
-
-  /* ---------- scenes ---------- */
-  function render(t){
-    X=MAIN; X.setTransform(DPR,0,0,DPR,0,0); X.globalAlpha=1; X.clearRect(0,0,W,H);
-    const u=L.u, cxm=W/2, cym=H/2;
-    // A · dot → hairline → the hero's 12 columns
-    const dotIn=E.back(seg(t,.15,.6)), split=E.io3(seg(t,1.0,1.7));
-    if(t<2.1){ const r=5*dotIn*(1+.35*Math.sin(seg(t,.6,1.0)*Math.PI)), half=split*W*.5;
-      X.globalAlpha=1-seg(t,1.7,2.1); X.fillStyle=K.ink;
-      if(split<=0){X.beginPath();X.arc(cxm,cym,r,0,7);X.fill();}
-      else { X.strokeStyle=a(.55); X.lineWidth=1; X.beginPath(); X.moveTo(cxm-half,Math.round(cym)+.5); X.lineTo(cxm+half,Math.round(cym)+.5); X.stroke();
-        [cxm-half,cxm+half].forEach(x=>{X.beginPath();X.arc(x,cym,r*(1-split*.4),0,7);X.fill();}); }
-      X.globalAlpha=1; }
-    { const al=lerp(.14,.05,seg(t,11,13.5)), top=L.heroTop, hh=L.heroH;
-      const gr=X.createLinearGradient(0,top,0,top+hh); gr.addColorStop(0,a(0)); gr.addColorStop(.3,a(al)); gr.addColorStop(.7,a(al)); gr.addColorStop(1,a(0));
-      X.strokeStyle=gr; X.lineWidth=1;
-      for(let i=0;i<12;i++){ const k=E.o5(seg(t,1.3+i*.035,2.2+i*.035)); if(k<=0) continue; const x=Math.round(L.grid.x+L.grid.w*i/12)+.5;
-        X.beginPath(); X.moveTo(x,top); X.lineTo(x,top+hh*k); X.stroke(); } }
-    // B · kinetic words, each measured by a redline
-    S.words.forEach((w,wi)=>{ const ti=t-(2.0+wi*1.0); if(ti<0||ti>1.15) return;
-      let fsK=L.fs*1.1; X.font=font(900,fsK,DISPLAY); let ww=0; for(const c of w) ww+=X.measureText(c).width-fsK*.05;
-      if(ww>W-2*L.hp){fsK*=(W-2*L.hp)/ww; ww=W-2*L.hp;}
-      const y=cym+fsK*.32, lineH=fsK*1.05; let x=L.hp;
-      X.save(); X.beginPath(); X.rect(0,y-fsK*.9,W,lineH+fsK*.1); X.clip(); X.fillStyle=K.ink; X.textBaseline='alphabetic'; X.textAlign='left';
-      [...w].forEach((c,i)=>{ const kin=E.o5(seg(ti,i*.028,.5+i*.028)), kout=E.io3(seg(ti,.85+i*.012,1.1+i*.012)), wt=lerp(900,300,E.o3(seg(ti,i*.028+.1,.75+i*.028)));
-        X.font=font(Math.round(wt),fsK,DISPLAY); const m=X.measureText(c).width; X.fillText(c,x,y+(1-kin)*lineH-kout*lineH); x+=m-fsK*.05; });
-      X.restore();
-      redline(L.hp,y+fsK*.22,L.hp+ww,y+fsK*.22,`W ${Math.round(ww*E.o3(seg(ti,.05,.6)))}`,E.o5(seg(ti,.05,.6)),1-seg(ti,.85,1.05)); });
-    // C · design-system board; the toggle flips the theme with a circle, like the site switch
-    if(t>4.9&&t<8.4){ const al=1-seg(t,8.05,8.35), kn=board(t,al);
-      if(kn){ const R=Math.hypot(Math.max(kn[0],W-kn[0]),Math.max(kn[1],H-kn[1])), r=R*E.io3(seg(t,6.85,7.4))*(1-E.io3(seg(t,7.5,8.0)));
-        if(r>.5){ const keep=K; X.save(); X.beginPath(); X.arc(kn[0],kn[1],r,0,7); X.clip(); K=keep===PAL.light?PAL.dark:PAL.light; X.fillStyle=K.bg; X.fillRect(0,0,W,H); board(t,al); K=keep; X.restore(); } } }
-    // D · board dissolves into dots that fly into the name
-    const flyT=t-8.1, solid=E.io(seg(t,10.5,11.2));
-    if(flyT>0&&solid<1){ X.fillStyle=K.ink; X.beginPath();
-      for(const p of PT){ const k=E.io3(cl((flyT-p.dl)/1.45)), ik=1-k, x=ik*ik*p.sx+2*ik*k*p.cx+k*k*p.tx, y=ik*ik*p.sy+2*ik*k*p.cy+k*k*p.ty;
-        const r=lerp(1.1*u,p.r,E.o3(k))*(1-solid); if(r<.2) continue; X.moveTo(x+r,y); X.arc(x,y,r,0,7); }
-      X.fill(); }
-    // E · solid name + one weight wave
-    const n=NM.join('').length, wv=[]; for(let i=0;i<n;i++){ const ph=seg(t,11.0+i*.07,11.9+i*.07); wv.push(300+600*Math.sin(ph*Math.PI)**2); }
-    if(solid>0){ X.globalAlpha=solid; X.fillStyle=K.ink; X.textBaseline='alphabetic'; X.textAlign='left';
-      nameRuns(wv).forEach(r=>{X.font=font(Math.round(r.w),L.fs,DISPLAY);X.fillText(r.c,r.x,r.y);}); X.globalAlpha=1; }
-    // F · the hero furniture, at its DOM positions
-    if(t>11.4){
-      if(L.rlTop) redline(L.rlTop.x,L.rlTop.y,L.rlTop.x+L.rlTop.w,L.rlTop.y,L.rlTop.label,E.o5(seg(t,11.6,12.8)));
-      if(L.rlLeft) redline(L.rlLeft.x,L.rlLeft.y,L.rlLeft.x,L.rlLeft.y+L.rlLeft.h,L.rlLeft.label,E.o5(seg(t,11.8,13.0)));
-      X.font=font(400,11,MONO); X.textBaseline='alphabetic'; X.fillStyle=K.ink2;
-      L.spec.forEach((s,i)=>{ const c=Math.floor(s.text.length*seg(t,12.0+i*.25,12.7+i*.25)); if(!c) return; const y=s.top+L.mAsc;
-        if(s.alignRight) spaced(s.text.slice(0,c),s.right,y,1.1,'right'); else spaced(s.text.slice(0,c),s.left,y,1.1); });
-      X.font=font(500,L.tfs,BODY); X.fillStyle=K.ink;
-      L.tag.forEach((ln,i)=>{ const k=E.o5(seg(t,12.3+i*.12,13.3+i*.12)); if(k<=0) return; const y=ln.top+L.tBase;
-        X.save(); X.beginPath(); X.rect(ln.x-4,y-L.tBase-(L.tlh-L.tfs),W,L.tlh+L.tfs*.3); X.clip(); X.fillText(ln.text,ln.x,y+(1-k)*L.tlh); X.restore(); });
-      L.meta.forEach((mt,i)=>{ const k=E.o5(seg(t,12.8+i*.15,13.5+i*.15)), ta=E.o3(seg(t,13.1+i*.15,13.8+i*.15)); const y0=(mt.lines[0]?mt.lines[0].top:mt.top);
-        if(k>0){ X.strokeStyle=a(.55); X.lineWidth=1; const dy=Math.round(mt.top+mt.h/2-(mt.lines.length>1?(mt.lines.length-1)*8.5:0))+.5;
-          X.beginPath(); X.moveTo(mt.x,dy); X.lineTo(mt.x+18*k,dy); X.stroke(); }
-        if(ta>0){ X.globalAlpha=ta; X.fillStyle=K.ink3; X.font=font(400,11,MONO); mt.lines.forEach(l=>spaced(l.text,l.x,l.top+L.mAsc,1.1)); X.globalAlpha=1; } }); }
-  }
-
-  /* ---------- ink: same shader as the hero, mapped to the hero box; its light ring follows the action ---------- */
-  const gl=INKC.getContext('webgl',{antialias:false,alpha:true}); let U=null;
-  if(gl){
-    const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
-    const fs=`precision highp float;uniform vec2 r;uniform float y0;uniform float t;uniform vec2 m;uniform float L;uniform float A;
-    vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}
-    float snoise(vec2 v){const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);vec2 i=floor(v+dot(v,C.yy));vec2 x0=v-i+dot(i,C.xx);vec2 i1=(x0.x>x0.y)?vec2(1.,0.):vec2(0.,1.);vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;i=mod289(i);vec3 p=permute(permute(i.y+vec3(0.,i1.y,1.))+i.x+vec3(0.,i1.x,1.));vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);m=m*m;m=m*m;vec3 x=2.*fract(p*C.www)-1.;vec3 h=abs(x)-.5;vec3 ox=floor(x+.5);vec3 a0=x-ox;m*=1.79284291400159-.85373472095314*(a0*a0+h*h);vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;return 130.*dot(m,g);}
-    void main(){vec2 uv=(gl_FragCoord.xy-vec2(0.,y0))/r;vec2 p=uv;p.x*=r.x/r.y;vec2 mm=m;mm.x*=r.x/r.y;float d=length(p-mm);
-    float n=snoise(p*1.3+vec2(t*.04,-t*.03));float n2=snoise(p*3.1-vec2(t*.02,t*.05)+n*.8);
-    float f=smoothstep(-.2,1.1,n+n2*.5);float ring=exp(-d*2.5)*.25;
-    float v=mix(.0,.42,f)+ring; float vig=smoothstep(1.5,.25,length(uv-vec2(.72,.55))); v*=vig;
-    vec3 col=mix(vec3(L),vec3(1.-L),v); gl_FragColor=vec4(col,v*.9)*A;}`;
-    const sh=(ty,src)=>{const o=gl.createShader(ty);gl.shaderSource(o,src);gl.compileShader(o);return o;};
-    const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
-    const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-    const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-    U=n=>gl.getUniformLocation(pr,n);
-  }
-  // ring path: x of the viewport, y of the viewport; converted to hero-box space per frame. Ends where the hero's own ring starts (.7, .5)
-  const RING=[[0,.5,.5],[1.0,.5,.5],[2.0,.32,.52],[4.6,.42,.5],[5.6,.45,.42],[6.8,.72,.33],[8.0,.72,.33],[9.4,.42,.62],[11.2,.3,.6],[13.5,.62,.55]];
-  function ringAt(t){ if(t>=13.5){ const k=E.io(seg(t,13.5,15)); const y=.55*H; const yEnd=L.heroTop+L.heroH*.5; return [lerp(.62,.7,k),lerp(y,yEnd,k)]; }
-    for(let i=1;i<RING.length;i++) if(t<=RING[i][0]){ const [t0,x0,y0]=RING[i-1],[t1,x1,y1]=RING[i]; const k=E.io(seg(t,t0,t1)); return [lerp(x0,x1,k),lerp(y0,y1,k)*H]; } return [.7,H*.5]; }
-  function renderInk(t){
-    if(!gl) return; const d=Math.min(devicePixelRatio||1,1.5), hh=L.heroH*d; let [x,yPx]=ringAt(t);
-    const A=E.io(seg(t,1.6,3.4))*(1-.35*Math.sin(seg(t,4.9,8.1)*Math.PI)); // off on the loader colour, quieter behind the board
-    gl.uniform2f(U('r'),INKC.width,hh); gl.uniform1f(U('y0'),INKC.height-(L.heroTop*d)-hh); gl.uniform1f(U('t'),t+40);
-    gl.uniform2f(U('m'),x,1-(yPx-L.heroTop)/L.heroH); gl.uniform1f(U('L'),K.L); gl.uniform1f(U('A'),A);
-    gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-  }
-
-  /* ---------- run ---------- */
-  function size(){ DPR=Math.min(devicePixelRatio||1,2); layout(); C.width=Math.round(W*DPR); C.height=Math.round(H*DPR);
-    if(gl){ const d=Math.min(devicePixelRatio||1,1.5); INKC.width=Math.round(W*d); INKC.height=Math.round(H*d); gl.viewport(0,0,INKC.width,INKC.height); } prepare(); }
-  scrollTo(0,0); document.body.classList.add('reeling'); size();
-  const t0=performance.now(); if(window.inkSync) inkSync(40); // the hero ink runs on the same clock, so the hand-off has no jump
-  let done=false, out=false;
-  function finish(fast){ if(out) return; out=true; box.classList.add('out'); if(fast) box.classList.add('fast'); document.body.classList.remove('reeling');
-    ['wheel','touchstart','keydown','pointerdown'].forEach(e=>removeEventListener(e,skip)); setTimeout(()=>{done=true; box.remove(); removeEventListener('resize',size);},fast?500:900); }
-  function skip(){ finish(true); }
-  ['wheel','touchstart','keydown','pointerdown'].forEach(e=>addEventListener(e,skip,{passive:true}));
-  addEventListener('resize',size);
-  (function frame(now){ if(done) return; const t=(now-t0)/1000;
-    const th=themeNow(); if(K!==PAL[th]) K=PAL[th];
-    if(lang!==curLang){ curLang=lang; S=TX[lang]||TX.ru; NM=NAME[lang]||NAME.ru; size(); }
-    renderInk(Math.max(0,t)); render(Math.max(0,t)); if(t>=14.2) finish(false);
-    requestAnimationFrame(frame); })(t0);
-}
-
 /* preloader: counter */
 (function(){
   const pre=document.getElementById('pre'), n=document.getElementById('pren'), l=document.getElementById('prel'), m=document.getElementById('prem');
   const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let seen=false; try{ seen=sessionStorage.getItem('pre')==='1'; }catch(e){}
   const hero=document.querySelector('.hero');
-  if(rm||seen){ pre.remove(); document.getElementById('reel').remove(); hero.classList.add('in'); return; }
+  if(rm||seen){ pre.remove(); hero.classList.add('in'); return; }
   document.body.classList.add('loading');
   const t0=performance.now(), MIN=1700, MAX=3800; let loaded=document.readyState==='complete';
   addEventListener('load',()=>loaded=true);
@@ -1100,7 +869,7 @@ function startReel(){
     const e=1-Math.pow(1-p,2.4); const pc=Math.round(e*100);
     n.textContent=String(pc).padStart(2,'0'); l.style.width=pc+'%';
     const d=I18N[lang]; m.textContent=pc<40?d['pre.1']:pc<80?d['pre.2']:d['pre.3'];
-    if(p>=1){ setTimeout(()=>{try{startReel();}catch(e){document.getElementById('reel')?.remove();document.body.classList.remove('reeling');} pre.classList.add('off');document.body.classList.remove('loading');hero.classList.add('in');try{sessionStorage.setItem('pre','1')}catch(e){} setTimeout(()=>pre.remove(),1000);},300); return; }
+    if(p>=1){ setTimeout(()=>{pre.classList.add('off');document.body.classList.remove('loading');hero.classList.add('in');try{sessionStorage.setItem('pre','1')}catch(e){} setTimeout(()=>pre.remove(),1000);},300); return; }
     requestAnimationFrame(tick);
   }
   tick();
