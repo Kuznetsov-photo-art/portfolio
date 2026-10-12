@@ -918,7 +918,7 @@ function startReel(){
     const tagEl=document.querySelector('.h-sub p'), tfs=parseFloat(getComputedStyle(tagEl).fontSize);
     const gl0=document.querySelector('.hero .gridlines').getBoundingClientRect();
     const rt=document.querySelector('.rl-top').getBoundingClientRect(), rlf=document.querySelector('.rl-left').getBoundingClientRect();
-    L={mob:W<=860, hp:ch0[0].left, fs, lh, tfs, u:cl(Math.min(W/1440,H/860),.45,1.4), heroTop:hr.top, heroH:hr.height,
+    L={mob:W<=860, hp:ch0[0].left, fs, lh, tfs, u:W<=860?cl(W/430,.7,1):cl(Math.min(W/1440,H/860),.45,1.4), heroTop:hr.top, heroH:hr.height,
       x:ch0.map(r=>r.left), b:lnEls.map(l=>l.getBoundingClientRect().top+nBase),
       grid:{x:gl0.left,w:gl0.width},
       rlTop:rt.width?{x:rt.left,y:Math.round(rt.top),w:rt.width,label:UP(document.getElementById('rlw').textContent)}:null,
@@ -934,9 +934,9 @@ function startReel(){
     return runs; }
 
   /* ---------- design-system board ---------- */
-  function comps(){ return L.mob ? [
-    {k:'cursor',x:W*.24,y:H*.3,d:5.0},{k:'button',x:W*.55,y:H*.2,d:5.15},{k:'toggle',x:W*.74,y:H*.32,d:5.3},
-    {k:'chips',x:W*.5,y:H*.44,d:5.45},{k:'type',x:W*.6,y:H*.56,d:5.6},{k:'ruler',x:W*.42,y:H*.7,d:5.75}
+  function comps(){ return L.mob ? [ // phones: bigger board spread over the whole height
+    {k:'cursor',x:W*.27,y:H*.33,d:5.0},{k:'button',x:W*.5,y:H*.16,d:5.15},{k:'toggle',x:W*.72,y:H*.33,d:5.3},
+    {k:'chips',x:W*.5,y:H*.47,d:5.45},{k:'type',x:W*.5,y:H*.62,d:5.6},{k:'ruler',x:W*.5,y:H*.82,d:5.75}
   ] : [
     {k:'cursor',x:W*.2,y:H*.36,d:5.0},{k:'button',x:W*.45,y:H*.26,d:5.15},{k:'toggle',x:W*.72,y:H*.32,d:5.3},
     {k:'chips',x:W*.36,y:H*.54,d:5.45},{k:'type',x:W*.74,y:H*.6,d:5.6},{k:'ruler',x:W*.2,y:H*.74,d:5.75}
