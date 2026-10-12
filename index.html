@@ -807,7 +807,8 @@ if(FINE){ let curEl=null;
   float n=snoise(p*1.3+vec2(t*.04,-t*.03));float n2=snoise(p*3.1-vec2(t*.02,t*.05)+n*.8);
   float f=smoothstep(-.2,1.1,n+n2*.5);float ring=exp(-d*2.5)*.25;
   float v=mix(.0,.42,f)+ring; float vig=smoothstep(1.5,.25,length(uv-vec2(.72,.55))); v*=vig;
-  vec3 col=mix(vec3(L),vec3(1.-L),v); gl_FragColor=vec4(col,v*.9);}`;
+  /* dark: light ink over black; light: dark ink over white (premultiplied — the old 1-v colour washed out to white) */
+  gl_FragColor=L<.5?vec4(vec3(v),v*.9):vec4(vec3(0.),v*.55);}`;
   function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;}
   const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
   const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
@@ -1081,7 +1082,7 @@ function startReel(){
     float n=snoise(p*1.3+vec2(t*.04,-t*.03));float n2=snoise(p*3.1-vec2(t*.02,t*.05)+n*.8);
     float f=smoothstep(-.2,1.1,n+n2*.5);float ring=exp(-d*2.5)*.25;
     float v=mix(.0,.42,f)+ring; float vig=smoothstep(1.5,.25,length(uv-vec2(.72,.55))); v*=vig;
-    vec3 col=mix(vec3(L),vec3(1.-L),v); gl_FragColor=vec4(col,v*.9)*A;}`;
+    gl_FragColor=(L<.5?vec4(vec3(v),v*.9):vec4(vec3(0.),v*.55))*A;}`; // same ink as the hero
     const sh=(ty,src)=>{const o=gl.createShader(ty);gl.shaderSource(o,src);gl.compileShader(o);return o;};
     const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
     const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
