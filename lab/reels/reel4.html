@@ -22,8 +22,8 @@ html,body{margin:0;background:#000;overflow:hidden}
 .phone .rim{border-radius:74px}
 .phone .dark{border-radius:61px}
 .disp{left:40px;top:560px;width:1000px;height:640px}
-.disp .lslice{position:absolute;inset:0;border-radius:26px;background:linear-gradient(180deg,#2c2c30,#55555b 50%,#2c2c30)}
-.disp .lback{position:absolute;inset:0;border-radius:26px;background:linear-gradient(160deg,#3d3d42,#1f1f23);transform:translateZ(-16px) rotateY(180deg)}
+.disp .lslice{position:absolute;border-radius:26px;background:linear-gradient(180deg,#2a2a2e,#6a6a70 22%,#3c3c41 50%,#5a5a60 78%,#2a2a2e)}
+.disp .lback{position:absolute;inset:3px;border-radius:23px;background:linear-gradient(160deg,#3d3d42,#1f1f23);transform:translateZ(-18px) rotateY(180deg)}
 .disp .front{position:absolute;inset:0;border-radius:26px;background:#060606;box-shadow:inset 0 0 0 2px #3a3a3e,inset 0 0 0 4px #121214}
 .disp .screen{position:absolute;inset:22px;border-radius:8px;overflow:hidden;background:#0A0A0A}
 .disp .rim{border-radius:26px}
@@ -107,8 +107,9 @@ function makeDevice(kind){
   if(kind==='phone'){ // contoured sides: the frame bulges out a little in the middle of its depth and rounds off to front and back
     for(let i=16;i>=0;i--){ const u=(i-8)/8, ins=-3+7*(1-Math.sqrt(1-u*u)), s=document.createElement('div'); s.className='slice';
       Object.assign(s.style,{inset:ins+'px',borderRadius:(74-ins)+'px',transform:`translateZ(${-1-i*1.75}px)`,filter:`brightness(${(1.25-.55*Math.abs(u)).toFixed(2)})`}); el.append(s); } }
-  else { const back=document.createElement('div'); back.className='lback'; el.append(back);
-    for(let i=10;i>=1;i--){ const s=document.createElement('div'); s.className='lslice'; s.style.transform=`translateZ(${-i*1.5}px)`; el.append(s); } }
+  else { const back=document.createElement('div'); back.className='lback'; el.append(back);   // contoured aluminium sides, like the phone
+    for(let i=12;i>=0;i--){ const u=(i-6)/6, ins=-2+5*(1-Math.sqrt(1-u*u)), s=document.createElement('div'); s.className='lslice';
+      Object.assign(s.style,{inset:ins+'px',borderRadius:(26-ins)+'px',transform:`translateZ(${-1-i*1.3}px)`,filter:`brightness(${(1.25-.55*Math.abs(u)).toFixed(2)})`}); el.append(s); } }
   front=document.createElement('div'); front.className='front'; el.append(front);
   const screen=document.createElement('div'); screen.className='screen'; front.append(screen);
   const page=kind==='phone'?phonePage('dark'):dispPage('dark'); screen.append(page);
