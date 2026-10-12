@@ -22,6 +22,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Andrew Kuznetsov • Lead Product Designer • AI & Design Systems</title>
+<script>/* runs before the first paint (the page is big and mobile browsers paint while it parses):
+   the saved theme, and on a repeat visit in this session (or with reduced motion) no preloader / HERO2 reel at all — otherwise they flash for a moment */
+try{ var d=document.documentElement; if(localStorage.getItem('theme')==='light') d.setAttribute('data-theme','light');
+  if(sessionStorage.getItem('pre')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('no-pre'); }catch(e){}</script>
 <link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
@@ -79,6 +83,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 .pre .l{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line)}
 .pre .l i{display:block;height:100%;width:0;background:var(--ink)}
 body.loading{overflow:hidden}
+.no-pre .pre,.no-pre .reel{display:none}
 /* HERO2 reel: overlay above the page and the grain (so it starts exactly in the curtain colour), below the cursor while the intro plays; fades into the hero it lands on */
 html{scrollbar-gutter:stable} /* the scrollbar coming back after the preloader/reel must not change the page width (Mac with a mouse): no reflow, no resize */
 .reel{position:fixed;inset:0;z-index:91;background:var(--bg);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
