@@ -3,8 +3,8 @@
 # usage: record.py <page url> <out.mp4>   (the page must be served with /assets/fonts available)
 import json, subprocess, time, urllib.request, tempfile, base64, os, sys
 import websocket, imageio_ffmpeg
-url,out=sys.argv[1],sys.argv[2]; FPS=30; T=20.0
-HERE=os.path.dirname(os.path.abspath(__file__)); wav=os.path.join(HERE,'reel1-beat.wav')
+url,out=sys.argv[1],sys.argv[2]; FPS=30; T=float(os.environ.get('DUR','20'))
+HERE=os.path.dirname(os.path.abspath(__file__)); wav=os.path.join(HERE,os.environ.get('WAV','reel1-beat.wav'))
 p=subprocess.Popen(['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','--headless=new','--hide-scrollbars','--remote-debugging-port=9373','--remote-allow-origins=http://127.0.0.1:9373',f'--user-data-dir={tempfile.mkdtemp()}','about:blank'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 ff=subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(),'-y','-loglevel','error','-f','image2pipe','-framerate',str(FPS),'-i','-','-i',wav,
     '-vf','scale=in_range=pc:out_range=tv,format=yuv420p','-c:v','libx264','-preset','slow','-crf','16','-profile:v','high','-color_range','tv','-colorspace','bt709','-color_primaries','bt709','-color_trc','bt709','-r',str(FPS),  # JPEG frames are full-range: convert to TV range for Instagram/iPhone
@@ -21,7 +21,7 @@ try:
             if r.get('id')==n[0]: return r.get('result',{})
     js=lambda e: cmd('Runtime.evaluate',expression=e,returnByValue=True).get('result',{}).get('value')
     cmd('Page.enable'); cmd('Emulation.setDeviceMetricsOverride',width=1080,height=1920,deviceScaleFactor=1,mobile=False)
-    cmd('Page.navigate',url=url+'?t=0')
+    cmd('Page.navigate',url=url+('&' if '?' in url else '?')+'t=0')
     for _ in range(80):
         time.sleep(.25)
         if js('window.__ready===true'): break

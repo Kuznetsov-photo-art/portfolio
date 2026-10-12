@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>REEL2 — product film</title>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+/* REEL2: a product film for the site, 1080×1920, 22 s, 120 BPM (beat2.py). ?mode=phone | desktop | both.
+   Reveal (rim light / the lid opens) · macro details on the beat · the site's own tagline in big type · fly-in + fast scroll ·
+   line-up on the drop · head-on finale with the address. window.__seek(t) draws the frame at t seconds */
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:fixed;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:#000}
+.world{position:absolute;inset:0;perspective:2600px;perspective-origin:540px 900px}
+.glow{position:absolute;inset:0;pointer-events:none}
+.dev{position:absolute;transform-style:preserve-3d}
+/* phone */
+.phone{left:240px;top:250px;width:600px;height:1300px}
+.phone .slice{position:absolute;inset:0;border-radius:96px;background:linear-gradient(90deg,#1b1b1d,#3a3a3e 20%,#2a2a2d 50%,#3a3a3e 80%,#1b1b1d)}
+.phone .front{position:absolute;inset:0;border-radius:96px;background:#050505;box-shadow:inset 0 0 0 3px #3b3b3f,inset 0 0 0 5px #141416}
+.phone .screen{position:absolute;inset:14px;border-radius:82px;overflow:hidden;background:#0A0A0A}
+.phone .island{position:absolute;left:50%;top:22px;width:150px;height:44px;margin-left:-75px;border-radius:22px;background:#000;z-index:5}
+.phone .rim{border-radius:96px}
+.phone .dark{border-radius:82px}
+/* desktop: a floating display (aluminium edge, black glass), like Apple shows its screens */
+.laptop{left:40px;top:560px;width:1000px;height:640px}
+.laptop .lid{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 100%}
+.laptop .lslice{position:absolute;inset:0;border-radius:26px;background:linear-gradient(180deg,#2c2c30,#55555b 50%,#2c2c30)}
+.laptop .lback{position:absolute;inset:0;border-radius:26px;background:linear-gradient(160deg,#3d3d42,#1f1f23);transform:translateZ(-16px) rotateY(180deg)}
+.laptop .front{position:absolute;inset:0;border-radius:26px;background:#060606;box-shadow:inset 0 0 0 2px #3a3a3e,inset 0 0 0 4px #121214}
+.laptop .screen{position:absolute;inset:22px;border-radius:8px;overflow:hidden;background:#0A0A0A}
+.laptop .notch{position:absolute;left:50%;top:0;width:120px;height:18px;margin-left:-60px;border-radius:0 0 10px 10px;background:#000;z-index:5}
+.laptop .rim{border-radius:26px}
+.laptop .dark{border-radius:8px}
+.laptop .base{position:absolute;left:-30px;top:100%;width:1060px;height:690px;transform-origin:50% 0;transform:rotateX(90deg);border-radius:0 0 34px 34px;
+  background:linear-gradient(180deg,#5a5a60 0%,#3e3e43 6%,#35353a 100%)}
+.laptop .base .kb{position:absolute;left:90px;right:90px;top:60px;height:300px;border-radius:12px;background:repeating-linear-gradient(90deg,#1c1c1f 0 52px,#2b2b2f 52px 56px),#1c1c1f;opacity:.9}
+.laptop .base .tp{position:absolute;left:50%;top:400px;width:420px;height:250px;margin-left:-210px;border-radius:14px;background:#2f2f34;box-shadow:inset 0 0 0 2px #45454a}
+.laptop .hdr{position:absolute;left:0;top:0;width:100%;z-index:3}
+/* shared screen parts */
+.page{position:absolute;left:0;top:0;transform-origin:0 0}
+.glare{position:absolute;inset:-20%;background:linear-gradient(112deg,transparent 38%,rgba(255,255,255,.075) 47%,rgba(255,255,255,.02) 53%,transparent 62%);z-index:6;pointer-events:none}
+.rim{position:absolute;inset:0;padding:4px;z-index:7;pointer-events:none;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.dark{position:absolute;inset:0;background:#000;z-index:4}
+.ly{position:absolute}
+.ly img{display:block;width:100%;height:100%}
+.mq{overflow:hidden;border-top:1px solid rgba(242,242,242,.10);border-bottom:1px solid rgba(242,242,242,.10)}
+.mq .row{position:absolute;left:0;white-space:nowrap;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.04em;line-height:1}
+.mq .row span{display:inline-flex;align-items:center;gap:.45em;padding-right:.45em}
+.mq .row span::after{content:'';width:.14em;height:.14em;background:#6B6B6B}
+.fw .lab{font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6B6B6B}
+.fw .word{position:absolute;left:0;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.04em;line-height:1;white-space:nowrap;color:#F2F2F2}
+.fw .word b{font-weight:800}
+.tiles{overflow:hidden}
+.tiles .strip{position:absolute;left:0;top:0;display:flex}
+.tiles .strip i{display:block;flex:none;overflow:hidden;background:#000}
+.tiles .strip img{width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+/* macro, type, finale */
+.macro{position:absolute;inset:0;perspective:1800px;display:none}
+.macro .holder{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.macro img{position:absolute;left:0;top:0;display:block}
+.dof{position:absolute;inset:0;pointer-events:none;display:none;-webkit-backdrop-filter:blur(11px);backdrop-filter:blur(11px);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 24%,transparent 40%,transparent 60%,#000 76%,#000 100%);mask-image:linear-gradient(180deg,#000 0%,#000 24%,transparent 40%,transparent 60%,#000 76%,#000 100%)}
+.type{position:absolute;inset:0;display:none}
+.type .ph{position:absolute;left:0;right:0;top:860px;text-align:center;white-space:nowrap}
+.type .ph span{display:inline-block;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.045em;line-height:1.1;
+  background:linear-gradient(100deg,#555 0%,#555 30%,#fff 46%,#f2f2f2 54%,#555 70%,#555 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.url{position:absolute;left:0;right:0;top:1550px;text-align:center;font-family:'Golos Text',sans-serif;font-weight:500;font-size:38px;letter-spacing:.01em;color:#A3A3A3;opacity:0}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage"><div class="glow" id="glow"></div><div class="world" id="world"></div><div class="dof" id="dof"></div><div class="type" id="type"></div><div class="url" id="url">andrewkuznetsov.com</div><div class="black" id="black"></div><div class="flash" id="flash"></div></div>
+<script>
+(async()=>{
+const MODE=new URLSearchParams(location.search).get('mode')||'phone';
+const W=1080,H=1920,BEAT=.5,T=22;
+const bt=n=>n*BEAT;
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), seg=(t,a,b)=>cl((t-a)/(b-a)), lerp=(a,b,k)=>a+(b-a)*k;
+const E={o3:t=>1-Math.pow(1-t,3),o5:t=>1-Math.pow(1-t,5),io3:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,expo:t=>t>=1?1:1-Math.pow(2,-10*t)};
+const man=await (await fetch('cap/manifest.json')).json();
+const mac=await (await fetch('cap/macro.json')).json();
+await Promise.all([`300 40px Unbounded`,`800 40px Unbounded`,`500 20px 'Golos Text'`,`400 12px 'JetBrains Mono'`].map(f=>document.fonts.load(f,'СоздаюпродуктыидизайнсистемывместесAIДизайн-системыСберВТБФинамandrewkuznetsov.com')));
+const world=document.getElementById('world'), stage=document.getElementById('stage');
+
+/* ---------- phone screen: the condensed home page (same layers as REEL1) ---------- */
+const L0=[['nav',0],['spec',96],['name1',man.name1.y],['name2',man.name2.y],['tag',353],['meta1',463],['meta2',488],['mq',570,'dom',390,120],['fw',712,'dom',390,150],
+ ['cases_head',880],['case1',960],['case2',1215],['case3',1406],['arch_head',1640],['tiles1',1720,'dom',390,165],['tiles2',1913,'dom',390,165],
+ ['about_head',2140],['portrait',2220],['lead',2600],['stats',2810],['tl1',2950],['tl2',3123],['tl3',3296],['c_title',3490],['c_row',3590],['footer',3840]];
+const PAGE_END=3960, SC=572/390;
+function phonePage(){
+  const pg=document.createElement('div'); pg.className='page'; Object.assign(pg.style,{width:390*SC+'px',height:PAGE_END*SC+'px'});
+  for(const [id,y,kind,w,h] of L0){ const m=man[id]||{}; const d=document.createElement('div'); d.className='ly';
+    Object.assign(d.style,{left:(kind?0:m.x)*SC+'px',top:y*SC+'px',width:(kind?w:m.w)*SC+'px',height:(kind?h:m.h)*SC+'px'});
+    if(!kind){ const im=new Image(); im.src=`cap/${id}_dark.png`; d.append(im); }
+    else if(id==='mq'){ d.classList.add('mq'); [0,1].forEach(r=>{ const row=document.createElement('div'); row.className='row'; row.style.top=(23+r*40)*SC+'px'; row.style.fontSize=34*SC+'px';
+        const list=r?[...man._marquee].reverse():man._marquee; row.innerHTML=[...list,...list,...list].map(([t,o])=>`<span style="${o?`color:transparent;-webkit-text-stroke:1.4px ${r?'#6B6B6B':'#A3A3A3'}`:`color:${r?'#A3A3A3':'#F2F2F2'}`}">${t}</span>`).join(''); d.append(row); }); }
+    else if(id==='fw'){ d.classList.add('fw'); d.innerHTML=`<div class="lab" style="font-size:${9*SC}px">Чем занимаюсь</div><div class="word" style="top:${30*SC}px;font-size:${41.5*SC}px"><b>Ди</b>зайн-системы</div>`; }
+    else { d.classList.add('tiles'); const r=id==='tiles2'?1:0, set=man._tiles.slice(r*10,r*10+10), s=document.createElement('div'); s.className='strip'; s.style.gap=12*SC+'px';
+      s.innerHTML=[...set,...set].map(src=>`<i style="width:${220*SC}px;height:${165*SC}px;border-radius:${4*SC}px"><img src="${src}"></i>`).join(''); d.append(s); }
+    pg.append(d); }
+  return pg;
+}
+/* ---------- laptop screen: the desktop site as a strip of section shots under its header ---------- */
+const DSEC=['hero','focus','work','archive','about','tl','contact'], LW=960, LH=596, DSC=LW/1440;
+function laptopPage(){
+  const pg=document.createElement('div'); pg.className='page'; Object.assign(pg.style,{width:LW+'px',height:DSEC.length*900*DSC+'px'});
+  DSEC.forEach((s,i)=>{ const im=new Image(); im.src=`cap/d_${s}.jpg`; Object.assign(im.style,{position:'absolute',left:0,top:i*900*DSC+'px',width:LW+'px',height:900*DSC+'px'}); pg.append(im); });
+  return pg;
+}
+function makeDevice(kind){
+  const el=document.createElement('div'); el.className='dev '+kind;
+  let lid=el, front, screen, page;
+  if(kind==='phone'){
+    for(let i=14;i>=1;i--){ const s=document.createElement('div'); s.className='slice'; s.style.transform=`translateZ(${-i*2}px)`; el.append(s); }
+    front=document.createElement('div'); front.className='front'; el.append(front);
+    screen=document.createElement('div'); screen.className='screen'; front.append(screen);
+    page=phonePage(); screen.append(page); const isl=document.createElement('div'); isl.className='island'; screen.append(isl);
+  } else {
+    lid=document.createElement('div'); lid.className='lid'; el.append(lid);
+    const back=document.createElement('div'); back.className='lback'; lid.append(back);
+    for(let i=10;i>=1;i--){ const s=document.createElement('div'); s.className='lslice'; s.style.transform=`translateZ(${-i*1.5}px)`; lid.append(s); }
+    front=document.createElement('div'); front.className='front'; lid.append(front);
+    screen=document.createElement('div'); screen.className='screen'; front.append(screen);
+    page=laptopPage(); screen.append(page);
+    const hdr=new Image(); hdr.src='cap/d_header.png'; hdr.className='hdr'; screen.append(hdr);
+  }
+  const glare=document.createElement('div'); glare.className='glare'; screen.append(glare);
+  const dark=document.createElement('div'); dark.className='dark'; screen.append(dark);
+  const rim=document.createElement('div'); rim.className='rim'; front.append(rim);
+  world.append(el);
+  return {kind,el,lid,screen,page,glare,dark,rim,mq:page.querySelector('.mq'),tiles:[...page.querySelectorAll('.tiles .strip')]};
+}
+function setDev(p,o){ // x y z rx ry rz s · scroll (phone: css px of the 390 layout; laptop: px of the strip) · on · bright · blur · rim · rimA · gl · lid (deg, laptop)
+  if(!(o.op>0)){ p.el.style.display='none'; return; } p.el.style.display='block'; p.el.style.opacity=o.op;
+  p.el.style.transform=`translate3d(${o.x||0}px,${o.y||0}px,${o.z||0}px) rotateX(${o.rx||0}deg) rotateY(${o.ry||0}deg) rotateZ(${o.rz||0}deg) scale(${o.s||1})`;
+  if(p.kind==='laptop') p.lid.style.transform=`rotateX(${o.lid??0}deg)`;
+  p.page.style.transform=`translateY(${-(o.scroll||0)*(p.kind==='phone'?SC:1)}px)`;
+  p.page.style.filter=o.blur>0.05?`blur(${o.blur.toFixed(2)}px)`:'none';
+  p.dark.style.opacity=1-(o.on??1);
+  p.screen.style.filter=o.bright>1.01?`brightness(${o.bright.toFixed(2)})`:'none';
+  p.glare.style.transform=`translateX(${(-(o.ry||0)*9+(o.gl||0)).toFixed(1)}px)`;
+  const ra=o.rimA||0; p.rim.style.opacity=ra; if(ra>0) p.rim.style.background=`linear-gradient(${o.rim||0}deg,transparent 35%,rgba(255,255,255,.95) 50%,transparent 65%)`;
+  const t=o.t||0; if(p.mq) p.mq.querySelectorAll('.row').forEach((r,i)=>r.style.transform=`translateX(${i?-1500+t*90:-300-t*90}px)`);
+  p.tiles.forEach((s,i)=>s.style.transform=`translateX(${i?-1800+t*60:-120-t*60}px)`);
+}
+const LAP=MODE!=='phone'?makeDevice('laptop'):null;
+const PHS=MODE==='phone'?[makeDevice('phone'),makeDevice('phone'),makeDevice('phone')]:MODE==='both'?[makeDevice('phone')]:[];
+
+/* ---------- macro shots (desktop details, ×3) ---------- */
+const SHOTS=[['name',.13,.36,.95,[-16,-8],8],['name',.5,.03,2.6,[14,6],10],['spec',.55,.5,2.2,[-12,-4],6],['ctrls',.74,.5,2.4,[16,6],8],
+ ['portrait',.5,.42,1.9,[-10,-3],6],['tag',.74,.2,1.6,[12,4],8],['name',.013,.5,3.2,[-14,-6],4],['name',.5,.72,1.15,[12,5],8]];
+const MAC=SHOTS.map(([id,fx,fy,z,ry,rx])=>{ const d=document.createElement('div'); d.className='macro'; const h=document.createElement('div'); h.className='holder';
+  const w=mac[id].w*3, hh=mac[id].h*3; const im=new Image(); im.src=`cap/m_${id}.png`; Object.assign(im.style,{width:w+'px',height:hh+'px'}); h.append(im);
+  d.append(h); stage.insertBefore(d,document.getElementById('dof')); return {d,h,w,hh,fx,fy,z,ry,rx}; });
+const DOF=document.getElementById('dof');
+/* ---------- big type: the site's own tagline ---------- */
+const TYPE=document.getElementById('type'); const PHR=['Создаю продукты','и дизайн-системы','вместе с AI'];
+const PEL=PHR.map(p=>{ const e=document.createElement('div'); e.className='ph'; e.innerHTML=`<span>${p}</span>`; TYPE.append(e); return e.firstChild; });
+TYPE.style.display='block'; PEL.forEach(e=>{ e.style.fontSize='100px'; e.style.fontSize=Math.min(160,100*940/e.offsetWidth)+'px'; }); TYPE.style.display='none';
+await Promise.all([...stage.querySelectorAll('img')].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;})));
+
+/* ---------- what the screens show on the beats ---------- */
+const SEC=[0,520,860,1600,2120,2560,2930,3470];                 // phone (css y)
+const DS=DSEC.map((_,i)=>i*900*DSC);                            // laptop strip positions
+const DMAX=(DSEC.length-1)*900*DSC;
+
+/* ---------- frame ---------- */
+const flash=document.getElementById('flash'), black=document.getElementById('black'), glow=document.getElementById('glow'), url=document.getElementById('url');
+function render(t){
+  if(LAP) setDev(LAP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
+  let fl=0, bl=0, g=0;
+  const P0=PHS[0];
+  if(t<bt(8)){                                                     // A · reveal from the dark
+    const k=E.io3(seg(t,.4,4)), on=E.o3(seg(t,2.9,3.6)), rim=lerp(-60,240,E.io(seg(t,.6,3.2))), rimA=Math.sin(Math.PI*seg(t,.6,3.4))*.9+.15*on;
+    if(MODE==='phone') setDev(P0,{t,y:-30+20*(1-k),ry:lerp(84,16,k),rx:lerp(10,5,k),rz:lerp(-4,-2,k),s:lerp(1.12,1.04,k),on,bright:1+.8*(1-seg(t,2.9,3.5)),rim,rimA,op:1,gl:-200+t*90});
+    else { // the display turns from edge-on to face the camera, rim light sliding along its edge
+      setDev(LAP,{t,y:MODE==='both'?-120:0,z:lerp(-300,0,k),ry:lerp(-84,-14,k),rx:lerp(10,6,k),rz:lerp(3,1,k),s:lerp(1.02,.98,k),on,bright:1+.8*(1-seg(t,2.9,3.5)),rim,rimA,op:1,gl:-200+t*90});
+      if(MODE==='both'){ const kp=E.o5(seg(t,2.2,3.6)); setDev(P0,{t,x:lerp(700,300,kp),y:420,z:300,ry:-18,rx:4,s:.5,on,rim:rim+40,rimA:.6*kp,op:kp>0?1:0,gl:t*60}); } }
+    g=.06*E.io(seg(t,1.4,3.6));
+  } else if(t<bt(16)){                                             // B · macro details, one per beat, focus band across the middle
+    const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), m=MAC[i], e=E.io(seg(t,bt(8+i),bt(9+i)));
+    m.d.style.display='block'; DOF.style.display='block';
+    const z=m.z*lerp(1,1.09,e);                                   // the focus point sits at the centre of the frame; the tilt pivots around it
+    m.h.style.transformOrigin='0 0';
+    m.h.style.transform=`translate(540px,930px) rotateX(${m.rx}deg) rotateY(${lerp(m.ry[0],m.ry[1],e)}deg) scale(${z}) translate(${-m.w*m.fx}px,${-m.hh*m.fy}px)`;
+    fl=Math.max(fl,.35*(1-seg(t,bt(8+i),bt(8+i)+.12)));
+  }
+  if(t>=bt(16)&&t<bt(24)){                                         // C · the tagline, the device dim behind
+    TYPE.style.display='block'; const dur=(bt(24)-bt(16))/3;
+    PEL.forEach((e,i)=>{ const t0=bt(16)+i*dur, k=seg(t,t0,t0+.7), out=seg(t,t0+dur-.18,t0+dur), v=k>0&&out<1;
+      e.parentNode.style.display=v?'block':'none'; if(!v) return;
+      e.style.opacity=E.o3(k)*(1-out); e.style.filter=`blur(${(18*(1-E.o3(k))+10*out).toFixed(1)}px)`;
+      e.style.transform=`translateY(${(36*(1-E.o3(k))).toFixed(1)}px) scale(${lerp(1.04,1,E.o3(k))})`; e.style.letterSpacing=`${lerp(.02,-.045,E.o3(k))}em`;
+      e.style.backgroundPosition=`${lerp(100,0,seg(t,t0,t0+dur))}% 0`; });
+    const kk=seg(t,bt(16),bt(24));
+    if(MODE==='phone') setDev(P0,{t,y:120,z:-1500,ry:lerp(-25,25,kk),rx:6,scroll:lerp(0,900,kk),on:1,op:.22,rimA:.25,rim:t*40});
+    else setDev(LAP,{t,y:150,z:-1700,ry:lerp(-25,25,kk),rx:10,scroll:lerp(0,DS[2],kk),on:1,op:.22,rimA:.25,rim:t*40});
+  }
+  if(t>=bt(24)&&t<bt(28)){                                         // D · fly in + a fast scroll through the whole page, then silence
+    const fi=E.o5(seg(t,bt(24),bt(25.2))), sk=seg(t,bt(24.8),bt(27.4)), sc=E.io3(sk), sc2=E.io3(seg(t+1/60,bt(24.8),bt(27.4)));
+    if(MODE==='phone'){ const v=Math.abs(sc2-sc)*60*(PAGE_END-900);
+      setDev(P0,{t,y:lerp(1500,0,fi),rx:lerp(28,7,fi),ry:lerp(-26,-9,fi),rz:lerp(6,1,fi),s:1.04,scroll:sc*(PAGE_END-900),blur:Math.min(6,v/1200),on:1,op:1,rimA:.5*fi,rim:200+t*80,gl:t*60}); }
+    else { const v=Math.abs(sc2-sc)*60*DMAX;
+      setDev(LAP,{t,y:lerp(1300,MODE==='both'?-120:0,fi),rx:lerp(30,6,fi),ry:lerp(-30,-10,fi),rz:lerp(5,0,fi),s:1,scroll:sc*DMAX,blur:Math.min(5,v/1500),on:1,op:1,rimA:.45*fi,rim:200+t*80,gl:t*60});
+      if(MODE==='both'){ const kp=E.o5(seg(t,bt(25),bt(26.2))); setDev(P0,{t,x:lerp(900,300,kp),y:420,z:300,ry:-14,rx:4,s:.5,scroll:sc*(PAGE_END-900),blur:Math.min(6,Math.abs(sc2-sc)*60*(PAGE_END-900)/1200),on:1,op:kp>0?1:0,rimA:.4*kp,rim:t*90,gl:t*60}); } }
+    if(t>=bt(27.5)) bl=1;
+  }
+  if(t>=bt(28)&&t<bt(36)){                                         // E · the drop: line-up / orbit, screens snap to a new section on every beat
+    const b=Math.floor((t-bt(28))/BEAT), kb=E.expo(seg(t,bt(28+b),bt(28+b)+.22)), sw=Math.sin((t-bt(28))*Math.PI/2)*7, pin=E.o5(seg(t,bt(28),bt(28)+.45));
+    if(MODE==='phone'){
+      [[-430,-380,30],[0,0,-5],[430,-380,-30]].forEach(([x,z,ry],i)=>{ const sec=SEC[(b+i*3)%SEC.length], prev=SEC[(b-1+i*3+SEC.length)%SEC.length];
+        setDev(PHS[i],{t,x:x*lerp(.6,1,pin),y:90,z:z-200,ry:ry+sw,rx:5,s:.7*lerp(1.12,1,pin),scroll:lerp(prev,sec,kb),on:1,op:1,rimA:.55*(1-kb)+.1,rim:(b*67+i*40)%360,gl:(t-bt(28))*120-200}); });
+    } else {
+      const sec=DS[(b+1)%DS.length], prev=DS[b%DS.length], ry=(b%2?12:-12)*1, ryp=(b%2?-12:12);
+      setDev(LAP,{t,y:MODE==='both'?-150:-40,z:lerp(-200,0,pin),ry:lerp(ryp,ry,E.io3(seg(t,bt(28+b),bt(28+b)+.45)))+sw*.3,rx:5,s:lerp(1.08,1,pin),scroll:lerp(prev,sec,kb),on:1,op:1,rimA:.5*(1-kb)+.1,rim:(b*67)%360,gl:(t-bt(28))*120-200});
+      if(MODE==='both'){ const ps=SEC[(b+4)%SEC.length], pp=SEC[(b+3)%SEC.length];
+        setDev(P0,{t,x:300,y:460,z:320,ry:-12-sw,rx:4,s:.52*lerp(1.12,1,pin),scroll:lerp(pp,ps,kb),on:1,op:1,rimA:.55*(1-kb)+.1,rim:(b*53+90)%360,gl:(t-bt(28))*100}); } }
+    fl=Math.max(fl,.55*(1-seg(t,bt(28),bt(28)+.15))); g=.07;
+  }
+  if(t>=bt(36)){                                                   // F · head-on, the address
+    const k=seg(t,bt(36),T), e=E.io(k), st=E.o3(seg(t,bt(36),bt(37.5))), rim=lerp(-40,220,seg(t,bt(36.4),bt(39))), rimA=Math.sin(Math.PI*seg(t,bt(36.4),bt(39)))*.85;
+    if(MODE==='phone') setDev(P0,{t,y:-60,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e),on:1,op:1,rimA,rim,gl:lerp(-300,300,k)});
+    else { setDev(LAP,{t,y:MODE==='both'?-200:-120,ry:lerp(-4,0,st),rx:lerp(6,0,st),s:lerp(1,1.03,e),on:1,op:1,rimA:rimA*.8,rim,gl:lerp(-300,300,k)});
+      if(MODE==='both') setDev(P0,{t,x:310,y:440,z:330,ry:lerp(-10,-6,st),rx:2,s:.5*lerp(1,1.03,e),on:1,op:1,rimA,rim:rim+30,gl:lerp(-200,300,k)}); }
+    url.style.opacity=E.o3(seg(t,bt(37.2),bt(38.4))); url.style.transform=`translateY(${(14*(1-E.o3(seg(t,bt(37.2),bt(38.4))))).toFixed(1)}px)`;
+    fl=Math.max(fl,.6*(1-seg(t,bt(36),bt(36)+.16))); g=.075;
+  } else url.style.opacity=0;
+  if(t>=bt(8)&&t<bt(8)+.14) fl=Math.max(fl,.6*(1-seg(t,bt(8),bt(8)+.14)));
+  glow.style.background=g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
+  flash.style.opacity=fl; black.style.opacity=Math.max(bl,seg(t,T-.6,T));
+}
+window.__seek=t=>render(t); window.__ready=true;
+const q=new URLSearchParams(location.search); if(q.has('t')) render(+q.get('t'));
+else { const t0=performance.now(); (function loop(n){ render(((n-t0)/1000)%T); requestAnimationFrame(loop); })(t0); }
+})();
+</script>
+</body>
+</html>
