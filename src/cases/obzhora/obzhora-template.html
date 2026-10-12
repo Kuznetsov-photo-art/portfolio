@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
 :root{
-  --bg:#F2F2F2; --bg-2:#FFFFFF; --bg-3:#E6E6E6;
+  --bg:#FFFFFF; --bg-2:#FFFFFF; --bg-3:#EBEBEB; /* light theme is white, as on the home page */
   --ink:#0A0A0A; --ink-2:#4A4A4A; --ink-3:#8A8A8A;
   --line:rgba(10,10,10,.10); --line-2:rgba(10,10,10,.22); --red:rgba(10,10,10,.55);
   --display:'Unbounded',system-ui,sans-serif;
@@ -665,5 +665,5 @@ requestAnimationFrame(frame);
 })();
 </script>
 <script>/* browser chrome colour follows the theme: Telegram's in-app browser paints its top bar with theme-color, otherwise the page shows through it without the header fade */
-(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(!document.body.classList.contains('dark'))?'#F2F2F2':'#0A0A0A'; };
+(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(!document.body.classList.contains('dark'))?'#FFFFFF':'#0A0A0A'; };
   const o=new MutationObserver(f); o.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); o.observe(document.body,{attributes:true,attributeFilter:['class']}); f(); })();</script>
