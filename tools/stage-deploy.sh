@@ -18,7 +18,7 @@ BADGE='<div aria-hidden="true" style="position:fixed;left:8px;bottom:calc(8px + 
 find . -name '*.html' -print0 | while IFS= read -r -d '' f; do
   perl -0pi -e 's{<head>}{<head>\n<meta name="robots" content="noindex,nofollow">}; s{</body>}{'"$BADGE"'\n</body>}' "$f"
   # link previews point at the stage: TEST card, stage URLs, «TEST ·» in the title
-  perl -pi -e 's{(<meta (?:property="og:image"|name="twitter:image") content=")https://andrewkuznetsov\.com/assets/og/[^"]+}{${1}https://'"$DOMAIN"'/assets/og/og-stage.jpg?v=1}g; s{(<meta property="og:url" content="|<link rel="canonical" href=")https://andrewkuznetsov\.com}{${1}https://'"$DOMAIN"'}g; s{(<meta property="og:title" content=")}{${1}TEST · }g' "$f"
+  perl -pi -e 's{(<meta (?:property="og:image"|name="twitter:image") content=")https://andrewkuznetsov\.com/assets/og/[^"]+}{${1}https://'"$DOMAIN"'/assets/og/og-stage.jpg?v=1}g; s{(<meta property="og:url" content="|<link rel="canonical" href=")https://andrewkuznetsov\.com}{${1}https://'"$DOMAIN"'}g; s{(<meta property="og:title" content=")}{${1}TEST · }g; s{<meta name="robots" content="index,follow">\n?}{}g' "$f"
 done
 REV=$(git -C "$ROOT" rev-parse --short stage)
 git init -q -b main
