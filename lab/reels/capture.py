@@ -16,7 +16,10 @@ PIECES=[ # id, selector (first match), extra css to apply before capture
  ('c_title','#contact h2'),('c_row','#contact .c-row'),('footer','footer'),
 ]
 PIECES=[p for p in PIECES if p[1]]
-HIDE="html,body{background:transparent!important}.grain,.cur,.totop,.navfx,#ink,.gridlines,#fgrid,.reel,.pre,.toast{display:none!important}.rv,.rv-wait,.tl-wait{opacity:1!important;transform:none!important;filter:none!important}*{transition:none!important}"
+ONLY=set(sys.argv[1:])                       # optional: capture only these ids (the manifest is merged)
+if ONLY: PIECES=[p for p in PIECES if p[0] in ONLY]
+SOLO={'name1':'#hname .ln.b','name2':'#hname .ln.a'}   # hide the neighbour line, or its glyphs end up inside the padded clip
+HIDE=".row .th{visibility:hidden!important}html,body{background:transparent!important}.grain,.cur,.totop,.navfx,#ink,.gridlines,#fgrid,.reel,.pre,.toast{display:none!important}.rv,.rv-wait,.tl-wait{opacity:1!important;transform:none!important;filter:none!important}*{transition:none!important}"
 def run(theme):
     p=subprocess.Popen(['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','--headless=new','--hide-scrollbars','--remote-debugging-port=9371','--remote-allow-origins=http://127.0.0.1:9371',f'--user-data-dir={tempfile.mkdtemp()}','about:blank'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     try:
@@ -44,6 +47,7 @@ def run(theme):
             r=json.loads(js(f"JSON.stringify((()=>{{const b=document.querySelector({json.dumps(sel)}).getBoundingClientRect();return [b.left,b.top,b.width,b.height,scrollY]}})())"))
             x,y,w,h,sy=r
             pad=16 if pid.startswith('name') else 0; y-=pad; h+=2*pad  # name lines: room for й / у outside the .86 line box
+            js(f"document.querySelectorAll('#hname .ln').forEach(e=>e.style.visibility='');"+(f"document.querySelector({json.dumps(SOLO[pid])}).style.visibility='hidden'" if pid in SOLO else ''))
             d=cmd('Page.captureScreenshot',format='png',clip={'x':x,'y':y+sy,'width':w,'height':h,'scale':1},captureBeyondViewport=True)['data']
             open(os.path.join(OUT,f'{pid}_{theme or "dark"}.png'),'wb').write(base64.b64decode(d))
             man[pid]={'x':x,'y':y+sy,'w':w,'h':h}
@@ -53,5 +57,8 @@ def run(theme):
         return man
     finally: p.terminate()
 m=run(''); run('light')
-json.dump(m,open(os.path.join(OUT,'manifest.json'),'w'),ensure_ascii=False,indent=1)
+mp=os.path.join(OUT,'manifest.json')
+if ONLY and os.path.exists(mp):
+    old=json.load(open(mp)); old.update({k:v for k,v in m.items() if not k.startswith('_')}); m=old
+json.dump(m,open(mp,'w'),ensure_ascii=False,indent=1)
 print(len(m),'pieces')
