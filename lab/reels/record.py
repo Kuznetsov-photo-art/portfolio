@@ -7,7 +7,7 @@ url,out=sys.argv[1],sys.argv[2]; FPS=30; T=20.0
 HERE=os.path.dirname(os.path.abspath(__file__)); wav=os.path.join(HERE,'reel1-beat.wav')
 p=subprocess.Popen(['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','--headless=new','--hide-scrollbars','--remote-debugging-port=9373','--remote-allow-origins=http://127.0.0.1:9373',f'--user-data-dir={tempfile.mkdtemp()}','about:blank'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 ff=subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(),'-y','-loglevel','error','-f','image2pipe','-framerate',str(FPS),'-i','-','-i',wav,
-    '-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-profile:v','high','-r',str(FPS),
+    '-vf','scale=in_range=pc:out_range=tv,format=yuv420p','-c:v','libx264','-preset','slow','-crf','16','-profile:v','high','-color_range','tv','-colorspace','bt709','-color_primaries','bt709','-color_trc','bt709','-r',str(FPS),  # JPEG frames are full-range: convert to TV range for Instagram/iPhone
     '-c:a','aac','-b:a','256k','-shortest','-movflags','+faststart',out],stdin=subprocess.PIPE)
 try:
     for _ in range(50):
