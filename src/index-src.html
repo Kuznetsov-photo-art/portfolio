@@ -836,6 +836,9 @@ if(FINE){ let curEl=null;
   let seen=false; try{ seen=sessionStorage.getItem('pre')==='1'; }catch(e){}
   const hero=document.querySelector('.hero');
   if(rm||seen){ pre.remove(); hero.classList.add('in'); return; }
+  // a fresh entrance always starts at the top: drop a leftover #archive / #work from the address (the curtain must open on the hero)
+  try{ history.scrollRestoration='manual'; if(location.hash) history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+  scrollTo(0,0);
   document.body.classList.add('loading');
   const t0=performance.now(), MIN=1700, MAX=3800; let loaded=document.readyState==='complete';
   addEventListener('load',()=>loaded=true);
@@ -844,7 +847,7 @@ if(FINE){ let curEl=null;
     const e=1-Math.pow(1-p,2.4); const pc=Math.round(e*100);
     n.textContent=String(pc).padStart(2,'0'); l.style.width=pc+'%';
     const d=I18N[lang]; m.textContent=pc<40?d['pre.1']:pc<80?d['pre.2']:d['pre.3'];
-    if(p>=1){ setTimeout(()=>{pre.classList.add('off');document.body.classList.remove('loading');hero.classList.add('in');try{sessionStorage.setItem('pre','1')}catch(e){} setTimeout(()=>pre.remove(),1000);},300); return; }
+    if(p>=1){ setTimeout(()=>{scrollTo(0,0); pre.classList.add('off');document.body.classList.remove('loading');hero.classList.add('in');try{sessionStorage.setItem('pre','1')}catch(e){} setTimeout(()=>pre.remove(),1000);},300); return; }
     requestAnimationFrame(tick);
   }
   tick();
