@@ -4,6 +4,7 @@
 import json, subprocess, time, urllib.request, tempfile, base64, os, sys
 import websocket
 OUT=os.path.join(os.path.dirname(os.path.abspath(__file__)),'cap'); os.makedirs(OUT,exist_ok=True)
+LANG=os.environ.get('LANG_SITE','ru'); LS='' if LANG=='ru' else '_'+LANG   # file suffix for non-Russian captures
 URL='https://andrewkuznetsov.com/'; DSF=1080/390
 PIECES=[ # id, selector (first match), extra css to apply before capture
  ('nav','header.nav'),('spec','.hero .spec'),
@@ -34,7 +35,7 @@ def run(theme):
                 if r.get('id')==n[0]: return r.get('result',{})
         js=lambda e: cmd('Runtime.evaluate',expression=e,returnByValue=True,awaitPromise=True).get('result',{}).get('value')
         cmd('Page.enable'); cmd('Emulation.setDeviceMetricsOverride',width=390,height=844,deviceScaleFactor=DSF,mobile=True)
-        cmd('Page.addScriptToEvaluateOnNewDocument',source=f"sessionStorage.setItem('pre','1');localStorage.setItem('lang','ru');localStorage.setItem('theme','{theme}')")
+        cmd('Page.addScriptToEvaluateOnNewDocument',source=f"sessionStorage.setItem('pre','1');localStorage.setItem('lang','{LANG}');localStorage.setItem('theme','{theme}')")
         cmd('Page.navigate',url=URL); time.sleep(5)
         js("(async()=>{for(let y=0;y<document.documentElement.scrollHeight;y+=250){scrollTo(0,y);await new Promise(r=>setTimeout(r,90));}scrollTo(0,0);})()"); time.sleep(1)
         js(f"(()=>{{const s=document.createElement('style');s.textContent={json.dumps(HIDE)};document.head.append(s);}})()")
@@ -49,7 +50,7 @@ def run(theme):
             pad=16 if pid.startswith('name') else 0; y-=pad; h+=2*pad  # name lines: room for й / у outside the .86 line box
             js(f"document.querySelectorAll('#hname .ln').forEach(e=>e.style.visibility='');"+(f"document.querySelector({json.dumps(SOLO[pid])}).style.visibility='hidden'" if pid in SOLO else ''))
             d=cmd('Page.captureScreenshot',format='png',clip={'x':x,'y':y+sy,'width':w,'height':h,'scale':1},captureBeyondViewport=True)['data']
-            open(os.path.join(OUT,f'{pid}_{theme or "dark"}.png'),'wb').write(base64.b64decode(d))
+            open(os.path.join(OUT,f'{pid}_{theme or "dark"}{LS}.png'),'wb').write(base64.b64decode(d))
             man[pid]={'x':x,'y':y+sy,'w':w,'h':h}
         # archive tile images (drawn by the reel itself)
         man['_tiles']=json.loads(js("JSON.stringify([...document.querySelectorAll('#arch .a-item img')].slice(0,40).map(i=>i.currentSrc||i.src))"))
@@ -57,7 +58,7 @@ def run(theme):
         return man
     finally: p.terminate()
 m=run(''); run('light')
-mp=os.path.join(OUT,'manifest.json')
+mp=os.path.join(OUT,f'manifest{LS}.json')
 if ONLY and os.path.exists(mp):
     old=json.load(open(mp)); old.update({k:v for k,v in m.items() if not k.startswith('_')}); m=old
 json.dump(m,open(mp,'w'),ensure_ascii=False,indent=1)
