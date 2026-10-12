@@ -986,7 +986,8 @@ function startReel(){
     X.stroke();
     if(label!=null&&k>.2){ X.font=font(400,10,MONO); X.textBaseline='middle'; X.textAlign='center'; const tw=spacedW(label,.8);
       X.translate((x1+xe)/2,(y1+ye)/2); if(!hor) X.rotate(-Math.PI/2);
-      X.fillStyle=K.pill; X.beginPath(); X.roundRect(-tw/2-5,-7,tw+10,14,2); X.fill(); X.fillStyle=K.bg; spaced(label,0,0,.8,'center'); }
+      X.fillStyle=K.pill; X.beginPath(); X.roundRect(-tw/2-5,-7,tw+10,14,2); X.fill(); X.fillStyle=K.bg;
+      X.textBaseline='alphabetic'; const capH=X.measureText('H').actualBoundingBoxAscent; spaced(label,0,Math.round(capH/2),.8,'center'); } // caps and digits centred in the pill ("middle" sits them high)
     X.restore();
   }
   function board(t,alpha){ const u=L.u; let kn=null; X.save(); X.globalAlpha=alpha;
