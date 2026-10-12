@@ -145,8 +145,8 @@ function pose(l,t,final){
   // landing: a small bounce into the plane
   if(k>0&&k<1){ z-=Math.sin(k*Math.PI)*14; }
   const landed=t>=l.t;
-  let blur=landed?Math.min(6,Math.abs(z)/90):Math.min(7,1.5+Math.abs(z)/160);
-  let op=landed?1:.8, br=1;
+  let blur=landed?Math.min(6,Math.abs(z)/90):Math.min(8,3.5+Math.abs(z)/160);
+  let op=landed?1:.55, br=1;                                   // pending layers stay soft, so they never fight with the landed ones
   // intro: the detail of this beat sits centred and sharp, the rest floats around it out of focus
   if(t<bt(8)){ const b=Math.min(7,Math.floor(t/BEAT)); if(l.i===PICK[b]){ z=60+Math.sin(t*2)*10; x=0; y=0; rx=ry=rz=0; blur=0; op=1; } else { blur=Math.max(blur,5); op=.55; } }
   if(landed&&t<l.t+.18) br=1+.7*(1-seg(t,l.t+.06,l.t+.18));     // a click of light as it lands
@@ -164,8 +164,7 @@ function drawScene(sc,t){
     el.style.filter=`blur(${p.blur.toFixed(2)}px)`+(p.br>1.01?` brightness(${p.br.toFixed(2)})`:'')+(p.sh>.02?` drop-shadow(0 ${Math.round(22*p.sh)}px ${Math.round(30*p.sh)}px ${K.shadow})`:''); // soft, short shadows
     if(l.id==='mq'){ const rows=el.querySelectorAll('.row'); rows[0].style.transform=`translateX(${-400-t*160}px)`; rows[1].style.transform=`translateX(${-2400+t*160}px)`; }
     if(l.id.startsWith('tiles')){ const r=l.id==='tiles2'?1:0; el.querySelector('.strip').style.transform=`translateX(${(r?-3000:-200)+(r?1:-1)*t*110}px)`; } });
-  const A=.38;                                                 // black like the site: the ink only whispers
-  sc.draw(t,K.L,A);
+  // no ink in the reel: pure black, like the site's background without the hero waves
   // flashes on the drop, the flip and the finale
   let f=0; for(const f0 of [bt(8),bt(24),bt(36)]){ const k=seg(t,f0,f0+.14); if(k>0&&k<1) f=Math.max(f,.7*(1-k)); }
   sc.flash.style.opacity=f;
