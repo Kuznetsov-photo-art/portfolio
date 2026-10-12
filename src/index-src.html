@@ -34,6 +34,11 @@ html{scroll-behavior:smooth}
 html.glitch section:not(.focus),html.glitch footer{animation:glx .28s steps(1,end) 1}
 html.glitch section :is(h1,h2,h3,p,a,b,span,li,em,strong),html.glitch footer *,html.glitch .nav *{animation:gls .28s steps(1,end) 1}
 @keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
+/* HERO2 hand-off: the last reel frame jitters and splits into RGB, then the hero takes its place with the same glitch — hides the sub-pixel differences of the swap */
+.reel.gl{animation:glx .16s steps(1,end) 1}.reel.gl #reelC{animation:glf .16s steps(1,end) 1}
+html.hglitch .hero,html.hglitch .nav{animation:glx .28s steps(1,end) 1}
+html.hglitch .hero :is(h1,p,span,.mono),html.hglitch .nav *{animation:gls .28s steps(1,end) 1}
+@keyframes glf{0%{filter:drop-shadow(3px 0 rgba(255,40,80,.85)) drop-shadow(-3px 0 rgba(0,220,255,.85))}50%{filter:drop-shadow(-4px 0 rgba(255,40,80,.8)) drop-shadow(4px 0 rgba(0,220,255,.8))}100%{filter:none}}
 @keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
 
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -63,9 +68,8 @@ body.loading{overflow:hidden}
 .no-pre .pre,.no-pre .reel{display:none}
 /* HERO2 reel: overlay above the page and the grain (so it starts exactly in the curtain colour), below the cursor while the intro plays; fades into the hero it lands on */
 html{scrollbar-gutter:stable} /* the scrollbar coming back after the preloader/reel must not change the page width (Mac with a mouse): no reflow, no resize */
-.reel{position:fixed;inset:0;z-index:91;background:var(--bg);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
+.reel{position:fixed;inset:0;z-index:91;background:var(--bg)}
 .reel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.reel.out{opacity:0;pointer-events:none}.reel.out.fast{transition-duration:.45s}
 body.reeling{overflow:hidden}
 body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre — right where the reel's dot is born; the native cursor stays */
 
@@ -1080,15 +1084,18 @@ function startReel(){
   const idle=window.requestIdleCallback||(f=>setTimeout(f,1));
   setTimeout(()=>idle(()=>{ if(!ready) prepare(); },{timeout:1500}),2600); // particles are built while the words play, not on the curtain
   let done=false, out=false;
-  function finish(fast){ if(out) return; out=true; box.classList.add('out'); if(fast) box.classList.add('fast'); removeEventListener('resize',size); document.body.classList.remove('reeling');
-    ['wheel','touchstart','keydown','pointerdown'].forEach(e=>removeEventListener(e,skip)); setTimeout(()=>{done=true; box.remove();},fast?500:900); }
-  function skip(){ finish(true); }
+  function finish(){ if(out) return; out=true; removeEventListener('resize',size); document.body.classList.remove('reeling');
+    ['wheel','touchstart','keydown','pointerdown'].forEach(e=>removeEventListener(e,skip));
+    box.classList.add('gl'); // the reel's last frame jitters and splits into RGB…
+    setTimeout(()=>{ done=true; box.remove(); // …and the hero takes its place with the language-switch glitch
+      root.classList.remove('hglitch'); void root.offsetWidth; root.classList.add('hglitch'); setTimeout(()=>root.classList.remove('hglitch'),300); },160); }
+  function skip(){ finish(); }
   ['wheel','touchstart','keydown','pointerdown'].forEach(e=>addEventListener(e,skip,{passive:true}));
   addEventListener('resize',size);
   (function frame(now){ if(done) return; const t=(now-t0)/1000; tNow=Math.max(0,t);
     const th=themeNow(); if(K!==PAL[th]) K=PAL[th];
     if(lang!==curLang){ curLang=lang; S=TX[lang]||TX.ru; NM=NAME[lang]||NAME.ru; size(); }
-    renderInk(Math.max(0,t)); render(Math.max(0,t)); if(t>=14.2) finish(false);
+    renderInk(Math.max(0,t)); render(Math.max(0,t)); if(t>=14.2) finish();
     requestAnimationFrame(frame); })(t0);
 }
 
