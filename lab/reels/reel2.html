@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Reel 2 — 3D-разборка главной</title>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+/* Instagram Reel 1080×1920, 20 s, 124 BPM (beat.py). Exploded view: the home page's own layers (capture.py) float in depth and
+   land top-down on the page plane on the beat; theme flips with a circle; overview; the last frame is the hero, head-on.
+   No added captions — only what is on the site, in its own fonts. window.__seek(t) draws the frame at t seconds */
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:fixed;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.scene{position:absolute;inset:0;overflow:hidden}
+.scene .bg{position:absolute;inset:0}
+.scene canvas.ink{position:absolute;inset:0;width:1080px;height:1920px}
+.view{position:absolute;inset:0;perspective:2300px;perspective-origin:540px 760px}
+.cam{position:absolute;left:0;top:0;width:1080px;transform-style:preserve-3d;transform-origin:0 0}
+.plane{position:absolute;left:0;top:0;width:1080px;transform-style:preserve-3d}
+.grid{position:absolute;inset:0;pointer-events:none}
+.ly{position:absolute;transform-origin:50% 50%;will-change:transform,filter,opacity;backface-visibility:hidden}
+.ly img{display:block;width:100%;height:100%}
+.mq{overflow:hidden}
+.mq .row{position:absolute;left:0;white-space:nowrap;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.04em;line-height:1}
+.mq .row span{display:inline-flex;align-items:center;gap:.45em;padding-right:.45em}
+.mq .row span::after{content:'';width:.14em;height:.14em}
+.mq.dark .row span::after{background:#6B6B6B}.mq.light .row span::after{background:#8A8A8A}
+.fw .lab{font-family:'JetBrains Mono',monospace;font-size:30px;letter-spacing:.1em;text-transform:uppercase}
+.fw .word{position:absolute;left:0;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.fw .word b{font-weight:800}
+.tiles{overflow:hidden}
+.tiles .strip{position:absolute;left:0;top:0;display:flex;gap:33px}
+.tiles .strip i{display:block;flex:none;width:609px;height:457px;border-radius:11px;overflow:hidden;background:#000}
+.tiles .strip img{width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+(async()=>{
+const W=1080,H=1920,S=1080/390,BPM=124,BEAT=60/BPM,T=20,FPS=30;
+const bt=n=>n*BEAT;
+const PAL={dark:{bg:'#0A0A0A',ink:'#F2F2F2',ink2:'#A3A3A3',ink3:'#6B6B6B',line:'rgba(242,242,242,.05)',L:0,shadow:'rgba(0,0,0,.55)'},
+           light:{bg:'#FFFFFF',ink:'#0A0A0A',ink2:'#4A4A4A',ink3:'#8A8A8A',line:'rgba(10,10,10,.05)',L:1,shadow:'rgba(0,0,0,.18)'}};
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), seg=(t,a,b)=>cl((t-a)/(b-a)), lerp=(a,b,k)=>a+(b-a)*k;
+const E={o3:t=>1-Math.pow(1-t,3),o5:t=>1-Math.pow(1-t,5),io3:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,
+  expo:t=>t>=1?1:1-Math.pow(2,-10*t), back:t=>{const c=1.4,c3=c+1;return 1+c3*Math.pow(t-1,3)+c*Math.pow(t-1,2);}};
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+const man=await (await fetch('cap/manifest.json')).json();
+await Promise.all([`300 40px Unbounded`,`800 40px Unbounded`,`400 12px 'JetBrains Mono'`].map(f=>document.fonts.load(f,'АаДизайн-системыСберВТБФинамLimexЧЕМ ЗАНИМАЮСЬ')));
+
+/* ---------- layers of the condensed page: id, top (css px of the 390 layout), landing beat ---------- */
+const L0=[
+ ['nav',0,8],['spec',96,9],['name1',man.name1.y,10],['name2',man.name2.y,11],['tag',353,12],['meta1',463,13],['meta2',488,13.5],
+ ['mq',570,14,'dom',390,120],['fw',712,15,'dom',390,150],
+ ['cases_head',880,16],['case1',960,17],['case2',1215,18],['case3',1406,19],
+ ['arch_head',1640,20],['tiles1',1720,21,'dom',390,165],['tiles2',1913,22,'dom',390,165],
+ ['about_head',2140,23],['portrait',2220,24],['lead',2600,25],['stats',2810,26],
+ ['tl1',2950,27],['tl2',3123,28],['tl3',3296,29],
+ ['c_title',3490,30],['c_row',3590,31],['footer',3840,32],
+];
+const PAGE_END=3960;
+const R=rng(11);
+const LAY=L0.map(([id,y,b,kind,w,h],i)=>{ const m=man[id]||{x:0,w,h};
+  return {id,kind:kind||'img',x:kind?0:m.x,y,w:kind?w:m.w,h:kind?h:m.h,t:bt(b),i,
+    // exploded pose: toward the camera, off to the side, tilted
+    z:420+R()*1100, dx:(R()-.5)*700, dy:(R()-.5)*500-160, rx:(R()-.5)*26, ry:(R()-.5)*34, rz:(R()-.5)*18, ph:R()*6.28}; });
+
+/* ---------- scenes (dark and light share the structure) ---------- */
+function buildScene(th){
+  const K=PAL[th]; const sc=document.createElement('div'); sc.className='scene'; sc.innerHTML=`<div class="bg" style="background:${K.bg}"></div><canvas class="ink" width="540" height="960"></canvas><div class="view"><div class="cam"><div class="plane" style="height:${PAGE_END*S}px"><div class="grid"></div></div></div></div><div class="flash"></div>`;
+  const plane=sc.querySelector('.plane');
+  plane.querySelector('.grid').style.background=`repeating-linear-gradient(90deg,${K.line} 0 2px,transparent 2px ${358*S/12}px)`;
+  plane.querySelector('.grid').style.left=16*S+'px'; plane.querySelector('.grid').style.width=358*S+'px';
+  const els=LAY.map(l=>{ const d=document.createElement('div'); d.className='ly'; Object.assign(d.style,{left:l.x*S+'px',top:l.y*S+'px',width:l.w*S+'px',height:l.h*S+'px'});
+    if(l.kind==='img'){ const im=new Image(); im.src=`cap/${l.id}_${th}.png`; d.append(im); }
+    else if(l.id==='mq'){ d.classList.add('mq'); d.style.borderTop=d.style.borderBottom=`3px solid ${th==='dark'?'rgba(242,242,242,.10)':'rgba(10,10,10,.10)'}`;
+      const items=man._marquee; [0,1].forEach(r=>{ const row=document.createElement('div'); row.className='row'; row.style.top=(23+r*40)*S+'px'; row.style.fontSize=34*S+'px';
+        const list=r?[...items].reverse():items; row.innerHTML=[...list,...list,...list].map(([txt,o])=>`<span style="${o?`color:transparent;-webkit-text-stroke:3px ${r?K.ink3:K.ink2}`:`color:${r?K.ink2:K.ink}`}">${txt}</span>`).join('');
+        d.append(row); }); d.classList.add(th); }
+    else if(l.id==='fw'){ d.classList.add('fw'); d.innerHTML=`<div class="lab" style="color:${K.ink3}">Чем занимаюсь</div><div class="word" style="top:${40*S}px;color:${K.ink}"><b>Ди</b>зайн-системы</div>`; }
+    else if(l.id.startsWith('tiles')){ d.classList.add('tiles'); const r=l.id==='tiles2'?1:0; const strip=document.createElement('div'); strip.className='strip';
+      const set=man._tiles.slice(r*10,r*10+10); strip.innerHTML=[...set,...set].map(src=>`<i><img src="${src}"></i>`).join(''); d.append(strip); }
+    plane.append(d); return d; });
+  // fit the focus word to the column like the site
+  return {el:sc,K,th,els,cam:sc.querySelector('.cam'),flash:sc.querySelector('.flash'),ink:sc.querySelector('canvas.ink')};
+}
+const stage=document.getElementById('stage');
+const SD=buildScene('dark'), SL=buildScene('light'); stage.append(SD.el,SL.el);
+await Promise.all([...stage.querySelectorAll('img')].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;})));
+for(const sc of [SD,SL]){ const w=sc.el.querySelector('.fw .word'); w.style.fontSize='100px'; const k=358*S/w.scrollWidth; w.style.fontSize=(100*k)+'px'; }
+
+/* ---------- ink (the site's shader) per scene ---------- */
+function makeInk(cv){ const gl=cv.getContext('webgl',{antialias:false,alpha:true,premultipliedAlpha:true,preserveDrawingBuffer:true});
+  const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs=`precision highp float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float L;uniform float A;
+  vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}
+  float snoise(vec2 v){const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);vec2 i=floor(v+dot(v,C.yy));vec2 x0=v-i+dot(i,C.xx);vec2 i1=(x0.x>x0.y)?vec2(1.,0.):vec2(0.,1.);vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;i=mod289(i);vec3 p=permute(permute(i.y+vec3(0.,i1.y,1.))+i.x+vec3(0.,i1.x,1.));vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);m=m*m;m=m*m;vec3 x=2.*fract(p*C.www)-1.;vec3 h=abs(x)-.5;vec3 ox=floor(x+.5);vec3 a0=x-ox;m*=1.79284291400159-.85373472095314*(a0*a0+h*h);vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;return 130.*dot(m,g);}
+  void main(){vec2 uv=gl_FragCoord.xy/r;vec2 p=uv;p.x*=r.x/r.y;vec2 mm=m;mm.x*=r.x/r.y;float d=length(p-mm);
+  float n=snoise(p*1.3+vec2(t*.04,-t*.03));float n2=snoise(p*3.1-vec2(t*.02,t*.05)+n*.8);
+  float f=smoothstep(-.2,1.1,n+n2*.5);float ring=exp(-d*2.5)*.25;
+  float v=mix(.0,.42,f)+ring; float vig=smoothstep(1.5,.25,length(uv-vec2(.5,.55))); v*=vig*A;
+  gl_FragColor=L<.5?vec4(vec3(v),v*.9):vec4(vec3(0.),v*.55);}`;
+  const sh=(ty,src)=>{const o=gl.createShader(ty);gl.shaderSource(o,src);gl.compileShader(o);return o;};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const U=n=>gl.getUniformLocation(pr,n); gl.viewport(0,0,540,960);
+  return (t,Lv,A)=>{ gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.uniform2f(U('r'),540,960); gl.uniform1f(U('t'),t*1.5+40);
+    gl.uniform2f(U('m'),.5+.25*Math.sin(t*.7),.5+.2*Math.cos(t*.5)); gl.uniform1f(U('L'),Lv); gl.uniform1f(U('A'),A); gl.drawArrays(gl.TRIANGLE_STRIP,0,4); }; }
+SD.draw=makeInk(SD.ink); SL.draw=makeInk(SL.ink);
+
+/* ---------- camera ---------- */
+// build: the camera follows the layer that is landing; overview: the whole page tilted; finale: the hero head-on
+const FOCUS=LAY.map(l=>[l.t,l.y+l.h/2]).sort((a,b)=>a[0]-b[0]);
+function followY(t){ let y=420; for(let i=0;i<FOCUS.length;i++){ const [t0,v]=FOCUS[i]; if(t>=t0){ const prev=i?FOCUS[i-1][1]:420; y=lerp(prev,v,E.io3(seg(t,t0,t0+.45))); } } return y; }
+const PICK=[2,17,1,24,10,19,4,7];                           // intro: one detail per beat
+const CUT=[[22,-14,1.5],[36,12,1.35],[16,-6,1.7],[30,18,1.3],[26,-20,1.45],[40,8,1.3],[18,-10,1.6],[28,14,1.4]];
+const ANG={2:[28,-11],3:[36,10],4:[24,-17],5:[40,7],6:[26,-9],7:[34,13]};   // build: angle per bar
+function camera(t){
+  if(t<bt(8)){ const b=Math.min(7,Math.floor(t/BEAT)), l=LAY[PICK[b]], [ax,az,sc]=CUT[b], k=seg(t,bt(b),bt(b+1));
+    return {ax,az:az+k*3,sc:sc+k*.06,y:l.y+l.h/2,tz:lerp(-120,40,k)}; }
+  const bar=Math.floor(t/(4*BEAT)), [a1,z1]=ANG[bar]||ANG[7], [a0,z0]=ANG[bar-1]||ANG[2], kb=E.io3(seg(t,bar*4*BEAT,bar*4*BEAT+.5));
+  let ax=lerp(a0,a1,kb), az=lerp(z0,z1,kb), sc=1.02, y=followY(t), tz=0;
+  const ov=E.io3(seg(t,bt(32.3),bt(34.2)));                    // overview of the whole page
+  ax=lerp(ax,50,ov); az=lerp(az,-28-(t-bt(32.3))*5*ov,ov); sc=lerp(sc,.42,ov); y=lerp(y,PAGE_END/2,ov);
+  if(t>=bt(36)){ const k=seg(t,bt(36),T); ax=0; az=0; sc=1+.035*E.io(k); y=(760-150)/S/sc; tz=0; }   // the hero, as on the phone
+  return {ax,az,sc,y,tz};
+}
+
+/* ---------- frame ---------- */
+function pose(l,t,final){
+  if(final) return {x:0,y:0,z:0,rx:0,ry:0,rz:0,blur:0,op:1,br:1,sh:0};
+  // overview: a gentle exploded lift so the details read as layers
+  const ov=E.io3(seg(t,bt(32.3),bt(34.2)))*(1-seg(t,bt(35.4),bt(36)));
+  const k=E.expo(seg(t,l.t,l.t+.34)), drift=1-k;
+  const fl=Math.sin(t*1.1+l.ph);
+  let z=(l.z+fl*50)*drift, x=(l.dx+fl*20)*drift, y=(l.dy+Math.cos(t*.9+l.ph)*24)*drift;
+  let rx=l.rx*drift, ry=l.ry*drift, rz=l.rz*drift;
+  if(k>=1&&ov>0){ z+=ov*(40+(l.i%7)*55); }
+  // landing: a small bounce into the plane
+  if(k>0&&k<1){ z-=Math.sin(k*Math.PI)*14; }
+  const landed=t>=l.t;
+  let blur=landed?Math.min(8,Math.abs(z)/80):Math.min(9,1.5+Math.abs(z)/150);
+  let op=landed?1:.8, br=1;
+  // intro: the detail of this beat sits centred and sharp, the rest floats around it out of focus
+  if(t<bt(8)){ const b=Math.min(7,Math.floor(t/BEAT)); if(l.i===PICK[b]){ z=60+Math.sin(t*2)*10; x=0; y=0; rx=ry=rz=0; blur=0; op=1; } else { blur=Math.max(blur,5); op=.55; } }
+  if(landed&&t<l.t+.18) br=1+.7*(1-seg(t,l.t+.06,l.t+.18));     // a click of light as it lands
+  if(t>=bt(7.5)&&t<bt(8)) op*=1-seg(t,bt(7.5),bt(7.5)+.08)*.85;     // the half-beat of silence before the drop
+  return {x,y,z,rx,ry,rz,blur,op,br,sh:Math.min(1,Math.abs(z)/600)};
+}
+function drawScene(sc,t){
+  const K=sc.K, final=t>=bt(36), c=camera(t);
+  const ay=t<bt(8)?930:760; sc.el.querySelector('.view').style.perspectiveOrigin=`540px ${ay}px`;   // intro: the detail sits at the centre of the frame
+  sc.cam.style.transform=`translate3d(540px,${ay}px,${c.tz}px) rotateX(${c.ax}deg) rotateZ(${c.az}deg) scale(${c.sc}) translate3d(-540px,${-c.y*S}px,0)`;
+  sc.els.forEach((el,i)=>{ const l=LAY[i], p=pose(l,t,final);
+    el.style.transform=`translate3d(${p.x}px,${p.y}px,${p.z}px) rotateX(${p.rx}deg) rotateY(${p.ry}deg) rotateZ(${p.rz}deg)`;
+    el.style.opacity=p.op;
+    el.style.filter=`blur(${p.blur.toFixed(2)}px)`+(p.br>1.01?` brightness(${p.br.toFixed(2)})`:'')+(p.sh>.02?` drop-shadow(0 ${Math.round(40*p.sh)}px ${Math.round(60*p.sh)}px ${K.shadow})`:'');
+    if(l.id==='mq'){ const rows=el.querySelectorAll('.row'); rows[0].style.transform=`translateX(${-400-t*160}px)`; rows[1].style.transform=`translateX(${-2400+t*160}px)`; }
+    if(l.id.startsWith('tiles')){ const r=l.id==='tiles2'?1:0; el.querySelector('.strip').style.transform=`translateX(${(r?-3000:-200)+(r?1:-1)*t*110}px)`; } });
+  const A=t<bt(8)?.55:.55+.45*seg(t,bt(8),bt(8.8));
+  sc.draw(t,K.L,final?1:A);
+  // flashes on the drop, the flip and the finale
+  let f=0; for(const f0 of [bt(8),bt(24),bt(36)]){ const k=seg(t,f0,f0+.14); if(k>0&&k<1) f=Math.max(f,.7*(1-k)); }
+  sc.flash.style.opacity=f;
+}
+function render(t){
+  const F0=bt(24), F1=bt(24)+.42, light=t>=F0&&t<bt(36);
+  drawScene(SD,t); if(light) drawScene(SL,t);
+  SL.el.style.display=light?'block':'none';
+  const fk=seg(t,F0,F1); SL.el.style.clipPath=fk<1?`circle(${(Math.hypot(W,H)/2*E.io3(fk)).toFixed(1)}px at 50% 50%)`:'none';
+  stage.style.opacity=1-seg(t,T-.45,T);
+}
+window.__seek=t=>render(t); window.__ready=true;
+const q=new URLSearchParams(location.search); if(q.has('t')) render(+q.get('t'));
+else { const t0=performance.now(); (function loop(n){ render(((n-t0)/1000)%T); requestAnimationFrame(loop); })(t0); }
+})();
+</script>
+</body>
+</html>

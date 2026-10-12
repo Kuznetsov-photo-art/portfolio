@@ -43,6 +43,7 @@ def run(theme):
             time.sleep(2.6 if pid=='portrait' else .35)
             r=json.loads(js(f"JSON.stringify((()=>{{const b=document.querySelector({json.dumps(sel)}).getBoundingClientRect();return [b.left,b.top,b.width,b.height,scrollY]}})())"))
             x,y,w,h,sy=r
+            pad=16 if pid.startswith('name') else 0; y-=pad; h+=2*pad  # name lines: room for й / у outside the .86 line box
             d=cmd('Page.captureScreenshot',format='png',clip={'x':x,'y':y+sy,'width':w,'height':h,'scale':1},captureBeyondViewport=True)['data']
             open(os.path.join(OUT,f'{pid}_{theme or "dark"}.png'),'wb').write(base64.b64decode(d))
             man[pid]={'x':x,'y':y+sy,'w':w,'h':h}
