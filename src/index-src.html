@@ -271,7 +271,7 @@ footer a:hover{color:var(--ink)}
 
 /* ---------- cursor ---------- */
 .cur{position:fixed;z-index:99;left:0;top:0;pointer-events:none;width:10px;height:10px;background:#fff;mix-blend-mode:difference;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-radius .25s;display:none}
-.cur.big{width:64px;height:64px;border-radius:50%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#000}
+.cur.big{width:auto;height:auto;min-width:64px;aspect-ratio:1/1;padding:0 11px;box-sizing:border-box;text-align:center;line-height:1.35;border-radius:50%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#000} /* label centred, one word per line, the circle grows to the longest word (EN «in progress» used to spill out) */
 /* label cursor: frosted glass instead of difference blend, so text under it doesn't mix with the label */
 .cur.big{mix-blend-mode:normal;background:color-mix(in srgb,var(--ink) 72%,transparent);color:var(--bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media(hover:hover) and (pointer:fine){.cur,.cur.big{display:grid;place-items:center}}
@@ -729,7 +729,7 @@ if(FINE)(function loop(){ cx+=(tx-cx)*.25; cy+=(ty-cy)*.25; cur.style.transform=
 function bindCursor(){}
 if(FINE){ let curEl=null;
   const setCur=t=>{ const lab=t&&t.closest&&t.closest('[data-cur]'), hit=lab||(t&&t.closest&&t.closest('a,button,[role="button"],label,summary,.sw')); if(hit===curEl) return; curEl=hit;
-    cur.classList.toggle('big',!!lab); cur.textContent=lab?lab.dataset.cur.toUpperCase():''; cur.style.width=cur.style.height=(hit&&!lab)?'24px':''; };
+    cur.classList.toggle('big',!!lab); cur.innerHTML=lab?lab.dataset.cur.toUpperCase().split(/\s+/).map(w=>w.replace(/[<>&]/g,'')).join('<br>'):''; cur.style.width=cur.style.height=(hit&&!lab)?'24px':''; };
   document.addEventListener('pointerover',e=>setCur(e.target)); document.addEventListener('pointerout',e=>{ if(!e.relatedTarget) setCur(null); }); }
 
 /* ink: monochrome fluid noise */
