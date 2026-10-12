@@ -724,13 +724,13 @@ if(!FINE) cur.remove();
 let cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy;
 addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
 if(FINE)(function loop(){ cx+=(tx-cx)*.25; cy+=(ty-cy)*.25; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
-function bindCursor(){
-  if(!FINE) return;
-  document.querySelectorAll('.row, .a-item, .c-link, .links a').forEach(el=>{
-    el.addEventListener('pointerenter',()=>{ if(el.dataset.cur){ cur.classList.add('big'); cur.textContent=el.dataset.cur.toUpperCase(); } else { cur.style.width='24px'; cur.style.height='24px'; } });
-    el.addEventListener('pointerleave',()=>{ cur.classList.remove('big'); cur.textContent=''; cur.style.width=''; cur.style.height=''; });
-  });
-}
+/* cursor over clickable things — one rule for the whole page: elements with data-cur show the big labelled circle,
+   any other link or button grows the dot to 24 px (works for content rendered later too) */
+function bindCursor(){}
+if(FINE){ let curEl=null;
+  const setCur=t=>{ const lab=t&&t.closest&&t.closest('[data-cur]'), hit=lab||(t&&t.closest&&t.closest('a,button,[role="button"],label,summary,.sw')); if(hit===curEl) return; curEl=hit;
+    cur.classList.toggle('big',!!lab); cur.textContent=lab?lab.dataset.cur.toUpperCase():''; cur.style.width=cur.style.height=(hit&&!lab)?'24px':''; };
+  document.addEventListener('pointerover',e=>setCur(e.target)); document.addEventListener('pointerout',e=>{ if(!e.relatedTarget) setCur(null); }); }
 
 /* ink: monochrome fluid noise */
 (function(){

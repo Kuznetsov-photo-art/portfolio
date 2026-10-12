@@ -570,7 +570,9 @@ $$('.stage').forEach(st=>{
 /* cursor */
 const cur=$('#cur'); let cx=innerWidth/2,cy=innerHeight/2,tx=cx,ty=cy;
 addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY});
-$$('a').forEach(a=>{a.addEventListener('mouseenter',()=>{cur.style.width=cur.style.height='36px'});a.addEventListener('mouseleave',()=>{cur.style.width=cur.style.height='10px'})});
+/* cursor grows to 24 px over any link or button — same rule as the home page */
+let curEl=null; const setCur=t=>{ const hit=t&&t.closest&&t.closest('a,button,[role="button"],label,summary,.sw'); if(hit===curEl) return; curEl=hit; cur.style.width=cur.style.height=hit?'24px':''; };
+document.addEventListener('pointerover',e=>setCur(e.target)); document.addEventListener('pointerout',e=>{ if(!e.relatedTarget) setCur(null); });
 
 /* reveals */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});

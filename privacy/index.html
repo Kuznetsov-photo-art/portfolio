@@ -112,6 +112,9 @@ html.glitch main,html.glitch footer{animation:glx .28s steps(1,end) 1}
 html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch footer *,html.glitch .nav *{animation:gls .28s steps(1,end) 1}
 @keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
 @keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
+/* cursor dot — same as the home page: follows the mouse, grows to 24 px over links and buttons; mouse devices only */
+.cur{position:fixed;z-index:200;left:0;top:0;pointer-events:none;width:10px;height:10px;border-radius:50%;background:#fff;mix-blend-mode:difference;transform:translate(-50%,-50%);transition:width .25s,height .25s;display:none}
+@media(hover:hover) and (pointer:fine){.cur{display:block}}
 </style>
 </head>
 <body>
@@ -215,6 +218,7 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
   <a href="/"><span lang="ru">На главную</span><span lang="en">Home</span></a>
 </footer>
 
+<div class="cur" id="cur" aria-hidden="true"></div>
 <button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
 
 <script>
@@ -248,6 +252,12 @@ addEventListener('pageshow',()=>{ try{ const t=localStorage.getItem('theme'); if
 document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',e=>{
   try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
 }));
+/* cursor */
+(()=>{ const cur=document.getElementById('cur'); if(!matchMedia('(hover:hover) and (pointer:fine)').matches){ cur.remove(); return; }
+  let cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy, curEl=null; addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
+  (function loop(){ cx+=(tx-cx)*.25; cy+=(ty-cy)*.25; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+  const setCur=t=>{ const hit=t&&t.closest&&t.closest('a,button,[role="button"],label,summary,.sw'); if(hit===curEl) return; curEl=hit; cur.style.width=cur.style.height=hit?'24px':''; };
+  document.addEventListener('pointerover',e=>setCur(e.target)); document.addEventListener('pointerout',e=>{ if(!e.relatedTarget) setCur(null); }); })();
 /* back to top */
 (()=>{const b=document.getElementById('totop');
   /* at the page end the button parks with its centre on the footer's top line instead of covering the links */
