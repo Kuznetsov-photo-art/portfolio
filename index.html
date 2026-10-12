@@ -79,8 +79,9 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 .pre .l{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line)}
 .pre .l i{display:block;height:100%;width:0;background:var(--ink)}
 body.loading{overflow:hidden}
-/* HERO2 reel: overlay above the page (below the grain and the cursor) while the intro plays; fades into the hero it lands on */
-.reel{position:fixed;inset:0;z-index:89;background:var(--bg);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
+/* HERO2 reel: overlay above the page and the grain (so it starts exactly in the curtain colour), below the cursor while the intro plays; fades into the hero it lands on */
+html{scrollbar-gutter:stable} /* the scrollbar coming back after the preloader/reel must not change the page width (Mac with a mouse): no reflow, no resize */
+.reel{position:fixed;inset:0;z-index:91;background:var(--bg);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
 .reel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .reel.out{opacity:0;pointer-events:none}.reel.out.fast{transition-duration:.45s}
 body.reeling{overflow:hidden}
@@ -968,16 +969,18 @@ function startReel(){
 
   /* ---------- particles: board pixels → name pixels ---------- */
   let PT=[];
-  function sample(draw,step,thr){ const o=document.createElement('canvas'); o.width=Math.ceil(W); o.height=Math.ceil(H);
-    const keep=X; X=o.getContext('2d',{willReadFrequently:true}); draw(); const d=X.getImageData(0,0,o.width,o.height).data; X=keep; const pts=[];
-    for(let y=0;y<o.height;y+=step) for(let x=0;x<o.width;x+=step){ if(d[(y*o.width+x)*4+3]>thr) pts.push([x,y]); } return pts; }
+  function sample(draw,box,sc,step,thr){ // draws into a small offscreen canvas (box, scale sc) and returns page coords of filled cells
+    const o=document.createElement('canvas'); o.width=Math.max(1,Math.ceil(box.w*sc)); o.height=Math.max(1,Math.ceil(box.h*sc));
+    const keep=X; X=o.getContext('2d',{willReadFrequently:true}); X.setTransform(sc,0,0,sc,-box.x*sc,-box.y*sc); draw(); const d=X.getImageData(0,0,o.width,o.height).data; X=keep; const pts=[];
+    for(let y=0;y<o.height;y+=step) for(let x=0;x<o.width;x+=step){ if(d[(y*o.width+x)*4+3]>thr) pts.push([box.x+x/sc,box.y+y/sc]); } return pts; }
+  let ready=false;
   function prepare(){
-    const step=Math.max(3,Math.round(L.fs/30));
-    const tgt=sample(()=>{X.fillStyle='#fff'; X.textBaseline='alphabetic'; nameRuns().forEach(r=>{X.font=font(300,L.fs,DISPLAY);X.fillText(r.c,r.x,r.y);});},step,128);
-    const src=sample(()=>comps().forEach(c=>drawComp(c,1,0)),2,60);
+    const step=Math.max(3,Math.round(L.fs/30)), runs0=nameRuns(), nb={x:L.hp-8,y:L.b[0]-L.fs,w:Math.max(...runs0.map(r=>r.x+r.m))-L.hp+16,h:L.b[1]-L.b[0]+L.fs*1.3};
+    const tgt=sample(()=>{X.fillStyle='#fff'; X.textBaseline='alphabetic'; nameRuns().forEach(r=>{X.font=font(300,L.fs,DISPLAY);X.fillText(r.c,r.x,r.y);});},nb,1,step,128);
+    const src=sample(()=>comps().forEach(c=>drawComp(c,1,0)),{x:0,y:0,w:W,h:H},.5,1,60);
     const R=rng(7), runs=nameRuns(), nx0=L.hp, nw=Math.max(...runs.map(r=>r.x+r.m))-nx0;
     PT=tgt.map(([tx,ty])=>{ const s=src.length?src[Math.floor(R()*src.length)]:[W/2,H/2]; const dx=tx-s[0],dy=ty-s[1],len=Math.hypot(dx,dy)||1, off=(R()-.5)*len*.8;
-      return {sx:s[0],sy:s[1],tx:tx+step/2,ty:ty+step/2,cx:(s[0]+tx)/2-dy/len*off,cy:(s[1]+ty)/2+dx/len*off,dl:cl((tx-nx0)/nw)*.75+R()*.3,r:step*.47}; });
+      return {sx:s[0],sy:s[1],tx:tx+step/2,ty:ty+step/2,cx:(s[0]+tx)/2-dy/len*off,cy:(s[1]+ty)/2+dx/len*off,dl:cl((tx-nx0)/nw)*.75+R()*.3,r:step*.47}; }); ready=true;
   }
 
   /* ---------- scenes ---------- */
@@ -992,7 +995,7 @@ function startReel(){
       else { X.strokeStyle=a(.55); X.lineWidth=1; X.beginPath(); X.moveTo(cxm-half,Math.round(cym)+.5); X.lineTo(cxm+half,Math.round(cym)+.5); X.stroke();
         [cxm-half,cxm+half].forEach(x=>{X.beginPath();X.arc(x,cym,r*(1-split*.4),0,7);X.fill();}); }
       X.globalAlpha=1; }
-    { const al=lerp(.14,.05,seg(t,11,13.5)), top=L.heroTop, hh=L.heroH;
+    { const al=.05, top=L.heroTop, hh=L.heroH; // exactly the hero's gridlines (opacity .5 × line .10)
       const gr=X.createLinearGradient(0,top,0,top+hh); gr.addColorStop(0,a(0)); gr.addColorStop(.3,a(al)); gr.addColorStop(.7,a(al)); gr.addColorStop(1,a(0));
       X.strokeStyle=gr; X.lineWidth=1;
       for(let i=0;i<12;i++){ const k=E.o5(seg(t,1.3+i*.035,2.2+i*.035)); if(k<=0) continue; const x=Math.round(L.grid.x+L.grid.w*i/12)+.5;
@@ -1012,6 +1015,7 @@ function startReel(){
       if(kn){ const R=Math.hypot(Math.max(kn[0],W-kn[0]),Math.max(kn[1],H-kn[1])), r=R*E.io3(seg(t,6.85,7.4))*(1-E.io3(seg(t,7.5,8.0)));
         if(r>.5){ const keep=K; X.save(); X.beginPath(); X.arc(kn[0],kn[1],r,0,7); X.clip(); K=keep===PAL.light?PAL.dark:PAL.light; X.fillStyle=K.bg; X.fillRect(0,0,W,H); board(t,al); K=keep; X.restore(); } } }
     // D · board dissolves into dots that fly into the name
+    if(!ready&&t>=7.9) prepare();
     const flyT=t-8.1, solid=E.io(seg(t,10.5,11.2));
     if(flyT>0&&solid<1){ X.fillStyle=K.ink; X.beginPath();
       for(const p of PT){ const k=E.io3(cl((flyT-p.dl)/1.45)), ik=1-k, x=ik*ik*p.sx+2*ik*k*p.cx+k*k*p.tx, y=ik*ik*p.sy+2*ik*k*p.cy+k*k*p.ty;
@@ -1068,17 +1072,21 @@ function startReel(){
   }
 
   /* ---------- run ---------- */
+  let tNow=0;
   function size(){ DPR=Math.min(devicePixelRatio||1,2); layout(); C.width=Math.round(W*DPR); C.height=Math.round(H*DPR);
-    if(gl){ const d=Math.min(devicePixelRatio||1,1.5); INKC.width=Math.round(W*d); INKC.height=Math.round(H*d); gl.viewport(0,0,INKC.width,INKC.height); } prepare(); }
-  scrollTo(0,0); document.body.classList.add('reeling'); size();
+    if(gl){ const d=Math.min(devicePixelRatio||1,1.5); INKC.width=Math.round(W*d); INKC.height=Math.round(H*d); gl.viewport(0,0,INKC.width,INKC.height); }
+    ready=false; if(tNow>=7.9) prepare(); renderInk(tNow); render(tNow); } // redraw at once: a resized canvas is blank until drawn
   const t0=performance.now(); if(window.inkSync) inkSync(40); // the hero ink runs on the same clock, so the hand-off has no jump
+  scrollTo(0,0); document.body.classList.add('reeling'); size();
+  const idle=window.requestIdleCallback||(f=>setTimeout(f,1));
+  setTimeout(()=>idle(()=>{ if(!ready) prepare(); },{timeout:1500}),2600); // particles are built while the words play, not on the curtain
   let done=false, out=false;
-  function finish(fast){ if(out) return; out=true; box.classList.add('out'); if(fast) box.classList.add('fast'); document.body.classList.remove('reeling');
-    ['wheel','touchstart','keydown','pointerdown'].forEach(e=>removeEventListener(e,skip)); setTimeout(()=>{done=true; box.remove(); removeEventListener('resize',size);},fast?500:900); }
+  function finish(fast){ if(out) return; out=true; box.classList.add('out'); if(fast) box.classList.add('fast'); removeEventListener('resize',size); document.body.classList.remove('reeling');
+    ['wheel','touchstart','keydown','pointerdown'].forEach(e=>removeEventListener(e,skip)); setTimeout(()=>{done=true; box.remove();},fast?500:900); }
   function skip(){ finish(true); }
   ['wheel','touchstart','keydown','pointerdown'].forEach(e=>addEventListener(e,skip,{passive:true}));
   addEventListener('resize',size);
-  (function frame(now){ if(done) return; const t=(now-t0)/1000;
+  (function frame(now){ if(done) return; const t=(now-t0)/1000; tNow=Math.max(0,t);
     const th=themeNow(); if(K!==PAL[th]) K=PAL[th];
     if(lang!==curLang){ curLang=lang; S=TX[lang]||TX.ru; NM=NAME[lang]||NAME.ru; size(); }
     renderInk(Math.max(0,t)); render(Math.max(0,t)); if(t>=14.2) finish(false);
