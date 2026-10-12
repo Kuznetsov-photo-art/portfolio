@@ -122,7 +122,7 @@ body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre —
 .rl .line{position:absolute;background:var(--red)}
 .rl .cap{position:absolute;background:var(--red)}
 .rl span{position:absolute;white-space:nowrap;padding:0 5px;line-height:14px;border-radius:2px;background:color-mix(in srgb,var(--ink) 55%,var(--bg));color:var(--bg)} /* label = a pill in the line colour, dark text (light theme: inverted), centred on the line */
-.rl-top{left:0;right:auto;top:-22px;width:var(--nw,600px);height:1px}
+.rl-top{left:0;right:0;top:-22px;height:1px} /* spans the name block, so it follows the window width */
 .rl-top .line{left:0;right:0;top:0;height:1px;transform-origin:left;transform:scaleX(0);transition:transform 1.2s cubic-bezier(.2,.8,.2,1) .4s}
 .rl-top .cap{width:1px;height:9px;top:-4px}
 .rl-top .cap.a{left:0}.rl-top .cap.b{right:0}
@@ -749,10 +749,15 @@ function kinetic(){
   hero.addEventListener('pointerleave',()=>chs.forEach(c=>c.style.setProperty('--w',300)));
   // intro wave
   chs.forEach((c,i)=>{ setTimeout(()=>{ c.style.setProperty('--w',800); setTimeout(()=>c.style.setProperty('--w',300),420); }, 2300+i*45); });
-  // redline width label
-  const ln=document.querySelector('#hname .ln.a'); if(ln){ const w=Math.round(ln.getBoundingClientRect().width); document.getElementById('rlw').textContent=w+' px'; document.querySelector('.rl-top').style.setProperty('--nw',w+'px'); }
-  const fs=Math.round(parseFloat(getComputedStyle(document.getElementById('hname')).fontSize)); document.getElementById('rlh').textContent=`H1 · ${fs} / 0.86`;
+  rlLabels();
 }
+/* redline labels: real width of the name block and the H1 size, live while the window is resized */
+function rlLabels(){
+  const h=document.getElementById('hname'); if(!h) return;
+  document.getElementById('rlw').textContent=Math.round(h.getBoundingClientRect().width)+' px';
+  document.getElementById('rlh').textContent=`H1 · ${Math.round(parseFloat(getComputedStyle(h).fontSize))} / 0.86`;
+}
+{ let q=0; addEventListener('resize',()=>{ if(!q) q=requestAnimationFrame(()=>{ q=0; rlLabels(); }); }); }
 
 /* cursor */
 const cur=document.getElementById('cur');
