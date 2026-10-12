@@ -25,6 +25,8 @@ try:
     for _ in range(80):
         time.sleep(.25)
         if js('window.__ready===true'): break
+    b=js('window.__broken||0')
+    if b: raise SystemExit(f'{b} images failed to load — not recording')
     for i in range(int(T*FPS)):
         js(f'__seek({i/FPS})')
         ff.stdin.write(base64.b64decode(cmd('Page.captureScreenshot',format='jpeg',quality=93)['data']))
