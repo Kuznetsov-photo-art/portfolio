@@ -270,7 +270,9 @@ section{padding-block:clamp(80px,10vw,160px)}
 .c-link{display:inline-flex;align-items:baseline;gap:12px;padding:16px 20px;font-size:15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0;transition:background .25s,color .25s;flex:1 1 auto}
 .c-link:hover{background:var(--ink);color:var(--bg)}
 .c-link .mono{color:inherit;opacity:.6} /* labels (TG, MAIL, IN…) sit on the text baseline, not on the cell centre */
-.c-act{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap} /* «скопировано» for screen readers only; the visible answer is the check mark */
+.toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:95;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:12px 20px;border-radius:999px;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)} /* «Адрес скопирован»: bottom centre, two seconds */
+@media(prefers-reduced-motion:reduce){.toast{transition:opacity .2s;transform:translate(-50%,0)}}
 .c-addr{white-space:nowrap} /* never break the address at its hyphen */
 /* mail cell: the whole cell opens the mail client (stretched mailto link); the copy icon sits above that link */
 .c-mail{position:relative}
@@ -418,12 +420,13 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
   <h2 class="rv" data-i18n-html="c.title">Есть задача?<br><em>Напишите</em></h2>
   <div class="c-row rv">
     <a class="c-link" href="https://t.me/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">TG</span>@Kuznetsov_designer</a>
-    <div class="c-link c-mail"><a class="c-mailto" href="mailto:kuznetsov-photo.art@yandex.ru"><span class="mono">Mail</span><span class="c-addr" id="mail">kuznetsov-photo.art@yandex.ru</span></a><span class="c-act" id="cact" aria-live="polite"></span><button class="c-copy" id="copy" type="button" aria-label="Копировать адрес" title="Копировать адрес"><svg class="i-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5"/></svg><svg class="i-done" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg></button></div>
+    <div class="c-link c-mail"><a class="c-mailto" href="mailto:kuznetsov-photo.art@yandex.ru"><span class="mono">Mail</span><span class="c-addr" id="mail">kuznetsov-photo.art@yandex.ru</span></a><button class="c-copy" id="copy" type="button" aria-label="Копировать адрес" title="Копировать адрес"><svg class="i-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5"/></svg><svg class="i-done" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg></button></div>
     <a class="c-link" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">BE</span>Behance</a>
     <a class="c-link" href="https://www.linkedin.com/in/andrew-kuznetsov-9a84791a4/" target="_blank" rel="noopener"><span class="mono">IN</span>LinkedIn</a>
     <a class="c-link" href="https://career.habr.com/andrew-kuznetsov-1991" target="_blank" rel="noopener"><span class="mono">Habr</span>Career</a>
   </div>
 </section>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <footer>
   <span><span class="cp">©</span> 2026 Andrew Kuznetsov · <span data-i18n="f.rights">Все права защищены</span></span>
@@ -450,7 +453,7 @@ const I18N = {
   'about.p1':'В <strong>Сбере</strong> перевёл все дизайн-системы со Sketch на Figma и с нуля сделал СберСпасибо для Бизнеса. В <strong>ВТБ</strong> вёл дизайн восьми продуктовых команд и дизайн-систему бизнес-блока банка. В <strong>YouGile</strong> за два года команда вырастила DAU в четыре раза',
   'about.p2':'В <strong>Lab4U</strong> построил дизайн-систему, спроектировал кросс-платформенный сервис по заказу анализов и сделал первый в России сервис AI-расшифровок анализов. Сейчас в <strong>Финаме</strong> строю мультибрендовую дизайн-систему для FinamX и Limex и AI-платформы для трейдеров в России и США',
   'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 90–95% моей работы идёт через Claude, ChatGPT и Cursor — от исследований и текстов до сборки дизайн-систем и рабочих прототипов. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды',
-  'c.title':'Есть задача?<br><em>Напишите</em>','c.copy':'Копировать адрес','c.copied':'скопировано',
+  'c.title':'Есть задача?<br><em>Напишите</em>','c.copy':'Копировать адрес','c.copied':'Адрес скопирован',
   'f.rights':'Все права защищены','f.privacy':'Конфиденциальность',
   'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','arch.more':'Показать все {n}','wip':'в работе','soon':'Скоро','focus':'направление',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
@@ -470,7 +473,7 @@ const I18N = {
   'about.p1':'At <strong>Sber</strong> I moved every design system from Sketch to Figma and built SberSpasibo for Business from scratch. At <strong>VTB</strong> I led design across eight product teams and owned the business-banking design system. At <strong>YouGile</strong> the team grew DAU 4× in two years',
   'about.p2':'At <strong>Lab4U</strong> I built the design system, designed a cross-platform lab-test ordering service and shipped Russia’s first AI lab-results interpretation service. Today at <strong>Finam</strong> I’m building a multi-brand design system for FinamX and Limex and AI platforms for traders in Russia and the US',
   'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 90–95% of my work runs through Claude, ChatGPT and Cursor — from research and copy to building design systems and working prototypes. I see this as the core skill of a designer right now and build team processes around it',
-  'c.title':'Have a project?<br><em>Say hello</em>','c.copy':'Copy address','c.copied':'copied',
+  'c.title':'Have a project?<br><em>Say hello</em>','c.copy':'Copy address','c.copied':'Address copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy',
   'f.what':'what I do','view':'view','open':'open','case':'case','arch.more':'Show all {n}','wip':'in progress','soon':'Soon','focus':'focus',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
@@ -656,10 +659,10 @@ addEventListener('pageshow',()=>{ let t='', l=lang; try{ t=localStorage.getItem(
 /* copy the address (the rest of the mail cell opens the mail client) */
 document.getElementById('copy').addEventListener('click',async e=>{
   e.preventDefault(); e.stopPropagation();
-  const b=e.currentTarget, a=document.getElementById('cact'), m=document.getElementById('mail').textContent;
+  const b=e.currentTarget, t=document.getElementById('toast'), m=document.getElementById('mail').textContent;
   try{ await navigator.clipboard.writeText(m); }catch(err){ const r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
-  b.classList.add('done'); a.textContent=I18N[lang]['c.copied']; clearTimeout(b._t);
-  b._t=setTimeout(()=>{ b.classList.remove('done'); a.textContent=''; },1800);
+  b.classList.add('done'); t.textContent=I18N[lang]['c.copied']; t.classList.add('on'); clearTimeout(b._t);
+  b._t=setTimeout(()=>{ b.classList.remove('done'); t.classList.remove('on'); },2000);
 });
 
 /* reveal */
