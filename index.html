@@ -290,13 +290,23 @@ section{padding-block:clamp(80px,10vw,160px)}
 .contact h2{font-size:clamp(40px,9vw,160px);font-weight:300;letter-spacing:-.06em;line-height:.9}
 .contact h2 em{font-style:normal;font-variation-settings:'wght' 800}
 .c-row{display:flex;flex-wrap:wrap;gap:0;margin-top:48px;border:1px solid var(--line);overflow:hidden} /* cells draw right+bottom lines and overlap by 1px; the frame clips the outer ones, so wrapped rows get a divider too */
-.c-link{display:inline-flex;align-items:center;gap:12px;padding:16px 20px;font-size:15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0;transition:background .25s,color .25s;flex:1 1 auto}
+.c-link{display:inline-flex;align-items:baseline;gap:12px;padding:16px 20px;font-size:15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0;transition:background .25s,color .25s;flex:1 1 auto}
 .c-link:hover{background:var(--ink);color:var(--bg)}
-.c-link .mono{color:inherit;opacity:.6}
+.c-link .mono{color:inherit;opacity:.6} /* labels (TG, MAIL, IN…) sit on the text baseline, not on the cell centre */
 .c-act{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding-left:8px;margin-left:auto;opacity:.7} /* «написать» pinned to the right edge of the mail cell; the whole cell is a mailto: link */
 .c-addr{white-space:nowrap} /* never break the address at its hyphen */
+/* mail cell: the whole cell opens the mail client (stretched mailto link); the copy icon sits above that link */
+.c-mail{position:relative}
+.c-mailto{display:inline-flex;align-items:baseline;gap:12px}
+.c-mailto::after{content:'';position:absolute;inset:0}
+.c-copy{position:relative;z-index:1;align-self:center;display:grid;place-items:center;width:28px;height:28px;margin:-6px 0;padding:0;border:0;border-radius:6px;background:none;color:inherit;cursor:pointer;opacity:.55;transition:opacity .2s,background .2s}
+.c-copy:hover,.c-copy:focus-visible{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+.c-copy svg{grid-area:1/1;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;transition:opacity .2s,transform .2s}
+.c-copy .i-done{opacity:0;transform:scale(.6)}
+.c-copy.done{opacity:1}.c-copy.done .i-copy{opacity:0;transform:scale(.6)}.c-copy.done .i-done{opacity:1;transform:none}
+.c-mail .c-act{pointer-events:none}
 @media(max-width:480px){.c-act{display:none}} /* phones: the address takes the whole cell, the cell itself is the link */
-@media(max-width:360px){.c-link:has(.c-addr){padding-inline:14px;gap:10px}.c-addr{font-size:13px}} /* 320 px phones: the whole address still fits */
+@media(max-width:360px){.c-link:has(.c-addr){padding-inline:14px;gap:8px}.c-addr{font-size:13px}.c-mailto .mono{display:none}} /* 320 px phones: the address and the copy icon still fit; the address speaks for itself */
 footer{padding:28px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 footer .cp{font-family:var(--body);font-size:1.5em;line-height:0;letter-spacing:0;vertical-align:-.1em} /* © in the mono font is tiny — draw it with the body font at cap height */
 footer nav{display:flex;gap:20px;flex-wrap:wrap}
@@ -434,7 +444,7 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
   <h2 class="rv" data-i18n-html="c.title">Есть задача?<br><em>Напишите</em></h2>
   <div class="c-row rv">
     <a class="c-link" href="https://t.me/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">TG</span>@Kuznetsov_designer</a>
-    <a class="c-link" href="mailto:kuznetsov-photo.art@yandex.ru"><span class="mono">Mail</span><span class="c-addr">kuznetsov-photo.art@yandex.ru</span><span class="c-act" data-i18n="c.write">написать</span></a>
+    <div class="c-link c-mail"><a class="c-mailto" href="mailto:kuznetsov-photo.art@yandex.ru"><span class="mono">Mail</span><span class="c-addr" id="mail">kuznetsov-photo.art@yandex.ru</span></a><button class="c-copy" id="copy" type="button" aria-label="Копировать адрес" title="Копировать адрес"><svg class="i-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5"/></svg><svg class="i-done" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg></button><span class="c-act" id="cact" data-i18n="c.write">написать</span></div>
     <a class="c-link" href="https://www.behance.net/Kuznetsov_designer" target="_blank" rel="noopener"><span class="mono">BE</span>Behance</a>
     <a class="c-link" href="https://www.linkedin.com/in/andrew-kuznetsov-9a84791a4/" target="_blank" rel="noopener"><span class="mono">IN</span>LinkedIn</a>
     <a class="c-link" href="https://career.habr.com/andrew-kuznetsov-1991" target="_blank" rel="noopener"><span class="mono">Habr</span>Career</a>
@@ -466,7 +476,7 @@ const I18N = {
   'about.p1':'В <strong>Сбере</strong> перевёл все дизайн-системы со Sketch на Figma и с нуля сделал СберСпасибо для Бизнеса. В <strong>ВТБ</strong> вёл дизайн восьми продуктовых команд и дизайн-систему бизнес-блока банка. В <strong>YouGile</strong> за два года команда вырастила DAU в четыре раза',
   'about.p2':'В <strong>Lab4U</strong> построил дизайн-систему, спроектировал кросс-платформенный сервис по заказу анализов и сделал первый в России сервис AI-расшифровок анализов. Сейчас в <strong>Финаме</strong> строю мультибрендовую дизайн-систему для FinamX и Limex и AI-платформы для трейдеров в России и США',
   'about.p3':'Люблю системы: токены, компоненты, документация, которую читают разработчики. Сегодня 90–95% моей работы идёт через Claude, ChatGPT и Cursor — от исследований и текстов до сборки дизайн-систем и рабочих прототипов. Считаю это главным навыком дизайнера сейчас и строю на нём процессы команды',
-  'c.title':'Есть задача?<br><em>Напишите</em>','c.write':'написать',
+  'c.title':'Есть задача?<br><em>Напишите</em>','c.write':'написать','c.copy':'Копировать адрес','c.copied':'скопировано',
   'f.rights':'Все права защищены','f.privacy':'Конфиденциальность',
   'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','arch.more':'Показать все {n}','wip':'в работе','soon':'Скоро','focus':'направление',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
@@ -486,7 +496,7 @@ const I18N = {
   'about.p1':'At <strong>Sber</strong> I moved every design system from Sketch to Figma and built SberSpasibo for Business from scratch. At <strong>VTB</strong> I led design across eight product teams and owned the business-banking design system. At <strong>YouGile</strong> the team grew DAU 4× in two years',
   'about.p2':'At <strong>Lab4U</strong> I built the design system, designed a cross-platform lab-test ordering service and shipped Russia’s first AI lab-results interpretation service. Today at <strong>Finam</strong> I’m building a multi-brand design system for FinamX and Limex and AI platforms for traders in Russia and the US',
   'about.p3':'I like systems: tokens, components, documentation developers actually read. Today 90–95% of my work runs through Claude, ChatGPT and Cursor — from research and copy to building design systems and working prototypes. I see this as the core skill of a designer right now and build team processes around it',
-  'c.title':'Have a project?<br><em>Say hello</em>','c.write':'write',
+  'c.title':'Have a project?<br><em>Say hello</em>','c.write':'write','c.copy':'Copy address','c.copied':'copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy',
   'f.what':'what I do','view':'view','open':'open','case':'case','arch.more':'Show all {n}','wip':'in progress','soon':'Soon','focus':'focus',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
@@ -596,6 +606,7 @@ function render(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=NB(d[k]);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=NB(d[k]);});
   root.lang=lang;
+  { const cp=document.getElementById('copy'); if(cp){ cp.setAttribute('aria-label',d['c.copy']); cp.title=d['c.copy']; } }
   document.getElementById('lang').innerHTML = lang==='ru' ? '<b>RU</b> / EN' : 'RU / <b>EN</b>';
   // name
   const hn=document.getElementById('hname'); const rls=[...hn.querySelectorAll('.rl')].map(e=>e.outerHTML).join('');
@@ -668,6 +679,15 @@ addEventListener('pageshow',()=>{ let t='', l=lang; try{ t=localStorage.getItem(
   if((root.getAttribute('data-theme')||'')!==t){ applyTheme(t||null); dispatchEvent(new Event('themechange')); }
   if(l!==lang){ lang=l; render(); } });
 
+/* copy the address (the rest of the mail cell opens the mail client) */
+document.getElementById('copy').addEventListener('click',async e=>{
+  e.preventDefault(); e.stopPropagation();
+  const b=e.currentTarget, a=document.getElementById('cact'), m=document.getElementById('mail').textContent;
+  try{ await navigator.clipboard.writeText(m); }catch(err){ const r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+  b.classList.add('done'); a.textContent=I18N[lang]['c.copied']; clearTimeout(b._t);
+  b._t=setTimeout(()=>{ b.classList.remove('done'); a.textContent=I18N[lang]['c.write']; },1800);
+});
+
 /* reveal */
 /* timeline: rows below the fold fade up one after another as they enter; once shown they stay (also across RU/EN re-render) */
 let tlio; const tlSeen=new Set();
@@ -705,6 +725,7 @@ function lockLines(){
     st.transition=st.fontVariationSettings=st.letterSpacing=st.width='';
     h.textContent='';
     lines.forEach((l,i)=>{ if(i) h.append(document.createElement('br')); const s=document.createElement('span'); s.className='ln'; s.textContent=l.join(' '); h.append(s); });
+    if([...h.querySelectorAll('.ln')].some(s=>s.offsetWidth>h.clientWidth+1)) h.textContent=txt; // a locked line wider than the column (narrow window) would widen the whole page — wrap naturally instead
   });
 }
 let llT; addEventListener('resize',()=>{clearTimeout(llT); llT=setTimeout(lockLines,150);});
