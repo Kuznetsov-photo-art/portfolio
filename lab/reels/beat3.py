@@ -135,6 +135,14 @@ st=stab(CH[0][1]+[77],.4,5200)
 for k in range(8): add(st,bt(40)+k*BEAT/2,.45*(.72**k),pan=(.5 if k%2 else -.5))
 add(pad([53,60,65,68],3.6,900),bt(40),.25)
 for k,m in enumerate([77,80,84,89]): add(pluck(m,.6),bt(42)+k*BEAT/2,.12*(1-k/5))
+# ---------- POWER=1: the screen switching on at beat 5 (2.34 s) — a short inhale, then a sub thump, a digital click and a bright zing
+if os.environ.get('POWER')=='1':
+    t0=bt(5)
+    n=int(.28*SR); sw=hp(lp(rng.standard_normal(n),9000),500)*np.linspace(0,1,n)**3; add(sw,t0-.28,.38,fx=True)
+    n=int(.45*SR); tt=np.arange(n)/SR; thump=np.sin(2*np.pi*np.cumsum(45+150*np.exp(-tt*30))/SR)*np.exp(-tt*8); add(np.tanh(thump*1.8),t0,.9,fx=True)
+    n=int(.012*SR); add(hp(rng.standard_normal(n),5000)*np.linspace(1,0,n),t0,.6,fx=True)
+    n=int(.22*SR); tt=np.arange(n)/SR; f=2200+5200*(tt/tt[-1]); zing=np.sin(2*np.pi*np.cumsum(f)/SR)*np.exp(-tt*22); add(zing,t0,.22,pan=.2,fx=True)
+    n=int(.6*SR); tt=np.arange(n)/SR; air=bp(rng.standard_normal(n),2500,9000)*np.exp(-tt*7); add(air,t0,.18,pan=-.2,fx=True)
 # ---------- mix: hard sidechain, room, glue, silence before the drop
 duck=np.ones(N)
 for kt in KICKS:
@@ -146,5 +154,5 @@ L2=hp(L2,25); R2=hp(R2,25)
 m=np.tanh(np.stack([L2,R2],1)*1.35); m/=np.abs(m).max()/0.9
 g=np.ones(N); i0,i1,i2=at(bt(27.5)-.015),at(bt(27.5)+.02),at(bt(28)-.003); g[i0:i1]=np.linspace(1,.01,i1-i0); g[i1:i2]=.01; m*=g[:,None]
 fn=int(.8*SR); m[-fn:]*=np.linspace(1,0,fn)[:,None]
-out=os.path.join(os.path.dirname(os.path.abspath(__file__)),'reel2-beat-v2.wav')
+out=os.path.join(os.path.dirname(os.path.abspath(__file__)),'reel2-beat-v3.wav' if os.environ.get('POWER')=='1' else 'reel2-beat-v2.wav')
 wavfile.write(out,SR,(m*32767).astype(np.int16)); print(out,f'{DUR}s',f'beat {BEAT:.5f}s')
