@@ -196,7 +196,7 @@ function render(t){
   if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
   let fl=0, bl=0, g=0; const P0=PHS[0];
   if(t<bt(8)){                                                     // A · reveal from the dark
-    const k=E.io3(seg(t,0,bt(8))), on=E.o3(seg(t,2.6,3.3)), rim=lerp(-80,260,E.io(seg(t,.55,2.8))), rimA=Math.sin(Math.PI*seg(t,.55,2.9))*1+.12*on, lit=E.io(seg(t,1.0,2.7));
+    const k=E.io3(seg(t,0,bt(8))), on=E.o3(seg(t,2.6,3.3)), rim=lerp(-80,260,E.io(seg(t,.05,2.4))), rimA=Math.sin(Math.PI*seg(t,.05,2.6))*1+.12*on, lit=E.io(seg(t,.3,2.2));   // light arrives almost at once
     if(MODE==='phone') setDev(P0,{t,lit,y:-30+20*(1-k),z:lerp(-700,0,k),ry:lerp(40,16,k),rx:lerp(14,5,k),rz:lerp(-4,-2,k),s:lerp(1.12,1.04,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
     else { setDev(DISP,{t,lit,y:SWAP?20:-120,z:lerp(-700,0,k),ry:lerp(-42,-10,k),rx:lerp(14,5,k),rz:lerp(3,1,k),s:lerp(1.02,.98,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
       const kp=E.o5(seg(t,2.0,3.4)); if(!SWAP) setDev(P0,{t,lit,x:lerp(820,90,kp),y:470,z:300,ry:lerp(-42,-10,k),rx:4,rz:-5,s:.5,on,rim:rim+40,rimA:.7*kp,op:kp>0?1:0,gl:t*60}); }
@@ -252,9 +252,10 @@ function render(t){
   }
   if(t>=bt(40)){                                                   // F · head-on, the address
     const k=seg(t,bt(40),T), e=E.io(k), st=E.o3(seg(t,bt(40),bt(41.5))), rim=lerp(-40,220,seg(t,bt(40.4),bt(43))), rimA=Math.sin(Math.PI*seg(t,bt(40.4),bt(43)))*.85;
-    if(MODE!=='both') setDev(P0,{t,y:-60,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e),on:1,op:1,rimA,rim,gl:lerp(-300,300,k)});
+    if(MODE!=='both') setDev(P0,{t,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e),on:1,op:1,rimA,rim,gl:lerp(-300,300,k)});
     else { setDev(DISP,{t,y:-200,ry:lerp(-6,0,st),rx:lerp(5,0,st),s:lerp(1,1.03,e),on:1,op:1,rimA:rimA*.8,rim,gl:lerp(-300,300,k)});
       setDev(P0,{t,x:90,y:470,z:300,ry:lerp(-6,0,st),rx:lerp(5,0,st),rz:-5,s:.5*lerp(1,1.03,e),on:1,op:1,rimA,rim:rim+30,gl:lerp(-300,300,k)}); }
+    if(MODE!=='both') url.style.top='1618px';                    // phone + address centred as one block
     url.style.opacity=E.o3(seg(t,bt(41.2),bt(42.4))); url.style.transform=`translateY(${(14*(1-E.o3(seg(t,bt(41.2),bt(42.4))))).toFixed(1)}px)`;
     if(MODE==='both') url.style.top='230px';   // above the display, clear of the phone
     g=.075;
@@ -264,7 +265,7 @@ function render(t){
   const WB=SWAP?E.io3(seg(t,bt(27.5),bt(28))):0, bgw=document.getElementById('bgw');
   if(WB>0){ bgw.style.display='block'; bgw.style.clipPath=WB<1?`circle(${(Math.hypot(540,960)*WB).toFixed(1)}px at 50% 50%)`:'none'; } else bgw.style.display='none';
   url.style.color=WB>=1?'#4A4A4A':'#A3A3A3';
-  glow.style.background=WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?79:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
+  glow.style.background=WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?82:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
     :g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
   flash.style.opacity=fl; black.style.opacity=Math.max(bl,seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
