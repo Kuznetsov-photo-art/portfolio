@@ -97,12 +97,29 @@ try:
         json.dump({'clip':clip,'rows':[[r[0]-clip['y'],r[1]-clip['y']] for r in A],'frames':N,'fps':FPS,'dsf':3},open(os.path.join(d,'meta.json'),'w'))
         print('archive',N,{k:round(v) for k,v in clip.items()})
 
+    if 'focus' in ONLY:                                     # «What I do»: the weight wave travels across «Product approach», the grid flickers behind
+        top=js("document.getElementById('focus').getBoundingClientRect().top+scrollY"); total=js("document.getElementById('focus').offsetHeight-innerHeight"); N3=js("document.querySelectorAll('#fwords .kw').length")
+        y0=top+total*((N3-1)/N3+.12); js(f"scrollTo(0,{y0}); focusUpdate(true);"); time.sleep(.3)
+        for _ in range(6): js('__step(1000/30)')                                         # IntersectionObserver → the grid loop is visible
+        js("focusUpdate(true)"); time.sleep(2.5)                                          # the last word slides in (CSS transition, real time)
+        for _ in range(60): js('__step(1000/30)')
+        print('grid probe',js("(()=>{const c=document.getElementById('fgrid'),g=c.getContext('2d'),d=g.getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<d.length;i+=4*97) if(d[i]>40) n++;return [c.width,c.height,n,getComputedStyle(c).opacity,getComputedStyle(c).display]})()"))
+        clip={'x':0,'y':0,'width':1440,'height':900}
+        d=outdir('focus'); N=16
+        for f in range(N):
+            lp=.12+.76*f/(N-1); js(f"scrollTo(0,{top+total*((N3-1+lp)/N3)}); focusUpdate();"); js('__step(1000/30)'); time.sleep(.05)
+            shot(os.path.join(d,f'{f:04d}.jpg'),clip)
+        W=json.loads(js("JSON.stringify((()=>{const w=document.querySelector('#fwords .kw.on').getBoundingClientRect();return [w.left,w.top,w.right,w.bottom]})())"))
+        json.dump({'clip':clip,'word':W,'frames':N,'fps':FPS},open(os.path.join(d,'meta.json'),'w'))
+        print('focus',N,'word',[round(v) for v in W])
+
     if 'about' in ONLY:
         js("scrollTo(0,document.querySelector('#about .portrait').getBoundingClientRect().top+scrollY-120)"); time.sleep(.8)
+        js("[...document.querySelectorAll('.rv,.rv-wait')].forEach(e=>e.classList.add('in'))")
         for _ in range(9): js('__step(1000/30)')            # the portrait starts assembling (IntersectionObserver fired on scroll)
         B=json.loads(js("""JSON.stringify((()=>{const p=document.querySelector('#about .portrait').getBoundingClientRect(),l=document.querySelector('#about .lead').getBoundingClientRect(),a=document.querySelector('#about .about').getBoundingClientRect();
           return {p:[p.left,p.top,p.right,p.bottom],l:[l.left,l.top,l.right,l.bottom],a:[a.left,a.right]};})())"""))
-        top=min(B['p'][1],B['l'][1])-20; bot=max(B['p'][3],B['l'][3])+20; clip={'x':B['a'][0]-20,'y':top,'width':B['a'][1]-B['a'][0]+40,'height':bot-top}
+        top=min(B['p'][1],B['l'][1])-650; bot=max(B['p'][3],B['l'][3])+550; clip={'x':B['a'][0]-20,'y':top,'width':B['a'][1]-B['a'][0]+40,'height':bot-top}
         nw=js("document.querySelectorAll('#about .lead .wd').length")
         d=outdir('about'); DUR=1.3; N=int(DUR*FPS)+1
         for f in range(N):

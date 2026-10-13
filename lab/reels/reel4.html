@@ -167,14 +167,14 @@ const DISP=MODE==='both'||SWAP?makeDevice('disp'):null;
 const PHS=MODE!=='both'?[makeDevice('phone'),makeDevice('phone',LANG==='en'),makeDevice('phone')]:[makeDevice('phone')];
 
 /* ---------- macro shots ---------- */
-const SHOTS=[['name',.13,.36,.95,[-16,-8],8],['name',.5,.03,2.6,[14,6],10],['spec',.55,.5,2.2,[-12,-4],6],['ctrls',.74,.5,2.4,[16,6],8],
+const SHOTS=[['name',.13,.36,.95,[-16,-8],8],['name',.5,.03,2.6,[14,6],10],['spec',.55,.5,2.2,[-12,-4],6],['ctrls',.758,.5,3.9,[16,6],8],
  ['portrait',.5,.42,1.9,[-10,-3],6],['tag',.74,.2,1.6,[12,4],8],['name',.013,.5,3.2,[-14,-6],4],['name',.5,.72,1.15,[12,5],8]];
 const MAC=SHOTS.map(([id,fx,fy,z,ry,rx])=>{ const d=document.createElement('div'); d.className='macro'; const h=document.createElement('div'); h.className='holder';
   const w=mac[id].w*3, hh=mac[id].h*3; const im=new Image(); im.src=`cap/m_${id}${SUF(LANG)}.png`; Object.assign(im.style,{width:w+'px',height:hh+'px'}); h.append(im);
   d.append(h); FXW.insertBefore(d,document.getElementById('dof')); return {d,h,w,hh,fx,fy,z,ry,rx}; });
 const DOF=document.getElementById('dof');
 /* three of the eight beats show the site's sections instead of cropped words (capture_sections.py): cases, about (text only — the portrait follows), archive */
-const SECS={}; if(LANG==='en') for(const name of ['cases','archive','about']){ const meta=await (await fetch(`cap/sec_${name}_en/meta.json`)).json();
+const SECS={}; if(LANG==='en') for(const name of ['focus','cases','archive','about']){ const meta=await (await fetch(`cap/sec_${name}_en/meta.json`)).json();
   const d=document.createElement('div'); d.className='macro'; const h=document.createElement('div'); h.className='holder';
   const cv=document.createElement('canvas'); cv.width=Math.round(meta.clip.width*(meta.dsf||2)); cv.height=Math.round(meta.clip.height*(meta.dsf||2)); cv.getContext('2d',{willReadFrequently:true});
   Object.assign(cv.style,{position:'absolute',left:0,top:0,width:meta.clip.width+'px',height:meta.clip.height+'px'}); h.append(cv); d.append(h); FXW.insertBefore(d,DOF);
@@ -188,7 +188,21 @@ function showSec(sc,f,tf){ sc.d.style.display='block'; f=Math.max(0,Math.min(sc.
       g.putImageData(im,0,0); } }
   sc.h.style.transform=tf; }
 // beat order: name · name (top) · CASES · ctrls · ABOUT · portrait · ARCHIVE · name (left edge) — spec, tagline and «…etso» close-ups replaced
-const ORDER=SECS.cases?[0,1,'cases',3,'about',4,'archive',6]:[0,1,2,3,4,5,6,7];
+const ORDER=SECS.cases?['focus',1,'cases',3,'about',4,'archive',6]:[0,1,2,3,4,5,6,7];   // the first name close-up → «What I do» in motion
+// the theme toggle rolls from the moon to the sun (the theme stays dark): frames over the ctrls close-up (capture_toggle.py)
+const ROLL=SECS.cases?Array.from({length:15},(_,i)=>{ const im=new Image(); im.src=`cap/ctrls_roll_en/${String(i).padStart(4,'0')}.png`; return im; }):[];
+await Promise.all(ROLL.map(im=>im.complete&&im.naturalWidth?1:new Promise(r=>{im.onload=im.onerror=r;})));
+if(ROLL.length){ const m=MAC[3], cv=document.createElement('canvas'); cv.width=m.w; cv.height=m.hh; Object.assign(cv.style,{position:'absolute',left:0,top:0,width:m.w+'px',height:m.hh+'px'});
+  m.h.querySelector('img').style.visibility='hidden'; m.h.append(cv); m.roll=cv; }
+// redline plates on the name close-ups: the numbers run like a window being resized (1040 → 1328 px, H1 128 → 166)
+const PLATES=[{x:675.2,y:11.5,w:57.6,h:14,txt:v=>`${v} PX`,from:1040,to:1328,rot:false},{x:11.5,y:126.4,w:14,h:112,txt:v=>`H1 · ${v} / 0.86`,from:128,to:166,rot:true}];
+MAC.forEach((m,i)=>{ if(SHOTS[i][0]!=='name'||!SECS.cases) return; m.plates=PLATES.map(P=>{ const cv=document.createElement('canvas'), M=4;
+  cv.width=(P.w+2*M)*3; cv.height=(P.h+2*M)*3; Object.assign(cv.style,{position:'absolute',left:(P.x-M)*3+'px',top:(P.y-M)*3+'px',width:cv.width+'px',height:cv.height+'px'}); m.h.append(cv); return {P,cv,M,_v:-1}; }); });
+function drawPlates(m,p){ if(!m.plates) return; for(const q of m.plates){ const P=q.P, v=Math.round(lerp(P.from,P.to,p)); if(q._v===v) continue; q._v=v;
+  const g=q.cv.getContext('2d'); g.clearRect(0,0,q.cv.width,q.cv.height); g.save(); g.translate(q.cv.width/2,q.cv.height/2); if(P.rot) g.rotate(-Math.PI/2);
+  const W=(P.rot?P.h:P.w)*3, H=(P.rot?P.w:P.h)*3; g.fillStyle='rgb(138,138,138)'; g.beginPath(); g.roundRect(-W/2,-H/2,W,H,6); g.fill();
+  g.font="400 30px 'JetBrains Mono'"; g.letterSpacing='2.4px'; g.fillStyle='#0A0A0A'; g.textAlign='center'; g.textBaseline='alphabetic';
+  g.fillText(P.txt(v),1.2,g.measureText('H').actualBoundingBoxAscent/2); g.restore(); } }
 const TYPE=document.getElementById('type'); const PHR=LANG==='en'?['I design products','and design systems','with AI']:['Создаю продукты','и дизайн-системы','вместе с AI'];
 const PEL=PHR.map(p=>{ const e=document.createElement('div'); e.className='ph'; e.innerHTML=`<span>${p}</span>`; TYPE.append(e); return e.firstChild; });
 TYPE.style.display='block'; PEL.forEach(e=>{ e.style.fontSize='100px'; e.style.fontSize=Math.min(160,100*940/e.offsetWidth)+'px'; }); TYPE.style.display='none';
@@ -228,8 +242,12 @@ function render(t){
     const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), o=ORDER[i], tb=t-bt(8+i), e=E.io(seg(t,bt(8+i),bt(9+i)));
     DOF.style.display='block'; DOF.style.backdropFilter=DOF.style.webkitBackdropFilter=o==='archive'?'blur(4px)':'blur(11px)';
     if(typeof o==='number'){ const m=MAC[o]; m.d.style.display='block';
+      drawPlates(m,E.o3(seg(tb,0,.42)));
+      if(m.roll){ const g=m.roll.getContext('2d'); g.clearRect(0,0,m.w,m.hh); g.drawImage(ROLL[Math.min(14,Math.floor(tb*30))],0,0,m.w,m.hh); }
       const z=m.z*lerp(1,1.09,e);
       m.h.style.transform=`translate(540px,930px) rotateX(${m.rx}deg) rotateY(${lerp(m.ry[0],m.ry[1],e)}deg) scale(${z}) translate(${-m.w*m.fx}px,${-m.hh*m.fy}px)`; }
+    else if(o==='focus'){ const sc=SECS.focus, Wd=sc.meta.word;         // «What I do»: the weight wave runs across «Product approach», the grid flickers behind
+      showSec(sc,Math.floor(tb*30),`translate(540px,930px) rotateX(11deg) rotateY(${lerp(-15,-8,e)}deg) rotateZ(-2deg) scale(${lerp(1.32,1.42,e)}) translate(${-(Wd[0]+560)}px,${-((Wd[1]+Wd[3])/2-10)}px)`); }
     else if(o==='cases'){ const sc=SECS.cases, R=sc.meta.rows[1];        // YouGile swells into its hover state
       showSec(sc,14+Math.floor(tb*30),`translate(540px,930px) rotateX(10deg) rotateY(${lerp(-14,-8,e)}deg) rotateZ(-2deg) scale(${lerp(1.9,2.02,e)}) translate(${-(R[2]+250)}px,${-(R[0]+R[1])/2}px)`); }
     else if(o==='about'){ const sc=SECS.about, L=sc.meta.lead;           // the lead text lights up word by word; the portrait stays out of frame (it is the next beat)
