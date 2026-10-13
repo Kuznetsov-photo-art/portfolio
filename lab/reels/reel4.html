@@ -182,7 +182,8 @@ const DS=DSEC.map((_,i)=>i*900*DSC), DMAX=(DSEC.length-1)*900*DSC;
 const SEC3=[0,520,880,1640,2140,2560,2950,3490];               // phone line-up
 
 /* ---------- the site's glitch: jitter + red/cyan split, ~0.28 s (stronger on the big hits) ---------- */
-const GL=[...(MODE==='swap'?[[bt(26.5),1.2]]:[]),[bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...[9,10,11,12,13,14,15].map(b=>[bt(b),.45]),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
+const GL=[...(MODE==='swap'?[[bt(26.5),1.2],[T-.58,1.35],[T-.3,.9]]:[]),   // swap: a glitch as the white closes behind the phone, and one more into the fade
+ [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...[9,10,11,12,13,14,15].map(b=>[bt(b),.45]),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
 const GLX=[[0,-4,0],[.18,5,-2],[.36,-2,0],[.54,3,0],[.72,-1,0],[.9,0,0]], GLS=[[0,3],[.3,-4],[.6,2],[.85,0]];
 function glitch(t){ let best=null; for(const [t0,k] of GL){ const p=(t-t0)/.28; if(p>=0&&p<1&&(!best||k>best[1])) best=[p,k]; } return best; }
 function stepVal(tab,p){ let v=tab[0]; for(const r of tab) if(p>=r[0]) v=r; return v; }
@@ -252,8 +253,9 @@ function render(t){
   }
   if(t>=bt(40)){                                                   // F · head-on, the address
     const k=seg(t,bt(40),T), e=E.io(k), st=E.o3(seg(t,bt(40),bt(41.5))), rim=lerp(-40,220,seg(t,bt(40.4),bt(43))), rimA=Math.sin(Math.PI*seg(t,bt(40.4),bt(43)))*.85;
-    if(MODE!=='both'){ const fin=SWAP?seg(t,T-1.2,T-.25):0;          // swap: on the black, a last streak of light runs round the frame — the start, mirrored
-      setDev(P0,{t,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e),on:1,op:1,rimA:Math.max(rimA,Math.sin(Math.PI*fin)),rim:fin>0?lerp(100,440,E.io(fin)):rim,gl:lerp(-300,300,k)}); }
+    if(MODE!=='both'){ const fin=SWAP?seg(t,T-.62,T-.12):0;          // swap: on the black, a last streak of light runs round the frame — the start, mirrored
+      const d=t-(T-.6), bo=!SWAP||d<0?0:d<.16?.06*E.o3(d/.16):d<.38?lerp(.06,-.012,E.io((d-.16)/.22)):d<.52?lerp(-.012,0,E.io((d-.38)/.14)):0;   // bounce: in towards the lens, back out with a small overshoot
+      setDev(P0,{t,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e)*(1+bo),on:1,op:1,rimA:Math.max(rimA,Math.sin(Math.PI*fin)),rim:fin>0?lerp(100,440,E.io(fin)):rim,gl:lerp(-300,300,k)}); }
     else { setDev(DISP,{t,y:-200,ry:lerp(-6,0,st),rx:lerp(5,0,st),s:lerp(1,1.03,e),on:1,op:1,rimA:rimA*.8,rim,gl:lerp(-300,300,k)});
       setDev(P0,{t,x:90,y:470,z:300,ry:lerp(-6,0,st),rx:lerp(5,0,st),rz:-5,s:.5*lerp(1,1.03,e),on:1,op:1,rimA,rim:rim+30,gl:lerp(-300,300,k)}); }
     if(MODE!=='both') url.style.top='1618px';                    // phone + address centred as one block
@@ -264,15 +266,16 @@ function render(t){
   if(t>=bt(8)&&t<bt(8)+.14) fl=Math.max(fl,.6*(1-seg(t,bt(8),bt(8)+.14)));
   // swap: in the pause before the drop a circle opens from the centre and the black turns white (the site's theme switch); the line-up and the finale stand on white
   const WB=SWAP?E.io3(seg(t,bt(27.5),bt(28))):0, bgw=document.getElementById('bgw');
-  const BB=SWAP?E.io3(seg(t,T-1.55,T-.85)):0;                   // at the very end the white closes in: a huge circle shrinks to nothing behind the phone
+  const BB=SWAP?E.io3(seg(t,T-1.05,T-.55)):0;                   // at the very end the white closes in: a huge circle shrinks to nothing behind the phone
   if(WB>0&&BB<1){ bgw.style.display='block'; bgw.style.clipPath=BB>0?`circle(${(1110*(1-BB)).toFixed(1)}px at 50% 47%)`:WB<1?`circle(${(Math.hypot(540,960)*WB).toFixed(1)}px at 50% 50%)`:'none'; } else bgw.style.display='none';
   url.style.color='#A3A3A3'; url.style.mixBlendMode=WB>0?'difference':'normal';   // difference: dark grey on white, light grey on black — even while the edge crosses it
   glow.style.background=BB>.38?'none':WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?82:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
     :g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
-  flash.style.opacity=fl; black.style.opacity=Math.max(bl,SWAP?E.io(seg(t,T-.5,T)):seg(t,T-.6,T));
+  flash.style.opacity=fl; black.style.opacity=Math.max(bl,SWAP?E.io(seg(t,T-.36,T)):seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
   const gt=GLI?`translateX(${GLI.dx.toFixed(1)}px) skewX(${GLI.sk.toFixed(2)}deg)`:'none', gf=GLI&&GLI.rs?GLI.f:'none';
   MAC.forEach(m=>{ m.d.style.transform=gt; m.d.style.filter=gf; }); TYPE.style.transform=gt; TYPE.style.filter=gf;
+  if(t>=bt(40)){ const uy=14*(1-E.o3(seg(t,bt(41.2),bt(42.4)))); url.style.transform=`translateY(${uy.toFixed(1)}px)`+(GLI?' '+gt:''); url.style.filter=gf; } else url.style.filter='none';
 }
 window.__seek=t=>render(t); window.__ready=true;
 const q=new URLSearchParams(location.search); if(q.has('t')) render(+q.get('t'));
