@@ -62,7 +62,7 @@ html,body{margin:0;background:#000;overflow:hidden}
 </style>
 </head>
 <body>
-<div id="stage"><div id="fx" style="position:absolute;inset:0"><div class="glow" id="glow"></div><div class="world" id="world"></div><div class="dof" id="dof"></div><div class="type" id="type"></div><div class="url" id="url">andrewkuznetsov.com</div></div><div class="black" id="black"></div><div class="flash" id="flash"></div></div>
+<div id="stage"><div id="fx" style="position:absolute;inset:0"><div id="bgw" style="position:absolute;inset:0;background:#fff;display:none"></div><div class="glow" id="glow"></div><div class="world" id="world"></div><div class="dof" id="dof"></div><div class="type" id="type"></div><div class="url" id="url">andrewkuznetsov.com</div></div><div class="black" id="black"></div><div class="flash" id="flash"></div></div>
 <script>
 (async()=>{
 const MODE=new URLSearchParams(location.search).get('mode')||'phone';
@@ -224,14 +224,14 @@ function render(t){
       const ds=E.io3(seg(t,bt(24.6),bt(25.8))), ds2=E.io3(seg(t+1/60,bt(24.6),bt(25.8))), dv=Math.abs(ds2-ds)*60*DMAX;
       const out=E.io3(seg(t,bt(25.6),bt(26.5))), inn=E.o3(seg(t,bt(26.5),bt(27.4)));
       if(t<bt(26.5)) setDev(DISP,{t,y:lerp(1500,20,fi),rx:lerp(26,5,fi),ry:lerp(-24,-8,fi)+out*98,s:lerp(1,1.12,out),scroll:ds*DMAX,blur:Math.min(5,dv/1500),on:1,op:1,rimA:.45*fi+.5*out,rim:200+t*80,gl:t*60});
-      else { const ps=E.io3(seg(t,bt(26.5),bt(27.4))), ps2=E.io3(seg(t+1/60,bt(26.5),bt(27.4))), v=Math.abs(ps2-ps)*60*2400;
+      else if(t<bt(27.5)){ const ps=E.io3(seg(t,bt(26.5),bt(27.4))), ps2=E.io3(seg(t+1/60,bt(26.5),bt(27.4))), v=Math.abs(ps2-ps)*60*2400;
         setDev(P0,{t,y:0,rx:lerp(3,7,inn),ry:lerp(-90,-9,inn),rz:1,s:lerp(1.12,1.04,inn),scroll:lerp(2400,0,ps),blur:Math.min(6,v/1200),on:1,op:1,rimA:.6*(1-inn)+.2,rim:200+t*80,gl:t*60}); }
     }
     else { const dv=Math.abs(sc2-sc)*60*DMAX;                       // both fly in together, as one
       const gy=lerp(1500,0,fi), grx=lerp(26,5,fi), gry=lerp(-24,-8,fi);
       setDev(DISP,{t,y:-120+gy,rx:grx,ry:gry,s:1,scroll:sc*DMAX,blur:Math.min(5,dv/1500),on:1,op:1,rimA:.45*fi,rim:200+t*80,gl:t*60});
       setDev(P0,{t,x:90,y:470+gy,z:300,rx:grx,ry:gry,rz:-5,s:.5,scroll:sc*(PAGE_END-900),blur:Math.min(6,pv/1200),on:1,op:1,rimA:.45*fi,rim:230+t*80,gl:t*60}); }
-    if(t>=bt(27.5)) bl=1;
+    if(t>=bt(27.5)&&!SWAP) bl=1;                                  // swap: the pause is a black frame that a white circle opens (below)
   }
   if(t>=bt(28)&&t<bt(40)){                                         // E · the drop — one coherent move, screens snap on every beat, theme flips with the circle
     const b=Math.floor((t-bt(28))/BEAT), kb=E.expo(seg(t,bt(28+b),bt(28+b)+.22)), pin=E.o5(seg(t,bt(28),bt(28)+.45));
@@ -260,7 +260,12 @@ function render(t){
     g=.075;
   } else url.style.opacity=0;
   if(t>=bt(8)&&t<bt(8)+.14) fl=Math.max(fl,.6*(1-seg(t,bt(8),bt(8)+.14)));
-  glow.style.background=g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
+  // swap: in the pause before the drop a circle opens from the centre and the black turns white (the site's theme switch); the line-up and the finale stand on white
+  const WB=SWAP?E.io3(seg(t,bt(27.5),bt(28))):0, bgw=document.getElementById('bgw');
+  if(WB>0){ bgw.style.display='block'; bgw.style.clipPath=WB<1?`circle(${(Math.hypot(540,960)*WB).toFixed(1)}px at 50% 50%)`:'none'; } else bgw.style.display='none';
+  url.style.color=WB>=1?'#4A4A4A':'#A3A3A3';
+  glow.style.background=WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?79:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
+    :g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
   flash.style.opacity=fl; black.style.opacity=Math.max(bl,seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
   const gt=GLI?`translateX(${GLI.dx.toFixed(1)}px) skewX(${GLI.sk.toFixed(2)}deg)`:'none', gf=GLI&&GLI.rs?GLI.f:'none';
