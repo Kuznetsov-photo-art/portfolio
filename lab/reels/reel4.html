@@ -299,7 +299,7 @@ function render(t){
     if(MODE==='both') url.style.top='230px';   // above the display, clear of the phone
     g=.075;
   } else url.style.opacity=0;
-  if(t>=bt(8)&&t<bt(8)+.14) fl=Math.max(fl,.6*(1-seg(t,bt(8),bt(8)+.14)));
+  // no white flash on the first hit — the glitch marks it (flashes greyed the picture)
   // swap: in the pause before the drop a circle opens from the centre and the black turns white (the site's theme switch); the line-up and the finale stand on white
   const WB=SWAP?E.io3(seg(t,bt(27.5),bt(28))):0, bgw=document.getElementById('bgw');
   const BB=SWAP?E.io3(seg(t,T-1.05,T-.55)):0;                   // at the very end the white closes in: a huge circle shrinks to nothing behind the phone

@@ -58,7 +58,7 @@ try:
         js("scrollTo(0,document.getElementById('work').getBoundingClientRect().top+scrollY-260)"); time.sleep(.6)
         R=json.loads(js("""JSON.stringify((()=>{const rows=[...document.querySelectorAll('#cases .row')].map(r=>{const b=r.getBoundingClientRect(),h=r.querySelector('h3').getBoundingClientRect();return [b.top,b.bottom,h.top,h.bottom,h.left,h.right];});
           const s=document.querySelector('#work .sec-head').getBoundingClientRect(); return {rows,head:[s.top,s.bottom]};})())"""))
-        cy0=R['head'][0]-240; cy1=R['rows'][-1][1]+120; clip={'x':0,'y':cy0,'width':1440,'height':cy1-cy0}
+        cy0=R['head'][0]-1100; cy1=R['rows'][-1][1]+1000; clip={'x':0,'y':cy0,'width':1440,'height':cy1-cy0}   # the site runs on far beyond the frame — no edge ever shows, whatever the tilt
         d=outdir('cases'); DUR=1.55; N=int(DUR*FPS)+1; ST=[.12+i*.4 for i in range(4)]
         def hov(i,tau):
             a=tau-ST[i]; up=bez(a/.4) if a>0 else 0
