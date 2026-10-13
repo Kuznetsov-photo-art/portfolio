@@ -2,7 +2,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
+<script>/* language before the first paint: the saved choice, else Russian only for a Russian browser/system; an English visitor sees no Russian flash (safety net 1.5 s) */
+var L0=(function(){try{var s=localStorage.getItem('lang');if(s==='ru'||s==='en')return s;}catch(e){}return /^ru(-|$)/i.test(navigator.language||'')?'ru':'en';})(); document.documentElement.lang=L0; if(L0==='en'){ document.documentElement.classList.add('i18n-wait'); setTimeout(function(){document.documentElement.classList.remove('i18n-wait');},1500); }</script>
 <style>
+html.i18n-wait body{visibility:hidden}
 :root{
   --bg:#FFFFFF; --bg-2:#FFFFFF; --bg-3:#EBEBEB; /* light theme is white, as on the home page */
   --ink:#0A0A0A; --ink-2:#4A4A4A; --ink-3:#8A8A8A;
@@ -655,9 +658,9 @@ requestAnimationFrame(frame);
     document.documentElement.lang=l; document.title=l==='en'?'Obzhora — Andrew Kuznetsov':'Обжора — Andrew Kuznetsov';
     btn.innerHTML=l==='en'?'RU / <b>EN</b>':'<b>RU</b> / EN';
   }
-  let lang='ru'; try{ if(localStorage.getItem('lang')==='en') lang='en'; }catch(e){}
-  apply(lang);
-  addEventListener('pageshow',()=>{ let l='ru'; try{ if(localStorage.getItem('lang')==='en') l='en'; }catch(e){} if(l!==lang){ lang=l; apply(lang); dispatchEvent(new Event('resize')); } });
+  let lang=document.documentElement.lang==='en'?'en':'ru';   // decided in <head> (saved choice, else the browser language)
+  apply(lang); document.documentElement.classList.remove('i18n-wait');
+  addEventListener('pageshow',()=>{ let l=lang; try{ const s=localStorage.getItem('lang'); if(s==='ru'||s==='en') l=s; }catch(e){} if(l!==lang){ lang=l; apply(lang); dispatchEvent(new Event('resize')); } });
   function glitch(){ /* language glitch: instant switch, then ~0.28 s RGB split + jitter (same as the home page) */
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; const d=document.documentElement;
   d.classList.remove('glitch'); void d.offsetWidth; d.classList.add('glitch'); clearTimeout(glitch.t); glitch.t=setTimeout(()=>d.classList.remove('glitch'),300); }

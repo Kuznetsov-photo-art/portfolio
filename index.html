@@ -25,7 +25,10 @@
 <script>/* runs before the first paint (the page is big and mobile browsers paint while it parses):
    the saved theme, and on a repeat visit in this session (or with reduced motion) no preloader / HERO2 reel at all — otherwise they flash for a moment */
 try{ var d=document.documentElement; if(localStorage.getItem('theme')==='light') d.setAttribute('data-theme','light');
-  if(sessionStorage.getItem('pre')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('no-pre'); }catch(e){}</script>
+  if(sessionStorage.getItem('pre')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('no-pre'); }catch(e){}
+/* language: the visitor's own choice wins; otherwise Russian only for a Russian browser/system, English for everyone else.
+   An English visitor sees no Russian flash: translatable text stays hidden until render() (safety net: 1.5 s) */
+var L0=(function(){try{var s=localStorage.getItem('lang');if(s==='ru'||s==='en')return s;}catch(e){}return /^ru(-|$)/i.test(navigator.language||'')?'ru':'en';})(); document.documentElement.lang=L0; if(L0==='en'){ document.documentElement.classList.add('i18n-wait'); setTimeout(function(){document.documentElement.classList.remove('i18n-wait');},1500); }</script>
 <link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
@@ -88,6 +91,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;te
 .pre .l{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line)}
 .pre .l i{display:block;height:100%;width:0;background:var(--ink)}
 body.loading{overflow:hidden}
+html.i18n-wait [data-i18n],html.i18n-wait [data-i18n-html]{visibility:hidden}
 .no-pre .pre,.no-pre .reel{display:none}
 /* HERO2 reel: overlay above the page and the grain (so it starts exactly in the curtain colour), below the cursor while the intro plays; fades into the hero it lands on */
 html{scrollbar-gutter:stable} /* the scrollbar coming back after the preloader/reel must not change the page width (Mac with a mouse): no reflow, no resize */
@@ -602,7 +606,7 @@ const SKILLS = ['Figma','Design Systems','Tokens & Variables','UX Research','CJM
 const MQ = ['Сбер','ВТБ','Финам','Limex','Lab4U','YouGile','VK','Росбанк','Билайн','PrimeXBT','Rubetek','Yota Arena'];
 
 let lang='ru';
-try{ const s=localStorage.getItem('lang'); if(s) lang=s; else if(!/^ru/i.test(navigator.language)) lang='en'; }catch(e){}
+lang=document.documentElement.lang==='en'?'en':'ru';   // decided in <head> before the first paint (saved choice, else the browser language)
 const root=document.documentElement;
 let focusUpdate=null, focusBuild=null;
 
@@ -612,7 +616,7 @@ function render(){
   const d=I18N[lang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=NB(d[k]);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=NB(d[k]);});
-  root.lang=lang;
+  root.lang=lang; root.classList.remove('i18n-wait');
   { const cp=document.getElementById('copy'); if(cp){ cp.setAttribute('aria-label',d['c.copy']); cp.title=d['c.copy']; } }
   document.getElementById('lang').innerHTML = lang==='ru' ? '<b>RU</b> / EN' : 'RU / <b>EN</b>';
   // name
