@@ -173,6 +173,16 @@ const MAC=SHOTS.map(([id,fx,fy,z,ry,rx])=>{ const d=document.createElement('div'
   const w=mac[id].w*3, hh=mac[id].h*3; const im=new Image(); im.src=`cap/m_${id}${SUF(LANG)}.png`; Object.assign(im.style,{width:w+'px',height:hh+'px'}); h.append(im);
   d.append(h); FXW.insertBefore(d,document.getElementById('dof')); return {d,h,w,hh,fx,fy,z,ry,rx}; });
 const DOF=document.getElementById('dof');
+/* site sections instead of the macro shots (capture_sections.py): cases, archive, about — the site's own motion, filmed with a tilted camera */
+const USE_SEC=LANG==='en';
+const SECS=USE_SEC?await Promise.all(['cases','archive','about'].map(async name=>{ const meta=await (await fetch(`cap/sec_${name}_en/meta.json`)).json();
+  const d=document.createElement('div'); d.className='macro'; const h=document.createElement('div'); h.className='holder';
+  const cv=document.createElement('canvas'); cv.width=Math.round(meta.clip.width*2); cv.height=Math.round(meta.clip.height*2);
+  Object.assign(cv.style,{position:'absolute',left:0,top:0,width:meta.clip.width+'px',height:meta.clip.height+'px'}); h.append(cv); d.append(h); FXW.insertBefore(d,DOF);
+  const fr=Array.from({length:meta.frames},(_,i)=>{ const im=new Image(); im.src=`cap/sec_${name}_en/${String(i).padStart(4,'0')}.jpg`; return im; });
+  await Promise.all(fr.map(im=>im.complete&&im.naturalWidth?1:new Promise(r=>{im.onload=im.onerror=r;})));
+  return {name,meta,d,h,cv,fr,_f:-1}; })):[];
+function showSec(sc,f,tf){ sc.d.style.display='block'; f=Math.max(0,Math.min(sc.fr.length-1,f)); if(sc._f!==f){ sc._f=f; sc.cv.getContext('2d').drawImage(sc.fr[f],0,0,sc.cv.width,sc.cv.height); } sc.h.style.transform=tf; }
 const TYPE=document.getElementById('type'); const PHR=LANG==='en'?['I design products','and design systems','with AI']:['Создаю продукты','и дизайн-системы','вместе с AI'];
 const PEL=PHR.map(p=>{ const e=document.createElement('div'); e.className='ph'; e.innerHTML=`<span>${p}</span>`; TYPE.append(e); return e.firstChild; });
 TYPE.style.display='block'; PEL.forEach(e=>{ e.style.fontSize='100px'; e.style.fontSize=Math.min(160,100*940/e.offsetWidth)+'px'; }); TYPE.style.display='none';
@@ -189,7 +199,7 @@ const SEC3=[0,520,880,1640,2140,2560,2950,3490];               // phone line-up
 
 /* ---------- the site's glitch: jitter + red/cyan split, ~0.28 s (stronger on the big hits) ---------- */
 const GL=[...(MODE==='swap'?[[bt(26.5),1.2],[T-1.02,1.35],[T-.78,1.0]]:[]),   // swap: glitches while the white circle is closing in
- [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...[9,10,11,12,13,14,15].map(b=>[bt(b),.45]),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
+ [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...(USE_SEC?[[bt(11),.95],[bt(13.5),.95]]:[9,10,11,12,13,14,15].map(b=>[bt(b),.45])),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
 const GLX=[[0,-4,0],[.18,5,-2],[.36,-2,0],[.54,3,0],[.72,-1,0],[.9,0,0]], GLS=[[0,3],[.3,-4],[.6,2],[.85,0]];
 function glitch(t){ let best=null; for(const [t0,k] of GL){ const p=(t-t0)/.28; if(p>=0&&p<1&&(!best||k>best[1])) best=[p,k]; } return best; }
 function stepVal(tab,p){ let v=tab[0]; for(const r of tab) if(p>=r[0]) v=r; return v; }
@@ -200,7 +210,7 @@ let GLI=null;
 function render(t){
   { const G=glitch(t); if(G){ const [p,k]=G, [,dx,sk]=stepVal(GLX,p), [,rs]=stepVal(GLS,p);
       GLI={dx:dx*3*k,sk:sk*k,rs,f:rs?`drop-shadow(${(rs*3*k).toFixed(1)}px 0 rgba(255,40,80,.85)) drop-shadow(${(-rs*3*k).toFixed(1)}px 0 rgba(0,220,255,.85))`:''}; } else GLI=null; }
-  if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
+  if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); SECS.forEach(x=>x.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
   let fl=0, bl=0, g=0; const P0=PHS[0];
   if(t<bt(8)){                                                     // A · reveal from the dark
     const k=E.io3(seg(t,0,bt(8))), on=E.o3(seg(t,2.6,3.3)), rim=lerp(-80,260,E.io(seg(t,.05,2.4))), rimA=Math.sin(Math.PI*seg(t,.05,2.6))*1+.12*on, lit=E.io(seg(t,.3,2.2));   // light arrives almost at once
@@ -208,7 +218,19 @@ function render(t){
     else { const nwt=t-2.62; setDev(DISP,{t,lit,nw:SWAP&&nwt>=0&&nwt<NWC.frames/30?Math.floor(nwt*30):null,y:SWAP?20:-120,z:lerp(-700,0,k),ry:lerp(-42,-10,k),rx:lerp(14,5,k),rz:lerp(3,1,k),s:lerp(1.02,.98,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
       const kp=E.o5(seg(t,2.0,3.4)); if(!SWAP) setDev(P0,{t,lit,x:lerp(820,90,kp),y:470,z:300,ry:lerp(-42,-10,k),rx:4,rz:-5,s:.5,on,rim:rim+40,rimA:.7*kp,op:kp>0?1:0,gl:t*60}); }
     g=.06*E.io(seg(t,1.2,3.4));
-  } else if(t<bt(16)){                                             // B · macro details, one per beat
+  } else if(t<bt(16)&&USE_SEC){                                    // B · the site's sections: cases (3 beats), archive (2.5), about (2.5)
+    DOF.style.display='block';
+    if(t<bt(11)){ const sc=SECS[0], m=sc.meta, tau=t-bt(8), R=m.rows, cy=i=>(R[i][0]+R[i][1])/2;   // cases: the camera glides down, each title swells as it reaches the centre
+      let y=cy(0); for(let i=1;i<R.length;i++) y=lerp(y,cy(i),E.io3(seg(tau,m.starts[i]-.17,m.starts[i]+.15)));
+      const k=seg(tau,0,bt(3)), fx=R[0][2]+380;                     // whole titles in frame
+      showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(20,12,k)}deg) rotateY(${lerp(-13,-5,k)}deg) rotateZ(${lerp(-2.5,0,k)}deg) scale(${lerp(1.14,1.2,k)}) translate(${-fx}px,${-y}px)`); }
+    else if(t<bt(13.5)){ const sc=SECS[1], m=sc.meta, tau=t-bt(11), R=m.rows, k=seg(tau,0,bt(2.5));       // archive: low, tilted, the rows drift past; one tile presses into colour
+      const y=lerp((R[0][1]+R[1][0])/2,(R[1][0]+R[1][1])/2,E.io(k)), fx=lerp(600,800,E.io(k));
+      showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(28,20,k)}deg) rotateY(${lerp(10,-4,k)}deg) rotateZ(${lerp(-6,-2,k)}deg) scale(${lerp(1.52,1.64,k)}) translate(${-fx}px,${-y}px)`); }
+    else { const sc=SECS[2], m=sc.meta, tau=t-bt(13.5), P=m.portrait, Ld=m.lead, k=E.io(seg(tau,0,bt(2.5)));  // about: from the assembling portrait across to the words lighting up
+      const fx=lerp((P[0]+P[2])/2,(Ld[0]+Ld[2])/2,k), fy=lerp((P[1]+P[3])/2,(Ld[1]+Ld[3])/2,k);   // whole portrait, then the whole text column
+      showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(12,7,k)}deg) rotateY(${lerp(12,-8,k)}deg) rotateZ(${lerp(1.5,-1,k)}deg) scale(${lerp(1.1,1.14,k)}) translate(${-fx}px,${-fy}px)`); }
+  } else if(t<bt(16)){                                             // B · macro details, one per beat (Russian reel: no section captures yet)
     const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), m=MAC[i], e=E.io(seg(t,bt(8+i),bt(9+i)));
     m.d.style.display='block'; DOF.style.display='block';
     const z=m.z*lerp(1,1.09,e);
@@ -280,7 +302,7 @@ function render(t){
   flash.style.opacity=fl; black.style.opacity=Math.max(bl,SWAP?E.io(seg(t,T-.36,T)):seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
   const gt=GLI?`translateX(${GLI.dx.toFixed(1)}px) skewX(${GLI.sk.toFixed(2)}deg)`:'none', gf=GLI&&GLI.rs?GLI.f:'none';
-  MAC.forEach(m=>{ m.d.style.transform=gt; m.d.style.filter=gf; }); TYPE.style.transform=gt; TYPE.style.filter=gf;
+  MAC.forEach(m=>{ m.d.style.transform=gt; m.d.style.filter=gf; }); SECS.forEach(x=>{ x.d.style.transform=gt; x.d.style.filter=gf; }); TYPE.style.transform=gt; TYPE.style.filter=gf;
   if(t>=bt(40)){ const uy=14*(1-E.o3(seg(t,bt(41.2),bt(42.4)))); url.style.transform=`translateY(${uy.toFixed(1)}px)`+(GLI?' '+gt:''); url.style.filter=gf; } else url.style.filter='none';
 }
 window.__seek=t=>render(t); window.__ready=true;
