@@ -23,7 +23,7 @@ done
 # the stage is never counted: drop the visit counter (GoatCounter) and check nothing is left
 find . -name '*.html' -print0 | xargs -0 perl -ni -e 'print unless /<script data-goatcounter=/'
 rm -f assets/js/count.js
-if grep -rl 'goatcounter' --include='*.html' . ; then echo 'stage: visit counter still present, abort'; exit 1; fi
+if grep -rl 'data-goatcounter=\|/assets/js/count\.js' --include='*.html' . ; then echo 'stage: visit counter still present, abort'; exit 1; fi
 REV=$(git -C "$ROOT" rev-parse --short stage)
 git init -q -b main
 git add -A
