@@ -264,12 +264,10 @@ function render(t){
   if(t>=bt(8)&&t<bt(8)+.14) fl=Math.max(fl,.6*(1-seg(t,bt(8),bt(8)+.14)));
   // swap: in the pause before the drop a circle opens from the centre and the black turns white (the site's theme switch); the line-up and the finale stand on white
   const WB=SWAP?E.io3(seg(t,bt(27.5),bt(28))):0, bgw=document.getElementById('bgw');
-  if(WB>0){ bgw.style.display='block'; bgw.style.clipPath=WB<1?`circle(${(Math.hypot(540,960)*WB).toFixed(1)}px at 50% 50%)`:'none'; } else bgw.style.display='none';
-  // …and at the very end a black circle opens from behind the phone: back to the dark, the site's theme switch the other way
-  const BB=SWAP?E.io3(seg(t,T-1.55,T-.85)):0, bgb=document.getElementById('bgb');
-  if(BB>0){ bgb.style.display='block'; bgb.style.clipPath=BB<1?`circle(${(Math.hypot(540,960)*BB).toFixed(1)}px at 50% 47%)`:'none'; } else bgb.style.display='none';
-  url.style.color=WB>=1&&BB<.62?'#4A4A4A':'#A3A3A3';
-  glow.style.background=BB>.5?'none':WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?82:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
+  const BB=SWAP?E.io3(seg(t,T-1.55,T-.85)):0;                   // at the very end the white closes in: a huge circle shrinks to nothing behind the phone
+  if(WB>0&&BB<1){ bgw.style.display='block'; bgw.style.clipPath=BB>0?`circle(${(1110*(1-BB)).toFixed(1)}px at 50% 47%)`:WB<1?`circle(${(Math.hypot(540,960)*WB).toFixed(1)}px at 50% 50%)`:'none'; } else bgw.style.display='none';
+  url.style.color='#A3A3A3'; url.style.mixBlendMode=WB>0?'difference':'normal';   // difference: dark grey on white, light grey on black — even while the edge crosses it
+  glow.style.background=BB>.38?'none':WB>=1?`radial-gradient(ellipse 46% 7% at 50% ${t>=bt(40)?82:74}%,rgba(0,0,0,.22),transparent 70%)`   // a soft floor shadow on white
     :g>0?`radial-gradient(ellipse 60% 38% at 50% 58%,rgba(255,255,255,${g}),transparent 70%)`:'none';
   flash.style.opacity=fl; black.style.opacity=Math.max(bl,SWAP?E.io(seg(t,T-.5,T)):seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
