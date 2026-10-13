@@ -57,8 +57,8 @@ html,body{margin:0;background:#000;overflow:hidden}
 .type .ph span{display:inline-block;font-family:'Unbounded',sans-serif;font-weight:300;letter-spacing:-.045em;line-height:1.1;
   background:linear-gradient(100deg,#555 0%,#555 30%,#fff 46%,#f2f2f2 54%,#555 70%,#555 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
 .url{position:absolute;left:0;right:0;top:1550px;text-align:center;font-family:'Golos Text',sans-serif;font-weight:500;font-size:38px;letter-spacing:.01em;color:#A3A3A3;opacity:0}
-.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
-.black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.flash{position:absolute;inset:-3000px;background:#fff;opacity:0;pointer-events:none}
+.black{position:absolute;inset:-3000px;background:#000;opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
@@ -66,6 +66,13 @@ html,body{margin:0;background:#000;overflow:hidden}
 <script>
 (async()=>{
 const MODE=new URLSearchParams(location.search).get('mode')||'phone';
+/* other formats (?fmt=34 | 11 | 169): the 1080×1920 composition, centred in a W×H frame and scaled per scene —
+   close-ups fill the frame, devices stay whole; the background is black, so nothing shows a seam */
+const FMT=new URLSearchParams(location.search).get('fmt')||'916';
+const FR={'916':[1080,1920],'34':[1080,1440],'11':[1080,1080],'169':[1920,1080]}[FMT];
+const KS={'916':[1,1,1,1,1,1],'34':[.9,1,.9,.88,.84,.76],'11':[.9,1,.9,.66,.84,.56],'169':[1.35,1.78,1.4,.66,1.08,.56]}[FMT];   // devices and type keep ~8% of air to every edge; close-ups stay full-bleed   // reveal · details · phrases · fly-in/swap · line-up · finale
+{ const st=document.getElementById('stage'); if(FMT!=='916'){ document.documentElement.style.background=document.body.style.background='#000';
+    Object.assign(st.style,{left:(FR[0]-1080)/2+'px',top:(FR[1]-1920)/2+'px',overflow:'visible',transformOrigin:'540px 960px'}); } }
 const LANG=new URLSearchParams(location.search).get('lang')||'en';   // devices speak English by default; one phone switches to Russian near the end
 const SUF=l=>l==='en'?'_en':'';
 const BEAT=60/128, T=22.5;
@@ -238,6 +245,7 @@ function stepVal(tab,p){ let v=tab[0]; for(const r of tab) if(p>=r[0]) v=r; retu
 const flash=document.getElementById('flash'), black=document.getElementById('black'), glow=document.getElementById('glow'), url=document.getElementById('url');
 let GLI=null;
 function render(t){ window.__bo=0;
+  if(FMT!=='916'){ const sc=t<bt(8)?0:t<bt(16)?1:t<bt(24)?2:t<bt(28)?3:t<bt(40)?4:5; document.getElementById('stage').style.transform=`scale(${KS[sc]})`; }
   { const G=glitch(t); if(G){ const [p,k]=G, [,dx,sk]=stepVal(GLX,p), [,rs]=stepVal(GLS,p);
       GLI={dx:dx*3*k,sk:sk*k,rs,f:rs?`drop-shadow(${(rs*3*k).toFixed(1)}px 0 rgba(255,40,80,.85)) drop-shadow(${(-rs*3*k).toFixed(1)}px 0 rgba(0,220,255,.85))`:''}; } else GLI=null; }
   if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); Object.values(SECS).forEach(x=>x.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';

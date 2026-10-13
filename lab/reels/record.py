@@ -20,7 +20,7 @@ try:
             r=json.loads(ws.recv())
             if r.get('id')==n[0]: return r.get('result',{})
     js=lambda e: cmd('Runtime.evaluate',expression=e,returnByValue=True).get('result',{}).get('value')
-    cmd('Page.enable'); cmd('Emulation.setDeviceMetricsOverride',width=1080,height=1920,deviceScaleFactor=1,mobile=False)
+    cmd('Page.enable'); cmd('Emulation.setDeviceMetricsOverride',width=int(os.environ.get('VW','1080')),height=int(os.environ.get('VH','1920')),deviceScaleFactor=1,mobile=False)
     cmd('Page.navigate',url=url+('&' if '?' in url else '?')+'t=0')
     for _ in range(80):
         time.sleep(.25)
