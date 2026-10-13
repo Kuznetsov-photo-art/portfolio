@@ -182,7 +182,7 @@ const DS=DSEC.map((_,i)=>i*900*DSC), DMAX=(DSEC.length-1)*900*DSC;
 const SEC3=[0,520,880,1640,2140,2560,2950,3490];               // phone line-up
 
 /* ---------- the site's glitch: jitter + red/cyan split, ~0.28 s (stronger on the big hits) ---------- */
-const GL=[...(MODE==='swap'?[[bt(26.5),1.2],[T-.58,1.35],[T-.3,.9]]:[]),   // swap: a glitch as the white closes behind the phone, and one more into the fade
+const GL=[...(MODE==='swap'?[[bt(26.5),1.2],[T-1.02,1.35],[T-.78,1.0]]:[]),   // swap: glitches while the white circle is closing in
  [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...[9,10,11,12,13,14,15].map(b=>[bt(b),.45]),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
 const GLX=[[0,-4,0],[.18,5,-2],[.36,-2,0],[.54,3,0],[.72,-1,0],[.9,0,0]], GLS=[[0,3],[.3,-4],[.6,2],[.85,0]];
 function glitch(t){ let best=null; for(const [t0,k] of GL){ const p=(t-t0)/.28; if(p>=0&&p<1&&(!best||k>best[1])) best=[p,k]; } return best; }
@@ -254,7 +254,7 @@ function render(t){
   if(t>=bt(40)){                                                   // F · head-on, the address
     const k=seg(t,bt(40),T), e=E.io(k), st=E.o3(seg(t,bt(40),bt(41.5))), rim=lerp(-40,220,seg(t,bt(40.4),bt(43))), rimA=Math.sin(Math.PI*seg(t,bt(40.4),bt(43)))*.85;
     if(MODE!=='both'){ const fin=SWAP?seg(t,T-.62,T-.12):0;          // swap: on the black, a last streak of light runs round the frame — the start, mirrored
-      const d=t-(T-.6), bo=!SWAP||d<0?0:d<.16?.06*E.o3(d/.16):d<.38?lerp(.06,-.012,E.io((d-.16)/.22)):d<.52?lerp(-.012,0,E.io((d-.38)/.14)):0;   // bounce: in towards the lens, back out with a small overshoot
+      const d=t-(T-1.02), bo=!SWAP||d<0?0:d<.16?.06*E.o3(d/.16):d<.38?lerp(.06,-.012,E.io((d-.16)/.22)):d<.52?lerp(-.012,0,E.io((d-.38)/.14)):0;   // bounce: in towards the lens, back out with a small overshoot
       setDev(P0,{t,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e)*(1+bo),on:1,op:1,rimA:Math.max(rimA,Math.sin(Math.PI*fin)),rim:fin>0?lerp(100,440,E.io(fin)):rim,gl:lerp(-300,300,k)}); }
     else { setDev(DISP,{t,y:-200,ry:lerp(-6,0,st),rx:lerp(5,0,st),s:lerp(1,1.03,e),on:1,op:1,rimA:rimA*.8,rim,gl:lerp(-300,300,k)});
       setDev(P0,{t,x:90,y:470,z:300,ry:lerp(-6,0,st),rx:lerp(5,0,st),rz:-5,s:.5*lerp(1,1.03,e),on:1,op:1,rimA,rim:rim+30,gl:lerp(-300,300,k)}); }
