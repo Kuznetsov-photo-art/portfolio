@@ -240,7 +240,7 @@ function render(t){
     g=.06*E.io(seg(t,1.2,3.4));
   } else if(t<bt(16)){                                             // B · macro details, one per beat
     const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), o=ORDER[i], tb=t-bt(8+i), e=E.io(seg(t,bt(8+i),bt(9+i)));
-    DOF.style.display='block'; DOF.style.backdropFilter=DOF.style.webkitBackdropFilter=o==='archive'?'blur(4px)':'blur(11px)';
+    DOF.style.display='block'; DOF.style.backdropFilter=DOF.style.webkitBackdropFilter=o==='archive'?'blur(4px)':o==='about'?'blur(4px)':'blur(11px)';
     if(typeof o==='number'){ const m=MAC[o]; m.d.style.display='block';
       drawPlates(m,E.o3(seg(tb,0,.42)));
       if(m.roll){ const g=m.roll.getContext('2d'); g.clearRect(0,0,m.w,m.hh); g.drawImage(ROLL[Math.min(14,Math.floor(tb*30))],0,0,m.w,m.hh); }
@@ -251,7 +251,7 @@ function render(t){
     else if(o==='cases'){ const sc=SECS.cases, R=sc.meta.rows[1];        // YouGile swells into its hover state
       showSec(sc,14+Math.floor(tb*30),`translate(540px,930px) rotateX(10deg) rotateY(${lerp(-14,-8,e)}deg) rotateZ(-2deg) scale(${lerp(1.9,2.02,e)}) translate(${-(R[2]+250)}px,${-(R[0]+R[1])/2}px)`); }
     else if(o==='about'){ const sc=SECS.about, L=sc.meta.lead;           // the lead text lights up word by word; the portrait stays out of frame (it is the next beat)
-      showSec(sc,10+Math.floor(tb*30),`translate(540px,930px) rotateX(8deg) rotateY(${lerp(13,7,e)}deg) rotateZ(1.5deg) scale(${lerp(1.95,2.07,e)}) translate(${-(L[0]+245)}px,${-(L[1]+62)}px)`); }
+      showSec(sc,10+Math.floor(tb*30),`translate(540px,930px) rotateX(8deg) rotateY(${lerp(13,7,e)}deg) rotateZ(1.5deg) scale(${lerp(1.95,2.07,e)}) translate(${-(L[0]+245)}px,${-(L[1]+195)}px)`); }   // camera lower: the heading sits high, the rest of the text below it
     else { const sc=SECS.archive, R=sc.meta.rows;                         // covers drift past, black-and-white, softer blur
       showSec(sc,Math.floor(tb*30),`translate(540px,930px) rotateX(12deg) rotateY(${lerp(10,4,e)}deg) rotateZ(-3deg) scale(${lerp(2.3,2.42,e)}) translate(-440px,${-(R[1][1]+R[2][0])/2}px)`); }
   }
