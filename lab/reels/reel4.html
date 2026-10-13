@@ -74,6 +74,9 @@ const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), seg=(t,a,b)=>cl((t-a)/(b-a)), l
 const E={o3:t=>1-Math.pow(1-t,3),o5:t=>1-Math.pow(1-t,5),io3:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,expo:t=>t>=1?1:1-Math.pow(2,-10*t)};
 const MANS={ru:await (await fetch('cap/manifest.json')).json(),en:await (await fetch('cap/manifest_en.json')).json()}, man=MANS.ru;
 const mac=await (await fetch(`cap/macro${SUF(LANG)}.json`)).json();
+// the site's «rubber» weight wave on the name, played on the display as it lights up (capture_namewave.py)
+const NWC=MODE==='swap'?await (await fetch(`cap/namewave${LANG==='en'?'_en':''}/crop.json`)).json():null;
+const NWF=NWC?Array.from({length:NWC.frames},(_,i)=>{ const im=new Image(); im.src=`cap/namewave${LANG==='en'?'_en':''}/${String(i).padStart(4,'0')}.jpg`; return im; }):[];
 await Promise.all([`300 40px Unbounded`,`800 40px Unbounded`,`500 20px 'Golos Text'`,`400 12px 'JetBrains Mono'`].map(f=>document.fonts.load(f,'СоздаюпродуктыидизайнсистемывместесAIДизайн-системыСберВТБФинамandrewkuznetsov.comIdesignproductsandsystemswithWhatIdo')));
 const world=document.getElementById('world'), stage=document.getElementById('stage'), FXW=document.getElementById('fx');
 const PAL={dark:{bg:'#0A0A0A',ink:'#F2F2F2',ink2:'#A3A3A3',ink3:'#6B6B6B',line:'rgba(242,242,242,.10)'},light:{bg:'#FFFFFF',ink:'#0A0A0A',ink2:'#4A4A4A',ink3:'#8A8A8A',line:'rgba(10,10,10,.10)'}};
@@ -121,6 +124,8 @@ function makeDevice(kind,withRU=false){
   front=document.createElement('div'); front.className='front'; el.append(front);
   const screen=document.createElement('div'); screen.className='screen'; front.append(screen);
   const page=kind==='phone'?phonePage('dark'):dispPage('dark'); screen.append(page);
+  let NW=null; if(kind==='disp'&&NWC){ NW=document.createElement('canvas'); NW.width=Math.round(NWC.w*1.5); NW.height=Math.round(NWC.h*1.5);
+    Object.assign(NW.style,{position:'absolute',left:NWC.x*DSC+'px',top:NWC.y*DSC+'px',width:NWC.w*DSC+'px',height:NWC.h*DSC+'px',display:'none'}); page.append(NW); }
   let RL=null, pageR=null;                                      // a Russian copy of the dark page, for the language switch
   if(withRU){ RL=document.createElement('div'); RL.className='rulayer'; Object.assign(RL.style,{position:'absolute',inset:0,zIndex:1,display:'none',background:'#0A0A0A'});
     pageR=phonePage('dark','ru'); RL.append(pageR); screen.append(RL); }
@@ -131,7 +136,7 @@ function makeDevice(kind,withRU=false){
   const dark=document.createElement('div'); dark.className='dark'; screen.append(dark);
   const rim=document.createElement('div'); rim.className='rim'; front.append(rim);
   world.append(el);
-  return {kind,el,screen,page,pageL,pageR,RL,glare,dark,rim,LL,slices:[...el.querySelectorAll('.slice,.lslice')],front,mqs:[...el.querySelectorAll('.mq')],tiles:[...el.querySelectorAll('.tiles .strip')],
+  return {kind,el,screen,page,pageL,pageR,RL,glare,dark,rim,LL,NW,slices:[...el.querySelectorAll('.slice,.lslice')],front,mqs:[...el.querySelectorAll('.mq')],tiles:[...el.querySelectorAll('.tiles .strip')],
     w:kind==='phone'?572:956, h:kind==='phone'?1272:596};
 }
 function setDev(p,o){ // x y z rx ry rz s · scroll · light (0..1: circle reveal from the theme toggle) · on · bright · blur · rim · rimA · gl
@@ -143,6 +148,7 @@ function setDev(p,o){ // x y z rx ry rz s · scroll · light (0..1: circle revea
     let y; if(p.kind==='phone'){ const L=pg._lay; y=cl(L.map(o.scroll||0),0,L.end-SCR_H)*SC; } else y=cl(o.scroll||0,0,DMAX);
     pg.style.transform=`translateY(${-y}px)`+gt; pg.style.filter=bl; }
   if(p.RL) p.RL.style.display=o.ru?'block':'none';
+  if(p.NW){ if(o.nw!=null){ const f=Math.min(NWC.frames-1,Math.max(0,o.nw)); p.NW.style.display='block'; if(p._nw!==f){ p._nw=f; p.NW.getContext('2d').drawImage(NWF[f],0,0,p.NW.width,p.NW.height); } } else p.NW.style.display='none'; }
   const lt=o.light||0, tx=p.kind==='phone'?p.w*.87:p.w*.965, ty=p.kind==='phone'?40:22;            // the toggle on the header
   if(lt<=0){ p.LL.style.display='none'; } else { p.LL.style.display='block'; p.LL.style.clipPath=lt>=1?'none':`circle(${(Math.hypot(p.w,p.h)*E.io3(lt)).toFixed(1)}px at ${tx}px ${ty}px)`; }
   p.dark.style.opacity=1-(o.on??1);
@@ -199,7 +205,7 @@ function render(t){
   if(t<bt(8)){                                                     // A · reveal from the dark
     const k=E.io3(seg(t,0,bt(8))), on=E.o3(seg(t,2.6,3.3)), rim=lerp(-80,260,E.io(seg(t,.05,2.4))), rimA=Math.sin(Math.PI*seg(t,.05,2.6))*1+.12*on, lit=E.io(seg(t,.3,2.2));   // light arrives almost at once
     if(MODE==='phone') setDev(P0,{t,lit,y:-30+20*(1-k),z:lerp(-700,0,k),ry:lerp(40,16,k),rx:lerp(14,5,k),rz:lerp(-4,-2,k),s:lerp(1.12,1.04,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
-    else { setDev(DISP,{t,lit,y:SWAP?20:-120,z:lerp(-700,0,k),ry:lerp(-42,-10,k),rx:lerp(14,5,k),rz:lerp(3,1,k),s:lerp(1.02,.98,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
+    else { const nwt=t-2.62; setDev(DISP,{t,lit,nw:SWAP&&nwt>=0&&nwt<NWC.frames/30?Math.floor(nwt*30):null,y:SWAP?20:-120,z:lerp(-700,0,k),ry:lerp(-42,-10,k),rx:lerp(14,5,k),rz:lerp(3,1,k),s:lerp(1.02,.98,k),on,bright:1+.8*(1-seg(t,2.6,3.2)),rim,rimA,op:1,gl:-200+t*90});
       const kp=E.o5(seg(t,2.0,3.4)); if(!SWAP) setDev(P0,{t,lit,x:lerp(820,90,kp),y:470,z:300,ry:lerp(-42,-10,k),rx:4,rz:-5,s:.5,on,rim:rim+40,rimA:.7*kp,op:kp>0?1:0,gl:t*60}); }
     g=.06*E.io(seg(t,1.2,3.4));
   } else if(t<bt(16)){                                             // B · macro details, one per beat
