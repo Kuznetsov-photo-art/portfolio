@@ -27,6 +27,7 @@ def wrap(src,dst,title=None,desc='',canonical='',image='',og_title='',og_desc=''
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script data-goatcounter="https://andrewkuznetsov.goatcounter.com/count" async src="/assets/js/count.js"></script>
 '''
     head=head.replace('<meta name="viewport" content="width=device-width,initial-scale=1">\n','')
     out=meta+head+'\n</head>\n<body>'+body+'\n</body>\n</html>\n'

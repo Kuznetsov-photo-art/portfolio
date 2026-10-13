@@ -22,6 +22,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script data-goatcounter="https://andrewkuznetsov.goatcounter.com/count" async src="/assets/js/count.js"></script>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <script>/* theme and language, set before paint so there is no flash; language: the saved choice, else Russian only for a Russian browser/system */
 try{ const t=localStorage.getItem('theme'); if(t) document.documentElement.setAttribute('data-theme',t); }catch(e){}
@@ -131,10 +132,10 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
   <span class="mono" lang="ru">Документ</span><span class="mono" lang="en">Document</span>
   <h1 lang="ru">Конфиденциальность</h1>
   <h1 lang="en">Privacy</h1>
-  <div class="mono upd"><span lang="ru">Обновлено 11 октября 2026</span><span lang="en">Updated October 11, 2026</span></div>
+  <div class="mono upd"><span lang="ru">Обновлено 13 октября 2026</span><span lang="en">Updated October 13, 2026</span></div>
 
-  <p class="lead" lang="ru">Это личное портфолио. Здесь нет форм, регистрации, аналитики, рекламы и cookie — сайт ничего о вас не собирает</p>
-  <p class="lead" lang="en">This is a personal portfolio. There are no forms, sign-ups, analytics, ads or cookies — the site collects nothing about you</p>
+  <p class="lead" lang="ru">Это личное портфолио. Здесь нет форм, регистрации, рекламы и cookie, а посещения считает только анонимный счётчик — сайт не знает, кто вы</p>
+  <p class="lead" lang="en">This is a personal portfolio. There are no forms, sign-ups, ads or cookies, and visits are counted only by an anonymous counter — the site does not know who you are</p>
 
   <section>
     <span class="n">01</span>
@@ -163,17 +164,31 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
     <div lang="ru">
       <h2>Хостинг</h2>
       <p>Сайт размещён на GitHub Pages. Как любой хостинг, GitHub может записывать технические данные запросов — IP-адрес, время, браузер — для безопасности и работы сервиса. Подробнее — в <a href="https://docs.github.com/ru/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Заявлении GitHub о конфиденциальности</a></p>
-      <p>Шрифты и все файлы загружаются с этого же сайта, запросов к сторонним сервисам нет</p>
+      <p>Шрифты и все файлы, включая код счётчика, загружаются с этого же сайта. Наружу уходит только отметка о просмотре страницы — о ней ниже</p>
     </div>
     <div lang="en">
       <h2>Hosting</h2>
       <p>The site is hosted on GitHub Pages. Like any host, GitHub may log technical request data — IP address, time, browser — for security and to run the service. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub General Privacy Statement</a></p>
-      <p>Fonts and all files are served from this site, with no requests to third-party services</p>
+      <p>Fonts and all files, including the counter code, are served from this site. The only thing sent elsewhere is the page-view ping described below</p>
     </div>
   </section>
 
   <section>
     <span class="n">03</span>
+    <div lang="ru">
+      <h2>Счётчик посещений</h2>
+      <p>Чтобы понимать, сколько людей заходит на сайт и откуда, я использую <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a> — простой счётчик с открытым кодом. Он не ставит cookie, не следит за вами на других сайтах и не сохраняет IP-адрес</p>
+      <p>При просмотре страницы он отправляет только её адрес и заголовок, сайт, с которого вы пришли, и размер экрана. Браузер, систему и страну сервис определяет по самому запросу. Я вижу лишь общие цифры, без данных о конкретных людях</p>
+    </div>
+    <div lang="en">
+      <h2>Visit counter</h2>
+      <p>To see how many people visit the site and where they come from, I use <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a> — a simple open-source counter. It sets no cookies, does not follow you to other sites and does not store your IP address</p>
+      <p>For each page view it sends only the page address and title, the site you came from and your screen size. The service works out the browser, system and country from the request itself. I only see totals, never data about specific people</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="n">04</span>
     <div lang="ru">
       <h2>Если вы мне пишете</h2>
       <p>В Telegram или на почту <a href="mailto:kuznetsov-photo.art@yandex.ru">kuznetsov-photo.art@yandex.ru</a> я получаю только то, что вы отправили сами: имя, контакт и текст. Использую это, чтобы ответить и обсудить задачу, и никому не передаю. Напишите — и я удалю переписку</p>
@@ -187,7 +202,7 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
   </section>
 
   <section>
-    <span class="n">04</span>
+    <span class="n">05</span>
     <div lang="ru">
       <h2>Права на материалы</h2>
       <p>Работы в портфолио показаны в ознакомительных целях. Права на проекты принадлежат их правообладателям — компаниям-заказчикам и автору. Копировать и использовать материалы сайта без письменного разрешения нельзя</p>
@@ -201,7 +216,7 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
   </section>
 
   <section>
-    <span class="n">05</span>
+    <span class="n">06</span>
     <div lang="ru">
       <h2>Вопросы</h2>
       <p>Всё, что касается этой страницы, — на <a href="mailto:kuznetsov-photo.art@yandex.ru">kuznetsov-photo.art@yandex.ru</a></p>

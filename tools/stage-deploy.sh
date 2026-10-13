@@ -20,6 +20,10 @@ find . -name '*.html' -print0 | while IFS= read -r -d '' f; do
   # link previews point at the stage: TEST card, stage URLs, «TEST ·» in the title
   perl -pi -e 's{(<meta (?:property="og:image"|name="twitter:image") content=")https://andrewkuznetsov\.com/assets/og/[^"]+}{${1}https://'"$DOMAIN"'/assets/og/og-stage.jpg?v=1}g; s{(<meta property="og:url" content="|<link rel="canonical" href=")https://andrewkuznetsov\.com}{${1}https://'"$DOMAIN"'}g; s{(<meta property="og:title" content=")}{${1}TEST · }g; s{<meta name="robots" content="index,follow">\n?}{}g' "$f"
 done
+# the stage is never counted: drop the visit counter (GoatCounter) and check nothing is left
+find . -name '*.html' -print0 | xargs -0 perl -ni -e 'print unless /<script data-goatcounter=/'
+rm -f assets/js/count.js
+if grep -rl 'goatcounter' --include='*.html' . ; then echo 'stage: visit counter still present, abort'; exit 1; fi
 REV=$(git -C "$ROOT" rev-parse --short stage)
 git init -q -b main
 git add -A
