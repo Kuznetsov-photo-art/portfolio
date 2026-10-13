@@ -173,6 +173,22 @@ const MAC=SHOTS.map(([id,fx,fy,z,ry,rx])=>{ const d=document.createElement('div'
   const w=mac[id].w*3, hh=mac[id].h*3; const im=new Image(); im.src=`cap/m_${id}${SUF(LANG)}.png`; Object.assign(im.style,{width:w+'px',height:hh+'px'}); h.append(im);
   d.append(h); FXW.insertBefore(d,document.getElementById('dof')); return {d,h,w,hh,fx,fy,z,ry,rx}; });
 const DOF=document.getElementById('dof');
+/* three of the eight beats show the site's sections instead of cropped words (capture_sections.py): cases, about (text only — the portrait follows), archive */
+const SECS={}; if(LANG==='en') for(const name of ['cases','archive','about']){ const meta=await (await fetch(`cap/sec_${name}_en/meta.json`)).json();
+  const d=document.createElement('div'); d.className='macro'; const h=document.createElement('div'); h.className='holder';
+  const cv=document.createElement('canvas'); cv.width=Math.round(meta.clip.width*(meta.dsf||2)); cv.height=Math.round(meta.clip.height*(meta.dsf||2)); cv.getContext('2d',{willReadFrequently:true});
+  Object.assign(cv.style,{position:'absolute',left:0,top:0,width:meta.clip.width+'px',height:meta.clip.height+'px'}); h.append(cv); d.append(h); FXW.insertBefore(d,DOF);
+  const fr=Array.from({length:meta.frames},(_,i)=>{ const im=new Image(); im.src=`cap/sec_${name}_en/${String(i).padStart(4,'0')}.jpg`; return im; });
+  await Promise.all(fr.map(im=>im.complete&&im.naturalWidth?1:new Promise(r=>{im.onload=im.onerror=r;})));
+  SECS[name]={name,meta,d,h,cv,fr,_f:-1,key:name!=='archive'}; }   // archive tiles stay on their panel (keyed photos would tint in the glitch)
+function showSec(sc,f,tf){ sc.d.style.display='block'; f=Math.max(0,Math.min(sc.fr.length-1,f));
+  if(sc._f!==f){ sc._f=f; const g=sc.cv.getContext('2d'); g.drawImage(sc.fr[f],0,0,sc.cv.width,sc.cv.height);
+    if(sc.key){ const im=g.getImageData(0,0,sc.cv.width,sc.cv.height), d=im.data;   // the page's #0A0A0A keyed out: the glitch splits the text, never a panel edge
+      for(let i=0;i<d.length;i+=4){ const m=Math.max(d[i],d[i+1],d[i+2]); if(m<=13){ d[i+3]=0; continue; } const k=255/m; d[i]*=k; d[i+1]*=k; d[i+2]*=k; d[i+3]=(m-13)*255/242; }
+      g.putImageData(im,0,0); } }
+  sc.h.style.transform=tf; }
+// beat order: name · name (top) · CASES · ctrls · ABOUT · portrait · ARCHIVE · name (left edge) — spec, tagline and «…etso» close-ups replaced
+const ORDER=SECS.cases?[0,1,'cases',3,'about',4,'archive',6]:[0,1,2,3,4,5,6,7];
 const TYPE=document.getElementById('type'); const PHR=LANG==='en'?['I design products','and design systems','with AI']:['Создаю продукты','и дизайн-системы','вместе с AI'];
 const PEL=PHR.map(p=>{ const e=document.createElement('div'); e.className='ph'; e.innerHTML=`<span>${p}</span>`; TYPE.append(e); return e.firstChild; });
 TYPE.style.display='block'; PEL.forEach(e=>{ e.style.fontSize='100px'; e.style.fontSize=Math.min(160,100*940/e.offsetWidth)+'px'; }); TYPE.style.display='none';
@@ -200,7 +216,7 @@ let GLI=null;
 function render(t){
   { const G=glitch(t); if(G){ const [p,k]=G, [,dx,sk]=stepVal(GLX,p), [,rs]=stepVal(GLS,p);
       GLI={dx:dx*3*k,sk:sk*k,rs,f:rs?`drop-shadow(${(rs*3*k).toFixed(1)}px 0 rgba(255,40,80,.85)) drop-shadow(${(-rs*3*k).toFixed(1)}px 0 rgba(0,220,255,.85))`:''}; } else GLI=null; }
-  if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
+  if(DISP) setDev(DISP,{op:0}); PHS.forEach(p=>setDev(p,{op:0})); MAC.forEach(m=>m.d.style.display='none'); Object.values(SECS).forEach(x=>x.d.style.display='none'); TYPE.style.display='none'; DOF.style.display='none';
   let fl=0, bl=0, g=0; const P0=PHS[0];
   if(t<bt(8)){                                                     // A · reveal from the dark
     const k=E.io3(seg(t,0,bt(8))), on=E.o3(seg(t,2.6,3.3)), rim=lerp(-80,260,E.io(seg(t,.05,2.4))), rimA=Math.sin(Math.PI*seg(t,.05,2.6))*1+.12*on, lit=E.io(seg(t,.3,2.2));   // light arrives almost at once
@@ -209,10 +225,17 @@ function render(t){
       const kp=E.o5(seg(t,2.0,3.4)); if(!SWAP) setDev(P0,{t,lit,x:lerp(820,90,kp),y:470,z:300,ry:lerp(-42,-10,k),rx:4,rz:-5,s:.5,on,rim:rim+40,rimA:.7*kp,op:kp>0?1:0,gl:t*60}); }
     g=.06*E.io(seg(t,1.2,3.4));
   } else if(t<bt(16)){                                             // B · macro details, one per beat
-    const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), m=MAC[i], e=E.io(seg(t,bt(8+i),bt(9+i)));
-    m.d.style.display='block'; DOF.style.display='block';
-    const z=m.z*lerp(1,1.09,e);
-    m.h.style.transform=`translate(540px,930px) rotateX(${m.rx}deg) rotateY(${lerp(m.ry[0],m.ry[1],e)}deg) scale(${z}) translate(${-m.w*m.fx}px,${-m.hh*m.fy}px)`;
+    const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), o=ORDER[i], tb=t-bt(8+i), e=E.io(seg(t,bt(8+i),bt(9+i)));
+    DOF.style.display='block'; DOF.style.backdropFilter=DOF.style.webkitBackdropFilter=o==='archive'?'blur(4px)':'blur(11px)';
+    if(typeof o==='number'){ const m=MAC[o]; m.d.style.display='block';
+      const z=m.z*lerp(1,1.09,e);
+      m.h.style.transform=`translate(540px,930px) rotateX(${m.rx}deg) rotateY(${lerp(m.ry[0],m.ry[1],e)}deg) scale(${z}) translate(${-m.w*m.fx}px,${-m.hh*m.fy}px)`; }
+    else if(o==='cases'){ const sc=SECS.cases, R=sc.meta.rows[1];        // YouGile swells into its hover state
+      showSec(sc,14+Math.floor(tb*30),`translate(540px,930px) rotateX(10deg) rotateY(${lerp(-14,-8,e)}deg) rotateZ(-2deg) scale(${lerp(1.9,2.02,e)}) translate(${-(R[2]+250)}px,${-(R[0]+R[1])/2}px)`); }
+    else if(o==='about'){ const sc=SECS.about, L=sc.meta.lead;           // the lead text lights up word by word; the portrait stays out of frame (it is the next beat)
+      showSec(sc,10+Math.floor(tb*30),`translate(540px,930px) rotateX(8deg) rotateY(${lerp(13,7,e)}deg) rotateZ(1.5deg) scale(${lerp(1.95,2.07,e)}) translate(${-(L[0]+245)}px,${-(L[1]+62)}px)`); }
+    else { const sc=SECS.archive, R=sc.meta.rows;                         // covers drift past, black-and-white, softer blur
+      showSec(sc,Math.floor(tb*30),`translate(540px,930px) rotateX(12deg) rotateY(${lerp(10,4,e)}deg) rotateZ(-3deg) scale(${lerp(2.3,2.42,e)}) translate(-440px,${-(R[1][1]+R[2][0])/2}px)`); }
   }
   if(t>=bt(16)&&t<bt(24)){                                         // C · tagline, the device dim behind
     TYPE.style.display='block'; const dur=(bt(24)-bt(16))/3;
@@ -280,7 +303,7 @@ function render(t){
   flash.style.opacity=fl; black.style.opacity=Math.max(bl,SWAP?E.io(seg(t,T-.36,T)):seg(t,T-.6,T));
   // glitch on the macro shots and the tagline (the screens get it in setDev)
   const gt=GLI?`translateX(${GLI.dx.toFixed(1)}px) skewX(${GLI.sk.toFixed(2)}deg)`:'none', gf=GLI&&GLI.rs?GLI.f:'none';
-  MAC.forEach(m=>{ m.d.style.transform=gt; m.d.style.filter=gf; }); TYPE.style.transform=gt; TYPE.style.filter=gf;
+  MAC.forEach(m=>{ m.d.style.transform=gt; m.d.style.filter=gf; }); Object.values(SECS).forEach(x=>{ x.d.style.transform=gt; x.d.style.filter=x.key?gf:'none'; }); TYPE.style.transform=gt; TYPE.style.filter=gf;
   if(t>=bt(40)){ const uy=14*(1-E.o3(seg(t,bt(41.2),bt(42.4)))); url.style.transform=`translateY(${uy.toFixed(1)}px)`+(GLI?' '+gt:''); url.style.filter=gf; } else url.style.filter='none';
 }
 window.__seek=t=>render(t); window.__ready=true;
