@@ -214,9 +214,7 @@ function render(t){
       e.style.opacity=E.o3(k)*(1-out); e.style.filter=`blur(${(18*(1-E.o3(k))+10*out).toFixed(1)}px)`;
       e.style.transform=`translateY(${(36*(1-E.o3(k))).toFixed(1)}px) scale(${lerp(1.04,1,E.o3(k))})`; e.style.letterSpacing=`${lerp(.02,-.045,E.o3(k))}em`;
       e.style.backgroundPosition=`${lerp(100,0,seg(t,t0,t0+dur))}% 0`; });
-    const kk=seg(t,bt(16),bt(24));
-    if(MODE==='phone') setDev(P0,{t,y:120,z:-1500,ry:lerp(-25,25,kk),rx:6,scroll:lerp(0,900,kk),on:1,op:.22,rimA:.25,rim:t*40});
-    else setDev(DISP,{t,y:150,z:-1700,ry:lerp(-25,25,kk),rx:6,scroll:lerp(0,DS[2],kk),on:1,op:.22,rimA:.25,rim:t*40});
+    // the phrases stand alone on pure black — no device behind them
   }
   if(t>=bt(24)&&t<bt(28)){                                         // D · fly in + a fast scroll through the whole page, then silence
     const fi=E.o5(seg(t,bt(24),bt(25.2))), sc=E.io3(seg(t,bt(24.8),bt(27.4))), sc2=E.io3(seg(t+1/60,bt(24.8),bt(27.4)));
