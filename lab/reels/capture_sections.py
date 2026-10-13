@@ -109,7 +109,7 @@ try:
             tau=f/FPS; k=round(min(1,max(0,(tau-.05)/1.0))*nw)
             js(f"document.querySelectorAll('#about .lead .wd').forEach((w,i)=>w.classList.toggle('on',i<{k}))")
             if f:                                                  # the assembly advances per animation frame: 3 ticks per video frame until it has formed, then 1
-                for _ in range(3 if f<=18 else 1): js('__step(1000/30)')
+                for _ in range(2 if f<=28 else 1): js('__step(1000/30)')   # forms as the camera arrives (~0.9 s), not before
             shot(os.path.join(d,f'{f:04d}.jpg'),clip)
         json.dump({'clip':clip,'portrait':[B['p'][0]-clip['x'],B['p'][1]-top,B['p'][2]-clip['x'],B['p'][3]-top],'lead':[B['l'][0]-clip['x'],B['l'][1]-top,B['l'][2]-clip['x'],B['l'][3]-top],'frames':N,'fps':FPS},open(os.path.join(d,'meta.json'),'w'))
         print('about',N,clip,'words',nw)

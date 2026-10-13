@@ -205,7 +205,7 @@ const SEC3=[0,520,880,1640,2140,2560,2950,3490];               // phone line-up
 
 /* ---------- the site's glitch: jitter + red/cyan split, ~0.28 s (stronger on the big hits) ---------- */
 const GL=[...(MODE==='swap'?[[bt(26.5),1.2],[T-1.02,1.35],[T-.78,1.0]]:[]),   // swap: glitches while the white circle is closing in
- [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...(USE_SEC?[[bt(11),.95],[bt(13.5),.95]]:[9,10,11,12,13,14,15].map(b=>[bt(b),.45])),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
+ [bt(8),1],[bt(16),.8],[bt(28),1.1],[bt(40),1.1],...(USE_SEC?[[bt(13.5),.95]]:[9,10,11,12,13,14,15].map(b=>[bt(b),.45])),[bt(16)+8/3*BEAT,.6],[bt(16)+16/3*BEAT,.6]];
 const GLX=[[0,-4,0],[.18,5,-2],[.36,-2,0],[.54,3,0],[.72,-1,0],[.9,0,0]], GLS=[[0,3],[.3,-4],[.6,2],[.85,0]];
 function glitch(t){ let best=null; for(const [t0,k] of GL){ const p=(t-t0)/.28; if(p>=0&&p<1&&(!best||k>best[1])) best=[p,k]; } return best; }
 function stepVal(tab,p){ let v=tab[0]; for(const r of tab) if(p>=r[0]) v=r; return v; }
@@ -234,10 +234,10 @@ function render(t){
       const y=lerp(R[1][1],R[2][0],E.io(k)), fx=lerp(300,560,E.io(k)); DOF.style.backdropFilter=DOF.style.webkitBackdropFilter='blur(4px)';
       showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(17,11,k)}deg) rotateY(${lerp(8,-3,k)}deg) rotateZ(${lerp(-4,-1,k)}deg) scale(${lerp(2.05,2.2,k)}) translate(${-fx}px,${-y}px)`); }
     else { const sc=SECS[2], m=sc.meta, tau=t-bt(13.5), P=m.portrait, Ld=m.lead, k=E.io(seg(tau,0,bt(2.5)));  // about: close, right to left — from the words lighting up to the portrait assembling into a face
-      const a=E.io3(seg(tau,0,.72)), push=E.io(seg(tau,.6,1.17)); DOF.style.backdropFilter=DOF.style.webkitBackdropFilter='blur(9px)';
-      const fx=lerp((Ld[0]+Ld[2])/2+40,(P[0]+P[2])/2,a), fy=lerp(150,(P[1]+P[3])/2,a);
-      showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(10,4,a)}deg) rotateY(${lerp(-12,6,a)}deg) rotateZ(${lerp(-1.5,.5,a)}deg) scale(${lerp(1.7,2.25,a)+.12*push}) translate(${-fx}px,${-fy}px)`);
-      sc.d.style.opacity=1-E.io(seg(tau,bt(2.5)-.16,bt(2.5))); }
+      const a=E.io(seg(tau,0,bt(2.5))); DOF.style.backdropFilter=DOF.style.webkitBackdropFilter='blur(9px)';   // one even pass, right to left: the face forms as the camera reaches it, no lingering
+      const fx=lerp((Ld[0]+Ld[2])/2+40,(P[0]+P[2])/2-40,a), fy=lerp(150,(P[1]+P[3])/2,a);
+      showSec(sc,Math.floor(tau*30),`translate(540px,960px) rotateX(${lerp(10,5,a)}deg) rotateY(${lerp(-12,8,a)}deg) rotateZ(${lerp(-1.5,1,a)}deg) scale(${lerp(1.75,1.95,a)}) translate(${-fx}px,${-fy}px)`);
+      sc.d.style.opacity=1-E.io(seg(tau,bt(2.5)-.1,bt(2.5))); }
   } else if(t<bt(16)){                                             // B · macro details, one per beat (Russian reel: no section captures yet)
     const i=Math.min(7,Math.floor((t-bt(8))/BEAT)), m=MAC[i], e=E.io(seg(t,bt(8+i),bt(9+i)));
     m.d.style.display='block'; DOF.style.display='block';
