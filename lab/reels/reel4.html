@@ -152,7 +152,8 @@ function setDev(p,o){ // x y z rx ry rz s · scroll · light (0..1: circle revea
     const c=Math.round(60*lit); p.front.style.boxShadow=`inset 0 0 0 1.5px rgb(${c},${c},${c+6}),inset 0 0 0 4px #000`; }   // the rim light is never dimmed — it is the light
   const ra=Math.min(1,(o.rimA||0)+.3*lit); p.rim.style.opacity=ra;   // glossy edges always catch a little light
   if(ra>0) p.rim.style.background=`conic-gradient(from ${o.rim||0}deg at 50% 50%,transparent 0deg,rgba(255,255,255,0) 6deg,#fff 34deg,rgba(255,255,255,0) 62deg,transparent 180deg,rgba(255,255,255,0) 186deg,rgba(255,255,255,.55) 214deg,rgba(255,255,255,0) 242deg,transparent 360deg)`;   // light arcs running along the contour
-  const t=o.t||0; p.mqs.forEach(mq=>mq.querySelectorAll('.row').forEach((r,i)=>r.style.transform=`translateX(${i?-1500+t*90:-300-t*90}px)`));
+  const t=o.t||0;   // company rows loop forever, in opposite directions (3 copies of the list, the offset wraps by one copy)
+  p.mqs.forEach(mq=>mq.querySelectorAll('.row').forEach((r,i)=>{ const w=r._w||(r._w=r.scrollWidth/3), d=((i?200:300)+t*90)%w; r.style.transform=`translateX(${(i?-w+d:-d).toFixed(1)}px)`; }));
   p.tiles.forEach((s,i)=>s.style.transform=`translateX(${i%2?-1800+t*60:-120-t*60}px)`);
 }
 const SWAP=MODE==='swap';                                       // the display presents first, then the phone takes over
