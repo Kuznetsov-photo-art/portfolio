@@ -148,6 +148,8 @@ function setDev(p,o){ // x y z rx ry rz s · scroll · light (0..1: circle revea
     let y; if(p.kind==='phone'){ const L=pg._lay; y=cl(L.map(o.scroll||0),0,L.end-SCR_H)*SC; } else y=cl(o.scroll||0,0,DMAX);
     pg.style.transform=`translateY(${-y}px)`+gt; pg.style.filter=bl; }
   if(p.RL) p.RL.style.display=o.ru?'block':'none';
+  if(p.NWm){ const on=o.nwm!=null; p.NWm.style.display=on?'block':'none'; p.nameLy.forEach(e=>e.style.visibility=on?'hidden':'');
+    if(on){ const f=Math.min(NWM.frames-1,Math.max(0,o.nwm)); if(p._nwm!==f){ p._nwm=f; const g=p.NWm.getContext('2d'); g.clearRect(0,0,p.NWm.width,p.NWm.height); g.drawImage(NWMF[f],0,0,p.NWm.width,p.NWm.height); } } }
   if(p.NW){ if(o.nw!=null){ const f=Math.min(NWC.frames-1,Math.max(0,o.nw)); p.NW.style.display='block'; if(p._nw!==f){ p._nw=f; p.NW.getContext('2d').drawImage(NWF[f],0,0,p.NW.width,p.NW.height); } } else p.NW.style.display='none'; }
   const lt=o.light||0, tx=p.kind==='phone'?p.w*.87:p.w*.965, ty=p.kind==='phone'?40:22;            // the toggle on the header
   if(lt<=0){ p.LL.style.display='none'; } else { p.LL.style.display='block'; p.LL.style.clipPath=lt>=1?'none':`circle(${(Math.hypot(p.w,p.h)*E.io3(lt)).toFixed(1)}px at ${tx}px ${ty}px)`; }
@@ -165,6 +167,14 @@ function setDev(p,o){ // x y z rx ry rz s · scroll · light (0..1: circle revea
 const SWAP=MODE==='swap';                                       // the display presents first, then the phone takes over
 const DISP=MODE==='both'||SWAP?makeDevice('disp'):null;
 const PHS=MODE!=='both'?[makeDevice('phone'),makeDevice('phone',LANG==='en'),makeDevice('phone')]:[makeDevice('phone')];
+// the finale phone: the same «rubber» weight wave on the name (capture_namewave.py MOBILE=1), laid over the name layers of its dark page
+const NWM=SWAP?await (await fetch(`cap/namewave_m${LANG==='en'?'_en':''}/crop.json`)).json():null;
+const NWMF=NWM?Array.from({length:NWM.frames},(_,i)=>{ const im=new Image(); im.src=`cap/namewave_m${LANG==='en'?'_en':''}/${String(i).padStart(4,'0')}.png`; return im; }):[];
+await Promise.all(NWMF.map(im=>im.complete&&im.naturalWidth?1:new Promise(r=>{im.onload=im.onerror=r;})));
+if(NWM){ const p=PHS[0], pg=p.page, iN=L0.findIndex(r=>r[0]==='name1'), y=pg._lay.anchors[iN][1], cv=document.createElement('canvas');
+  cv.width=Math.round(NWM.w*1080/390); cv.height=Math.round(NWM.h*1080/390);
+  Object.assign(cv.style,{position:'absolute',left:NWM.x*SC+'px',top:y*SC+'px',width:NWM.w*SC+'px',height:NWM.h*SC+'px',display:'none'}); pg.append(cv);
+  p.NWm=cv; p.nameLy=[...pg.children].filter((_,k)=>L0[k]&&(L0[k][0]==='name1'||L0[k][0]==='name2')); }
 
 /* ---------- macro shots ---------- */
 const SHOTS=[['name',.13,.36,.95,[-16,-8],8],['name',.5,.03,2.6,[14,6],10],['spec',.55,.5,2.2,[-12,-4],6],['ctrls',.758,.5,3.9,[16,6],8],
@@ -302,7 +312,7 @@ function render(t){
     const k=seg(t,bt(40),T), e=E.io(k), st=E.o3(seg(t,bt(40),bt(41.5))), rim=lerp(-40,220,seg(t,bt(40.4),bt(43))), rimA=Math.sin(Math.PI*seg(t,bt(40.4),bt(43)))*.85;
     if(MODE!=='both'){ const fin=SWAP?seg(t,T-.62,T-.12):0;          // swap: on the black, a last streak of light runs round the frame — the start, mirrored
       const d=t-(T-1.02), bo=!SWAP||d<0?0:d<.16?.06*E.o3(d/.16):d<.38?lerp(.06,-.012,E.io((d-.16)/.22)):d<.52?lerp(-.012,0,E.io((d-.38)/.14)):0;   // bounce: in towards the lens, back out with a small overshoot
-      setDev(P0,{t,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e)*(1+bo),on:1,op:1,rimA:Math.max(rimA,Math.sin(Math.PI*fin)),rim:fin>0?lerp(100,440,E.io(fin)):rim,gl:lerp(-300,300,k)}); }
+      const nwt=t-(bt(40)+.3); setDev(P0,{t,nwm:SWAP&&nwt>=0&&nwt<NWM.frames/30?Math.floor(nwt*30):null,y:8,ry:lerp(-4,0,st),rx:lerp(4,0,st),s:lerp(.98,1.02,e)*(1+bo),on:1,op:1,rimA:Math.max(rimA,Math.sin(Math.PI*fin)),rim:fin>0?lerp(100,440,E.io(fin)):rim,gl:lerp(-300,300,k)}); }
     else { setDev(DISP,{t,y:-200,ry:lerp(-6,0,st),rx:lerp(5,0,st),s:lerp(1,1.03,e),on:1,op:1,rimA:rimA*.8,rim,gl:lerp(-300,300,k)});
       setDev(P0,{t,x:90,y:470,z:300,ry:lerp(-6,0,st),rx:lerp(5,0,st),rz:-5,s:.5*lerp(1,1.03,e),on:1,op:1,rimA,rim:rim+30,gl:lerp(-300,300,k)}); }
     if(MODE!=='both') url.style.top='1618px';                    // phone + address centred as one block
