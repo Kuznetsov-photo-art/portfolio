@@ -624,8 +624,8 @@ let focusUpdate=null, focusBuild=null;
 
 /* typography: glue 1–2 letter words to the next word and keep dashes off the line start — no hanging «и», «в», «—» */
 const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
-/* case titles: NB glue, the separator never starts a line, and «AI-платформа» / «дизайн-система» never break at the hyphen */
-const caseT=t=>NB(t).replace(/ ([•·])/g,'\u00a0$1').replace(/(\S)-(\S)/g,'$1\u2011$2');
+/* case titles: NB glue and the separator never starts a line (hyphens may still break: a no-break «AI-расшифровка» is wider than the phone column and ran under the cover) */
+const caseT=t=>NB(t).replace(/ ([•·])/g,'\u00a0$1');
 function render(){
   const d=I18N[lang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=NB(d[k]);});
