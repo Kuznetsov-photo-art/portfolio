@@ -184,6 +184,9 @@ section{padding-block:clamp(80px,10vw,160px)}
 .sec-head h2{font-size:clamp(28px,4vw,60px);font-weight:300;letter-spacing:-.04em}
 .sec-head .rule{height:1px;background:var(--line);margin-bottom:14px}
 .sec-head .mono{margin-bottom:12px}
+[data-i18n="work.note"]::after{content:'';display:inline-block;width:9px;height:9px;margin-left:10px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-1px;animation:noteSpin .9s linear infinite} /* «Кейсы скоро появятся» + a small spinning ring, cap-height tall, the text colour */
+@keyframes noteSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){[data-i18n="work.note"]::after{animation:none}}
 @media(max-width:640px){.sec-head{grid-template-columns:1fr;gap:10px}.sec-head .rule{display:none}}
 
 /* ---------- work index ---------- */
