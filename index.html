@@ -1006,7 +1006,7 @@ function startReel(){
     const tagEl=document.querySelector('.h-sub p'), tfs=parseFloat(getComputedStyle(tagEl).fontSize);
     const gl0=document.querySelector('.hero .gridlines').getBoundingClientRect();
     const rt=document.querySelector('.rl-top').getBoundingClientRect(), rlf=document.querySelector('.rl-left').getBoundingClientRect();
-    L={mob:W<=860, hp:ch0[0].left, fs, lh, tfs, u:W<=860?cl(W/430,.7,1):cl(Math.min(W/1440,H/860),.45,1.4), heroTop:hr.top, heroH:hr.height,
+    L={mob:W<=860, hp:ch0[0].left, fs, lh, tfs, u:W<=860?Math.max(.5,Math.min(cl(W/430,.7,1),(H*.83-28-72)/507)):cl(Math.min(W/1440,H/860),.45,1.4), heroTop:hr.top, heroH:hr.height,
       x:ch0.map(r=>r.left), b:lnEls.map(l=>l.getBoundingClientRect().top+nBase),
       grid:{x:gl0.left,w:gl0.width},
       rlTop:rt.width?{x:rt.left,y:Math.round(rt.top),w:rt.width,label:UP(document.getElementById('rlw').textContent)}:null,
@@ -1022,13 +1022,17 @@ function startReel(){
     return runs; }
 
   /* ---------- design-system board ---------- */
-  function comps(){ return L.mob ? [ // phones: bigger board spread over the whole height
-    {k:'cursor',x:W*.27,y:H*.33,d:5.0},{k:'button',x:W*.5,y:H*.16,d:5.15},{k:'toggle',x:W*.72,y:H*.33,d:5.3},
-    {k:'chips',x:W*.5,y:H*.47,d:5.45},{k:'type',x:W*.5,y:H*.62,d:5.6},{k:'ruler',x:W*.5,y:H*.82,d:5.75}
-  ] : [
+  function comps(){
+    if(L.mob){ // phones: a column over the whole height, built from each block's real extent (px above / below its centre) with at least 18 px between blocks — no redline or label touches a neighbour, even on a short screen (Telegram)
+      const u=L.u, ext=[[34*u,34*u],[71*u,60*u+MOB64+8],[20*u,20*u],[72*u,109*u],[34*u,53*u]], used=ext.reduce((p,e)=>p+e[0]+e[1],0), gap=Math.max(18,(H*.83-used)/4);
+      let y=H*.1; const cy=ext.map(e=>{ const c=y+e[0]; y=c+e[1]+gap; return c; }); // button · cursor+toggle · chips · Aa · ruler
+      return [{k:'cursor',x:W*.27,y:cy[1],d:5.0},{k:'button',x:W*.5,y:cy[0],d:5.15},{k:'toggle',x:W*.72,y:cy[1],d:5.3},
+        {k:'chips',x:W*.5,y:cy[2],d:5.45},{k:'type',x:W*.5,y:cy[3],d:5.6},{k:'ruler',x:W*.5,y:cy[4],d:5.75}]; }
+    return [
     {k:'cursor',x:W*.2,y:H*.36,d:5.0},{k:'button',x:W*.45,y:H*.26,d:5.15},{k:'toggle',x:W*.72,y:H*.32,d:5.3},
     {k:'chips',x:W*.36,y:H*.54,d:5.45},{k:'type',x:W*.74,y:H*.6,d:5.6},{k:'ruler',x:W*.2,y:H*.74,d:5.75}
-  ];}
+  ]; }
+  const MOB64=20; // phones: the «64» redline sits 20 px under the cursor circle (its pill clears the circle by 13 px)
   function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);}
   function drawComp(c,k,knob){
     if(k<=0) return null; const u=L.u, e=E.back(k); let kx=null;
@@ -1063,7 +1067,7 @@ function startReel(){
     const cs=comps(); cs.forEach(c=>{ const kx=drawComp(c,seg(t,c.d,c.d+.55),knob); if(kx!=null) kn=[kx,c.y]; });
     const b=cs[1], tg=cs[2];
     if(!L.mob) redline(b.x+115*u+8,b.y-60*u,tg.x-62*u-8,b.y-60*u,`${Math.round(tg.x-62*u-b.x-115*u-16)}`,E.o5(seg(t,6.0,6.5)),alpha);
-    redline(cs[0].x-60*u,cs[0].y+80*u,cs[0].x+60*u,cs[0].y+80*u,'64',E.o5(seg(t,6.15,6.6)),alpha);
+    const y64=cs[0].y+(L.mob?60*u+MOB64:80*u); redline(cs[0].x-60*u,y64,cs[0].x+60*u,y64,'64',E.o5(seg(t,6.15,6.6)),alpha);
     X.restore(); return kn; }
 
   /* ---------- particles: board pixels → name pixels ---------- */
@@ -1108,7 +1112,7 @@ function startReel(){
       [...w].forEach((c,i)=>{ const kin=E.o5(seg(ti,i*.028,.5+i*.028)), kout=E.io3(seg(ti,.85+i*.012,1.1+i*.012)), wt=lerp(900,300,E.o3(seg(ti,i*.028+.1,.75+i*.028)));
         X.font=font(Math.round(wt),fsK,DISPLAY); const m=X.measureText(c).width; X.fillText(c,x,y+(1-kin)*lineH-kout*lineH); x+=m-fsK*.05; });
       X.restore();
-      redline(L.hp,y+fsK*.22,L.hp+ww,y+fsK*.22,`W ${Math.round(ww*E.o3(seg(ti,.05,.6)))}`,E.o5(seg(ti,.05,.6)),1-seg(ti,.85,1.05)); });
+      const ry=y+(L.mob?fsK*.26+14:fsK*.22); /* phones: below the descenders plus half the pill and a gap — the pill no longer touches the letters */ redline(L.hp,ry,L.hp+ww,ry,`W ${Math.round(ww*E.o3(seg(ti,.05,.6)))}`,E.o5(seg(ti,.05,.6)),1-seg(ti,.85,1.05)); });
     // C · design-system board; the toggle flips the theme with a circle, like the site switch
     if(t>4.9&&t<8.4){ const al=1-seg(t,8.05,8.35), kn=board(t,al);
       if(kn){ const R=Math.hypot(Math.max(kn[0],W-kn[0]),Math.max(kn[1],H-kn[1])), r=R*E.io3(seg(t,6.85,7.4))*(1-E.io3(seg(t,7.5,8.0)));
