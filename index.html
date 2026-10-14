@@ -306,6 +306,32 @@ section{padding-block:clamp(80px,10vw,160px)}
 .toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:95;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:12px 20px;border-radius:999px;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
 .toast.on{opacity:1;transform:translate(-50%,0)} /* «Адрес скопирован»: bottom centre, two seconds */
 @media(prefers-reduced-motion:reduce){.toast{transition:opacity .2s;transform:translate(-50%,0)}}
+/* «case coming soon»: a click on an unfinished case opens a card that glitches in (slices + RGB split, like the language switch) and out; no cross, one playful button; Esc and a click outside also close. Under the grain (z 90), above the header */
+.sm{position:fixed;inset:0;z-index:89;display:grid;place-items:center;padding:var(--gutter)}
+.sm[hidden]{display:none}
+.sm-bg{position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:smFade .3s ease both}
+.sm-card{position:relative;width:min(440px,100%);padding:44px 36px 36px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:6px;text-align:center;display:grid;justify-items:center;animation:smOn .46s steps(1,end) both,glf .46s steps(1,end) 1}
+.sm-card::before{content:'';position:absolute;inset:-11px;pointer-events:none;--c:var(--ink-3);background:linear-gradient(var(--c),var(--c)) 0 0/12px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 0/1px 12px no-repeat,linear-gradient(var(--c),var(--c)) 100% 0/12px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 0/1px 12px no-repeat,linear-gradient(var(--c),var(--c)) 0 100%/12px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 100%/1px 12px no-repeat,linear-gradient(var(--c),var(--c)) 100% 100%/12px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 100%/1px 12px no-repeat} /* crop marks around the card, the «Spec» language of the hero */
+.sm-card :is(.sm-k,h3,p){animation:gls .46s steps(1,end) 1}
+.sm-ic{width:64px;height:64px;color:var(--ink);margin-bottom:26px;overflow:visible}
+.sm-ic .fr{stroke-width:1;stroke-dasharray:2 3;opacity:.45}
+.sm-ic .hd{fill:var(--bg-2);stroke-width:1.2}
+.sm-ic .ln{stroke-width:3;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1;animation:smW 3s cubic-bezier(.6,0,.2,1) infinite}
+.sm-ic .ln:nth-of-type(2){animation-delay:.22s}.sm-ic .ln:nth-of-type(3){animation-delay:.44s} /* the «page» types itself in and wipes out, line by line */
+@keyframes smW{0%{stroke-dashoffset:1}32%,72%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+.sm-k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.sm-t{font-weight:300;font-size:clamp(26px,3.2vw,34px);letter-spacing:-.035em;line-height:1.08;margin:0 0 14px}
+.sm-p{margin:0 0 30px;color:var(--ink-2);font-size:16px;line-height:1.5;max-width:34ch}
+.sm-b{appearance:none;width:100%;height:52px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:500 16px/1 var(--body);cursor:pointer;transition:background .25s,color .25s}
+@media(hover:hover){.sm-b:hover{background:transparent;color:var(--ink)}}
+.sm-b:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.sm.off .sm-card{animation:smOff .26s steps(1,end) both,glf .26s steps(1,end) 1}
+.sm.off .sm-bg{animation:smFade .26s ease reverse both}
+@keyframes smOn{0%{opacity:0;clip-path:inset(46% 0 46% 0);transform:translateX(-14px)}10%{opacity:1;clip-path:inset(12% 0 64% 0);transform:translateX(12px) skewX(-4deg)}22%{clip-path:inset(58% 0 10% 0);transform:translateX(-8px)}34%{opacity:.35;clip-path:inset(-20px);transform:translateX(5px)}46%{opacity:1;clip-path:inset(24% 0 30% 0);transform:translateX(-3px) skewX(2deg)}58%{clip-path:inset(-20px);transform:translateX(2px)}70%,100%{opacity:1;clip-path:inset(-20px);transform:none}}
+@keyframes smOff{0%{opacity:1;clip-path:inset(-20px);transform:none}25%{clip-path:inset(30% 0 40% 0);transform:translateX(8px)}50%{opacity:.5;clip-path:inset(60% 0 8% 0);transform:translateX(-10px) skewX(3deg)}75%{opacity:1;clip-path:inset(48% 0 48% 0);transform:translateX(14px)}100%{opacity:0;clip-path:inset(50% 0 50% 0)}}
+@keyframes smFade{from{opacity:0}to{opacity:1}}
+html.sm-lock{overflow:hidden} /* the page under the card does not scroll; scrollbar-gutter:stable keeps the layout from shifting */
+@media(prefers-reduced-motion:reduce){.sm-card,.sm-card :is(.sm-k,h3,p){animation:smFade .2s ease both}.sm.off .sm-card,.sm.off .sm-bg{animation:smFade .2s ease reverse both}.sm-ic .ln{animation:none;stroke-dashoffset:0}}
 .c-addr{white-space:nowrap} /* never break the address at its hyphen */
 /* mail cell: the whole cell opens the mail client (stretched mailto link); the copy icon sits above that link */
 .c-mail{position:relative}
@@ -462,6 +488,16 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
   </div>
 </section>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sm" id="soon" role="dialog" aria-modal="true" aria-labelledby="sm-t" aria-describedby="sm-p" hidden>
+  <div class="sm-bg"></div>
+  <div class="sm-card">
+    <svg class="sm-ic" viewBox="0 0 64 64" fill="none" stroke="currentColor" aria-hidden="true"><rect class="fr" x="10" y="10" width="44" height="44"/><g class="hd"><rect x="7" y="7" width="6" height="6"/><rect x="51" y="7" width="6" height="6"/><rect x="7" y="51" width="6" height="6"/><rect x="51" y="51" width="6" height="6"/></g><g><path class="ln" pathLength="1" d="M20 24h24"/><path class="ln" pathLength="1" d="M20 32h18"/><path class="ln" pathLength="1" d="M20 40h10"/></g></svg>
+    <span class="sm-k" id="sm-k"></span>
+    <h3 class="sm-t" id="sm-t" data-i18n="sm.t">Кейс скоро появится</h3>
+    <p class="sm-p" id="sm-p" data-i18n="sm.p">Сейчас он на оформлении: собираю экраны, цифры и историю проекта. Загляните чуть позже</p>
+    <button class="sm-b" id="sm-b" type="button" data-i18n="sm.b">Ладно, подожду</button>
+  </div>
+</div>
 
 <footer>
   <span><span class="cp">©</span> 2026 Andrew Kuznetsov · <span data-i18n="f.rights">Все права защищены</span></span>
@@ -491,6 +527,7 @@ const I18N = {
   'c.title':'Есть задача?<br><em>Напишите</em>','c.copy':'Копировать адрес','c.copied':'Адрес скопирован',
   'f.rights':'Все права защищены','f.privacy':'Конфиденциальность',
   'f.what':'чем занимаюсь','view':'смотреть','open':'открыть','case':'кейс','arch.more':'Показать все {n}','wip':'в работе','soon':'Скоро','focus':'направление',
+  'sm.t':'Кейс скоро появится','sm.p':'Сейчас он на оформлении: собираю экраны, цифры и историю проекта. Загляните чуть позже','sm.b':'Ладно, подожду',
   'pre.1':'Загружаем токены','pre.2':'Собираем компоненты','pre.3':'Публикуем библиотеку',
  },
  en:{
@@ -511,6 +548,7 @@ const I18N = {
   'c.title':'Have a project?<br><em>Say hello</em>','c.copy':'Copy address','c.copied':'Address copied',
   'f.rights':'All rights reserved','f.privacy':'Privacy',
   'f.what':'what I do','view':'view','open':'open','case':'case','arch.more':'Show all {n}','wip':'in progress','soon':'Soon','focus':'focus',
+  'sm.t':'Case coming soon','sm.p':'It’s being put together right now: screens, numbers and the story behind the project. Check back a little later','sm.b':'Fine, I’ll wait',
   'pre.1':'Loading tokens','pre.2':'Assembling components','pre.3':'Publishing library',
  }
 };
@@ -625,7 +663,7 @@ function render(){
   hn.innerHTML = rls + NAME[lang].map((w,i)=>`<span class="ln ${i?'b':'a'}">${[...w].map(c=>`<span class="ch">${c}</span>`).join('')}</span>`).join('');
   // work index
   document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
-    <a class="row soon rv" data-k="${c.k||''}" data-cur="${d.wip}">
+    <a class="row soon rv" tabindex="0" role="button" data-k="${c.k||''}" data-cur="${d.wip}">
       <span class="no">00${i+1}</span>
       <h3>${c[lang].t}</h3>
       <span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span>
@@ -699,6 +737,26 @@ document.getElementById('copy').addEventListener('click',async e=>{
   b.classList.add('done'); t.textContent=I18N[lang]['c.copied']; t.classList.add('on'); clearTimeout(b._t);
   b._t=setTimeout(()=>{ b.classList.remove('done'); t.classList.remove('on'); },2000);
 });
+
+/* «case coming soon»: an unfinished case (a row without its own page) opens the glitching card; the button, Esc or a click outside close it */
+const soon=document.getElementById('soon'); let soonFrom=null;
+function soonOpen(row){
+  const i=[...row.parentNode.children].indexOf(row), c=CASES[i];
+  document.getElementById('sm-k').textContent=`00${i+1} · ${c[lang].t.split(' — ')[0]}`;
+  soonFrom=row; clearTimeout(soon._t); soon.classList.remove('off'); soon.hidden=false; root.classList.add('sm-lock');
+  document.getElementById('sm-b').focus({preventScroll:true});
+}
+function soonClose(){
+  if(soon.hidden||soon.classList.contains('off')) return;
+  soon.classList.add('off'); root.classList.remove('sm-lock');
+  soon._t=setTimeout(()=>{ soon.hidden=true; soon.classList.remove('off'); },matchMedia('(prefers-reduced-motion: reduce)').matches?200:260);
+  if(soonFrom) soonFrom.focus({preventScroll:true});
+}
+const casesEl=document.getElementById('cases');
+casesEl.addEventListener('click',e=>{ const r=e.target.closest('.row'); if(r&&!r.hasAttribute('href')){ e.preventDefault(); soonOpen(r); } });
+casesEl.addEventListener('keydown',e=>{ const r=e.target.closest('.row'); if(r&&!r.hasAttribute('href')&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); soonOpen(r); } });
+soon.addEventListener('click',e=>{ if(e.target.closest('.sm-b')||!e.target.closest('.sm-card')) soonClose(); });
+addEventListener('keydown',e=>{ if(soon.hidden) return; if(e.key==='Escape') soonClose(); else if(e.key==='Tab'){ e.preventDefault(); document.getElementById('sm-b').focus(); } });
 
 /* reveal */
 /* timeline: rows below the fold fade up one after another as they enter; once shown they stay (also across RU/EN re-render) */
