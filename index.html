@@ -625,7 +625,7 @@ function render(){
   hn.innerHTML = rls + NAME[lang].map((w,i)=>`<span class="ln ${i?'b':'a'}">${[...w].map(c=>`<span class="ch">${c}</span>`).join('')}</span>`).join('');
   // work index
   document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
-    <a class="row soon rv" href="#work" data-k="${c.k||''}" data-cur="${d.wip}">
+    <a class="row soon rv" data-k="${c.k||''}" data-cur="${d.wip}">
       <span class="no">00${i+1}</span>
       <h3>${c[lang].t}</h3>
       <span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span>
