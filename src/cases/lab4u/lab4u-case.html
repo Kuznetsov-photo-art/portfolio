@@ -1,7 +1,8 @@
 <title>Lab4U — Andrew Kuznetsov</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/assets/fonts/inter.css">
 <script>/* language before the first paint: the saved choice, else Russian only for a Russian browser/system; an English visitor sees no Russian flash (safety net 1.5 s) */
 var L0=(function(){try{var s=localStorage.getItem('lang');if(s==='ru'||s==='en')return s;}catch(e){}return /^ru(-|$)/i.test(navigator.language||'')?'ru':'en';})(); document.documentElement.lang=L0; if(L0==='en'){ document.documentElement.classList.add('i18n-wait'); setTimeout(function(){document.documentElement.classList.remove('i18n-wait');},1500); }</script>
 <style>
@@ -10,10 +11,10 @@ html.i18n-wait body{visibility:hidden}
   --bg:#FFFFFF; --bg-2:#F6F7F8; --bg-3:#EBEBEB;
   --ink:#0A0A0A; --ink-2:#4A4A4A; --ink-3:#8A8A8A;
   --line:rgba(10,10,10,.10); --line-2:rgba(10,10,10,.22); --red:rgba(10,10,10,.55);
-  --display:'Unbounded',system-ui,sans-serif;
-  --body:'Golos Text',system-ui,-apple-system,sans-serif;
+  --display:'Inter','Golos Text',system-ui,sans-serif; /* the case speaks the product's font: Lab4U is moving from Roboto to Inter (OFL) */
+  --body:'Inter','Golos Text',system-ui,-apple-system,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --roboto:Roboto,'Helvetica Neue',Arial,system-ui,sans-serif;
+  --roboto:Roboto,'Inter','Helvetica Neue',Arial,system-ui,sans-serif;
   --gutter:clamp(16px,4vw,56px);
   --acc:#00B6D3; --acc2:#0592D2; --accg:linear-gradient(135deg,#00B6D3,#0592D2); /* Lab4U logo turquoise → blue */
   --frame:#F1F2F4; --frame-2:#FFFFFF; /* Lab4U Background/BG/Base and Surface/Base, light */
@@ -485,6 +486,16 @@ html.glitch :is(section,header.hero){animation:glx .28s steps(1,end) 1}
 html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption):not(.h-title *,.h-title),html.glitch .nav *{animation:gls .28s steps(1,end) 1}
 @keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
 @keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
+/* Inter weights: headings 500, card titles 600, numbers 400, optical sizes on */
+body{font-optical-sizing:auto}
+.sec-head h2{font-weight:500;letter-spacing:-.045em}
+.sec-head .n{font-weight:300}
+.lead{font-weight:400;letter-spacing:-.025em}
+.specs b,.rules b{font-weight:400;letter-spacing:-.045em}
+.outro h2{font-weight:500;letter-spacing:-.055em}
+.mq span{font-weight:600}
+.path b,.feats b,.next b,.awards b,.st-steps b,.store b{font-weight:600;letter-spacing:-.025em}
+.h-sub{letter-spacing:-.015em}
 </style>
 
 <div class="grain"></div><script>document.body.classList.add("dark")</script>
