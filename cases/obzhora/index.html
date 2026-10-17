@@ -162,7 +162,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 body:not(.dark) .sw .k{transform:translateX(22px)}
 body:not(.dark) .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
 body:not(.dark) .sw .sun{opacity:1;transform:none}
-.hpin .track{--fw:clamp(180px,22vw,320px)} /* phone size in the horizontal track (shared by the figures and the titles) */
+.hpin{--fw:min(clamp(180px,22vw,320px),calc((100svh - 190px)/2.33))} /* phone size in the horizontal track (shared by the figures, the titles and the pinned area) */
 .hpin .track figure .ph{--w:var(--fw)}
 .hpin .track img{filter:none}
 .ph.big{--w:clamp(200px,24vw,400px)}
@@ -251,7 +251,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 
 /* horizontal pinned track */
 .hpin{position:relative;height:300vh}
-.hpin .sticky{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:flex-start;padding-top:64px} /* the track sits under the header, not in the screen centre — no empty screen after the text */
+.hpin .sticky{position:sticky;top:0;height:auto;max-height:100svh;overflow:hidden;display:flex;align-items:flex-start;padding-top:64px;padding-bottom:calc(var(--fw)*.19 + 90px)} /* as tall as the track itself (the phones are sized to fit the screen height too): no empty screen after it and no clipped captions at any window size */ /* the track sits under the header, not in the screen centre — no empty screen after the text */
 .hpin .track{display:flex;gap:0;padding-inline:var(--gutter);will-change:transform;align-items:center}
 .hpin .track figure{margin:0;flex:none;width:calc(var(--fw)*1.3)} /* = mockup width, so captions centre under the phone */
 .hpin .track figure:nth-child(even){transform:translateY(8%)}
@@ -299,9 +299,9 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .stage > .fl:not(.phone),.stage .cap{display:none}
   .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
   .stage > .fl.phone:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
-  .hpin .track{--fw:min(62vw,calc((100svh - 150px)/2.364))}
+  .hpin{--fw:min(62vw,calc((100svh - 150px)/2.364))}
   .hpin .track figure:nth-child(even){transform:none} /* phones: all phones of the track on one line */
-  .hpin .sticky{align-items:flex-start;padding-top:68px} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
+  .hpin .sticky{height:100svh;max-height:none;align-items:flex-start;padding-top:68px;padding-bottom:0} /* phones: the pinned area stays a full screen — the space after the track was liked as it is */ /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
   .sec{padding-block:calc(var(--gutter)*2.5)}.sec:has(.hpin){padding-bottom:calc(var(--gutter)*1.25)}.sec:has(.hpin)+.sec{padding-top:calc(var(--gutter)*1.25)} /* phones: sections twice as far apart (40 + 40 px), except after the horizontal track — its own space is enough */
   .pal{display:flex;flex-wrap:wrap;gap:10px}.pal .row{display:contents} /* phones: the chips run one after another in their order, without a break between the colour groups */
   .stage .pcap{position:static;display:block;margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
@@ -483,7 +483,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     <div class="fl phone" style="left:54%;top:18%" data-sp="-.26"><div class="ph "><img class="l" src="/cases/obzhora/img/mock-recipeadd_l.webp" alt=""><img class="d" src="/cases/obzhora/img/mock-recipeadd_d.webp" alt=""></div><span class="pcap">В приём пищи</span></div>
     <div class="fl phone" style="left:78%;top:4%" data-sp=".1"><div class="ph "><img class="l" src="/cases/obzhora/img/mock-favs_l.webp" alt=""><img class="d" src="/cases/obzhora/img/mock-favs_d.webp" alt=""></div><span class="pcap">Избранное</span></div>
     <div class="cap" style="left:38%;bottom:0"><i></i>рецепт дня · ккал на порцию</div>
-    <div class="cap" style="left:104.5%;bottom:0"><i></i>избранное · один тап</div>
+    <div class="cap" style="right:calc(var(--phw) * -.94);bottom:0"><i></i>избранное · один тап</div>
   </div>
 </section>
 
@@ -571,12 +571,18 @@ const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const fitPhones=()=>{
   $$('.stage').forEach(st=>{
     const ph=[...st.querySelectorAll(':scope > .fl.phone .ph')]; const n=ph.length;
-    if(innerWidth<=860||n<2){ st.style.removeProperty('--phw'); st.style.minHeight=''; ph.forEach(p=>p.style.removeProperty('--w')); return; }
+    if(innerWidth<=860||n<2){ st.style.removeProperty('--phw'); st.style.minHeight=''; st.style.removeProperty('height'); ph.forEach(p=>p.style.removeProperty('--w')); return; }
     const g=parseFloat(getComputedStyle(st).marginLeft)||56; // stage margin-left = resolved --gutter
     const W=st.parentElement.clientWidth-2*g, gap=24, body=.83;
     const P=Math.min((W-(n-1)*gap)/(1+body*(n-1)), 520); // image width
-    st.style.setProperty('--phw',P+'px'); st.style.minHeight=Math.round(P*1.82/.8)+'px'; /* phones sit up to ~20% down the stage */
+    st.style.setProperty('--phw',P+'px'); st.style.minHeight='';
     ph.forEach(p=>p.style.setProperty('--w',(P/1.3)+'px'));
+    /* stage height follows the phone size (not the window height): the lowest phone body + its caption + the group caption.
+       Phones sit at top:N% of the stage, so H·(1−maxTop) = body + 108 px (caption 31 + air 24 + group caption 13 + parallax 40). The empty strip under the phones stays the same at every width */
+    const tops=[...st.querySelectorAll(':scope > .fl.phone')].map(f=>{ const t=f.style.top||'0'; return t.endsWith('%')?parseFloat(t)/100:0; });
+    const bodyH=P*991/545*.898, H=Math.round((bodyH+108)/(1-Math.max(...tops)));
+    st.style.setProperty('height',H+'px','important');
+    const dn=st.querySelector(':scope > .fl.donut'); if(dn){ const i2=1, t2=tops[i2]*H; dn.style.top=Math.round(t2+bodyH+31+28)+'px'; } /* dark section: the donut sits under the 2nd phone's caption */
   });
 };
 fitPhones(); addEventListener('resize',fitPhones);
@@ -649,7 +655,7 @@ function frame(t){
       const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; const d=(c-vh/2);
       if(c<-vh||c>vh*2) continue;
       if(f.stage){ /* section phones: the drift grows evenly over the whole pass through the screen (no snap at the cap) and is eased in time; level at the screen centre */
-        const lim=innerWidth<=860?4:64, t=Math.max(-1,Math.min(1,d/(vh*.75))), k=Math.max(-1,Math.min(1,f.sp/.28));
+        const lim=innerWidth<=860?4:40, t=Math.max(-1,Math.min(1,d/(vh*.75))), k=Math.max(-1,Math.min(1,f.sp/.28));
         f.y+=(-lim*t*k-f.y)*.12;
       } else {
         const lim=(innerWidth<=860&&f.el.classList.contains('hero-ph'))?0:Math.min(120,vh*.12); /* phones: the hero phone does not drift up over the hero facts */
