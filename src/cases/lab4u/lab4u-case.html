@@ -110,7 +110,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .hero{--hx:max(var(--gutter),calc((100% - 1560px)/2 + var(--gutter)));--h-bg:var(--bg);--h-ink:#0A0A0A;--h-ink2:rgba(10,10,10,.66);--h-ink3:rgba(10,10,10,.46);--h-line:rgba(10,10,10,.12);--h-card:rgba(255,255,255,.66);--h-ok:#00A878;--h-warn:#E58A00;--h-acc:#00B6D3;
   position:relative;min-height:100svh;overflow:hidden;isolation:isolate;background:var(--h-bg);color:var(--h-ink);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);align-items:center;gap:var(--gutter);padding:calc(62px + var(--gutter)) var(--hx) calc(var(--gutter)*1.6);transition:background .8s}
 body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);--h-ink3:rgba(242,242,242,.46);--h-line:rgba(242,242,242,.12);--h-card:rgba(22,22,24,.62);--h-ok:#2FE0A8;--h-warn:#FFB443;--h-acc:#19C6E2}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-3;display:block;opacity:.85;-webkit-mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%)} /* strongly translucent; the plate runs past every edge and melts away before it, so no edge or corner shows when it turns */
+.hero #plate{position:absolute;inset:0;width:100%;height:100%;z-index:-3;display:block;opacity:.85;-webkit-mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%)} /* strongly translucent; the plate runs past every edge and melts away before it, so no edge or corner shows when it turns */
 .hero .dof{position:absolute;inset:0;z-index:-2;pointer-events:none;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);-webkit-mask-image:radial-gradient(ellipse 42% 48% at 26% 46%,transparent 0,transparent 30%,#000 100%);mask-image:radial-gradient(ellipse 42% 48% at 26% 46%,transparent 0,transparent 30%,#000 100%)} /* depth of field: the plate is sharp around the logo and blurs toward the sides */
 .hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 75% at 22% 52%,var(--h-bg) 18%,color-mix(in srgb,var(--h-bg) 70%,transparent) 45%,transparent 75%)} /* a soft veil keeps the copy readable over the plate */
 .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18%;z-index:-1;pointer-events:none;background:linear-gradient(transparent,var(--bg))} /* the hero melts into the page */
@@ -133,26 +133,13 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .h-meta a{border-bottom:1px solid var(--h-line);transition:border-color .3s,color .3s}.h-meta a:hover{color:var(--h-ink);border-color:var(--h-acc)}
 @keyframes hfade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .ready .h-eye,.ready .h-logo,.ready .h-sub,.ready .h-meta{animation:none;opacity:1;transform:none;clip-path:none} /* after the entrance the copy stays put: the language glitch swaps animations for 0.3 s and would otherwise replay the entrance (low specificity on purpose — the glitch still wins while it runs) */
-/* the abstract «reading»: a radar of 12 lab values — the reference range is a ring, the AI sweep reads each axis */
-.h-viz{position:relative;z-index:2;justify-self:end;width:min(100%,480px);aspect-ratio:1}
-.h-viz svg{width:100%;height:100%;display:block;overflow:visible}
-.rd-grid{fill:none;stroke:var(--h-line);stroke-width:1}
-.rd-spoke{stroke:var(--h-line);stroke-width:1}
-.rd-band{fill:color-mix(in srgb,var(--h-acc) 9%,transparent);stroke:color-mix(in srgb,var(--h-acc) 40%,transparent);stroke-width:1;stroke-dasharray:2 4}
-.rd-poly{fill:color-mix(in srgb,var(--h-acc) 14%,transparent);stroke:var(--h-acc);stroke-width:1.6;stroke-linejoin:round}
-.rd-dot{fill:var(--h-bg);stroke:var(--h-acc);stroke-width:2}
-.rd-dot.w{stroke:var(--h-warn);stroke-width:2.4}
-.rd-halo{fill:none;stroke:var(--h-warn);stroke-width:1.2;opacity:0}
-.rd-sweep path{fill:var(--h-acc)}
-.rd-prog{fill:none;stroke:var(--h-acc);stroke-width:2;stroke-linecap:round}
-.rd-lbl{font:500 9.5px var(--mono);letter-spacing:.08em;fill:var(--h-ink3);text-transform:uppercase;transition:fill .4s}
-.rd-lbl tspan.v{fill:var(--h-ink2)}
-.rd-lbl.on tspan.v{fill:var(--h-ink)}
-.rd-lbl.w tspan{fill:var(--h-warn)}
-.rd-core{fill:var(--h-bg);stroke:var(--h-line);stroke-width:1}
-.rd-n{font:600 46px var(--body);letter-spacing:-.04em;fill:var(--h-ink);font-variant-numeric:tabular-nums}
-.rd-cap{font:500 9.5px var(--mono);letter-spacing:.12em;fill:var(--h-ink3);text-transform:uppercase}
-.rd-dev{font:500 9.5px var(--mono);letter-spacing:.12em;fill:var(--h-warn);text-transform:uppercase}
+/* the abstract «reading»: a rotating 3D sphere of 12 lab values — needles out of a sphere of points, the reference range is a translucent shell */
+.h-viz{position:relative;z-index:2;justify-self:end;width:min(100%,540px);aspect-ratio:1}
+.h-viz::before{content:'';position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(closest-side,var(--h-bg) 52%,color-mix(in srgb,var(--h-bg) 70%,transparent) 72%,transparent 100%);pointer-events:none} /* a calm patch of background so the helix does not run through the sphere */
+.h-viz canvas{position:absolute;inset:-18%;width:136%;height:136%;display:block} /* the canvas spills past the box: room for the needle labels */
+.gv-cap{position:absolute;left:50%;bottom:-12%;transform:translateX(-50%);display:flex;align-items:baseline;gap:10px;white-space:nowrap;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--h-ink3)}
+.gv-cap b{font:600 30px/1 var(--body);letter-spacing:-.03em;color:var(--h-ink);font-variant-numeric:tabular-nums;text-transform:none}
+.gv-cap em{font-style:normal;color:var(--h-warn)}
 .scroll-hint{position:absolute;left:var(--hx);bottom:var(--gutter);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--h-ink3);display:flex;gap:10px;align-items:center;z-index:4}
 .scroll-hint i{width:1px;height:40px;background:var(--h-line);position:relative;overflow:hidden}
 .scroll-hint i::after{content:'';position:absolute;inset:0;background:var(--h-ink);animation:drop 1.8s cubic-bezier(.7,0,.3,1) infinite}
@@ -427,7 +414,8 @@ section[id]{scroll-margin-top:20px}
   .hero .dof{-webkit-mask-image:radial-gradient(ellipse 70% 32% at 50% 24%,transparent 0,transparent 30%,#000 100%);mask-image:radial-gradient(ellipse 70% 32% at 50% 24%,transparent 0,transparent 30%,#000 100%);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   .h-logo{margin-top:20px}
   .h-meta{gap:12px 22px;margin-top:22px}
-  .h-viz{justify-self:center;width:min(88vw,380px);margin-top:4px}
+  .h-viz{justify-self:center;width:min(78vw,380px);margin:4px 0 56px}
+  .h-viz canvas{inset:-13%;width:126%;height:126%}
   .intro .g,.txt{grid-template-columns:1fr}
   .specs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .specs div:nth-child(odd){padding-left:0}
@@ -524,7 +512,7 @@ body{font-optical-sizing:auto}
       <div><b>Платформы</b>Web · <a href="https://apps.apple.com/ru/app/lab4u-%D1%81%D0%B4%D0%B0%D1%82%D1%8C-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D1%8B/id1599966953" target="_blank" rel="noopener">iOS</a> · <a href="https://play.google.com/store/apps/details?id=ru.lab4u.android" target="_blank" rel="noopener">Android</a></div>
     </div>
   </div>
-  <div class="h-viz" aria-hidden="true"><svg id="radar" viewBox="-240 -240 480 480"></svg></div>
+  <div class="h-viz" aria-hidden="true"><canvas id="globe"></canvas><div class="gv-cap"><b id="gvN">0</b><span id="gvC"></span><em id="gvD"></em></div></div>
   <div class="scroll-hint"><span>Листайте</span><i></i></div>
 </header>
 
@@ -1019,42 +1007,59 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
     const ct=Math.cos(TILT), st=Math.sin(TILT), xs=x1*ct-y2*st, ys=x1*st+y2*ct, s=F/(F+z2); return [CX+xs*s, CY+ys*s, s, z2]; };
   const lit=new Map(); let spin=0, p=0, hold=.6, last=performance.now(), rT=0;
   const dust=[]; for(let k=0;k<(mob()?40:80);k++) dust.push({a:(Math.random()-.5),y:(Math.random()-.5),z:(Math.random()-.5),s:.6+Math.random()*1.4,v:.01+Math.random()*.03});
-  /* radar: 12 values on spokes; the reference range is the ring between R0 and R1; ferritin reads below it */
-  const rd=$('#radar'), NS='http://www.w3.org/2000/svg', N=12, R0=92, R1=150, RMAX=182;
-  const VAL=[['HB','142',.6],['FERR','18',.18,1],['VIT D','34',.42],['B12','410',.55],['TSH','1.9',.48],['GLU','5.1',.52],['CHOL','4.6',.62],['ALT','22',.4],['AST','24',.44],['CRP','1.2',.3],['CREA','78',.58],['FE','15',.5]];
-  const el=(n,a,par)=>{ const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); (par||rd).append(e); return e; };
-  const ang=i=>-Math.PI/2+i*2*Math.PI/N, rOf=v=>v<0?R0*(.82+v*.4):R0+(R1-R0)*v; /* v in band 0..1, a deviation reads below the ring */
-  const pt=(i,r)=>[Math.cos(ang(i))*r,Math.sin(ang(i))*r];
-  let poly, dots=[], halos=[], lbls=[], sweep, prog, nTxt, capTxt, devTxt, cur=VAL.map(()=>0), tgt=VAL.map(v=>v[3]?-.42:v[2]), hit=VAL.map(()=>false);
-  if(rd){
-    [60,R0,R1,RMAX].forEach(r=>el('circle',{r,class:'rd-grid'}));
-    for(let i=0;i<N;i++){ const [x2,y2]=pt(i,RMAX); el('line',{x1:0,y1:0,x2,y2,class:'rd-spoke'}); }
-    el('path',{d:`M${R1},0A${R1},${R1} 0 1,1 ${-R1},0A${R1},${R1} 0 1,1 ${R1},0ZM${R0},0A${R0},${R0} 0 1,0 ${-R0},0A${R0},${R0} 0 1,0 ${R0},0Z`,class:'rd-band','fill-rule':'evenodd'});
-    sweep=el('g',{class:'rd-sweep'}); for(let k=0;k<7;k++){ const a0=-k*5*Math.PI/180, a1=a0-5*Math.PI/180; el('path',{d:`M0,0L${Math.cos(a0)*RMAX},${Math.sin(a0)*RMAX}A${RMAX},${RMAX} 0 0,0 ${Math.cos(a1)*RMAX},${Math.sin(a1)*RMAX}Z`,opacity:(.22*(1-k/7)).toFixed(3)},sweep); }
-    prog=el('circle',{r:RMAX+10,class:'rd-prog',transform:'rotate(-90)','stroke-dasharray':`0 ${2*Math.PI*(RMAX+10)}`});
-    poly=el('path',{class:'rd-poly',d:'M0,0Z'});
-    for(let i=0;i<N;i++){ if(VAL[i][3]) halos[i]=el('circle',{r:8,class:'rd-halo'}); dots[i]=el('circle',{r:VAL[i][3]?5:3.2,class:'rd-dot'+(VAL[i][3]?' w':'')});
-      const [lx,ly]=pt(i,RMAX+26), tx=el('text',{x:lx,y:ly+3,'text-anchor':Math.abs(lx)<8?'middle':lx>0?'start':'end',class:'rd-lbl'+(VAL[i][3]?' w':'')});
-      const a=document.createElementNS(NS,'tspan'); a.textContent=VAL[i][0]+' '; const b=document.createElementNS(NS,'tspan'); b.setAttribute('class','v'); b.textContent=VAL[i][1]+(VAL[i][3]?' ↓':''); tx.append(a,b); lbls[i]=tx; }
-    el('circle',{r:52,class:'rd-core'});
-    nTxt=el('text',{x:0,y:8,'text-anchor':'middle',class:'rd-n'}); nTxt.textContent='0';
-    capTxt=el('text',{x:0,y:30,'text-anchor':'middle',class:'rd-cap'}); devTxt=el('text',{x:0,y:46,'text-anchor':'middle',class:'rd-dev'});
-  }
+  /* globe: 12 values as needles out of a rotating sphere of points; needles inside the shell (reference range) are normal,
+     ferritin falls short of it (amber, pulsing). The scanning ring crosses the sphere top → bottom with each pass and the needles it passes grow */
+  const gv=$('#globe'), gx=gv&&gv.getContext('2d'), gN=$('#gvN'), gC=$('#gvC'), gD=$('#gvD');
+  const VAL=[['HB','142',.44],['FERR','18',.1,1],['VIT D','34',.36],['B12','410',.46],['TSH','1.9',.4],['GLU','5.1',.42],['CHOL','4.6',.5],['ALT','22',.34],['AST','24',.38],['CRP','1.2',.31],['CREA','78',.47],['FE','15',.41]];
+  const B0=.28, B1=.55; /* the shell: needle length (in sphere radii) of the normal range */
+  const fib=(n,k)=>{ const y=1-2*(k+.5)/n, r=Math.sqrt(1-y*y), a=k*2.39996323; return [Math.cos(a)*r,y,Math.sin(a)*r]; };
+  const PTS=[]; for(let k=0;k<560;k++) PTS.push(fib(560,k));
+  const DIR=VAL.map((v,k)=>fib(12,k));
+  let gW=1,gS=1,gdpr=1,ry=0,rx=.32,gT=0, hit=VAL.map(()=>false), len=VAL.map(()=>0), tgt=VAL.map(v=>v[2]);
+  const gsize=()=>{ if(!gv) return; gdpr=Math.min(2,devicePixelRatio||1); gW=gv.clientWidth; gv.width=gW*gdpr; gv.height=gW*gdpr; };
+  gsize(); addEventListener('resize',gsize);
   const RT={ru:['показателей','отклонение'],en:['values','deviation']};
-  const rdText=()=>{ if(!rd) return; const L=document.documentElement.lang==='en'?'en':'ru'; capTxt.textContent=RT[L][0]; devTxt.textContent=hit[1]?'1 '+RT[L][1]:''; };
+  const rdText=()=>{ if(!gv) return; const L=document.documentElement.lang==='en'?'en':'ru'; gC.textContent=RT[L][0]; gD.textContent=hit[1]?'· 1 '+RT[L][1]:''; };
   rdText(); document.addEventListener('langchange',rdText);
-  let rdT=0;
-  const radar=(prog01,dt)=>{ if(!rd) return; rdT+=dt;
-    const a=prog01*2*Math.PI; sweep.setAttribute('transform',`rotate(${(a*180/Math.PI-90).toFixed(2)})`);
-    const C=2*Math.PI*(RMAX+10); prog.setAttribute('stroke-dasharray',`${(C*prog01).toFixed(1)} ${C}`);
-    let n=0, d='';
-    for(let i=0;i<N;i++){ const ai=(i/N)*2*Math.PI; if(!hit[i]&&a>=ai-.001&&prog01>0){ hit[i]=true; lbls[i].classList.add('on'); if(i===1) rdText(); }
-      if(hit[i]){ n++; cur[i]+=(tgt[i]-cur[i])*(1-Math.pow(.004,dt)); }
-      const r=hit[i]?rOf(cur[i]):(cur[i]?rOf(cur[i]):6), [x,y]=pt(i,r); dots[i].setAttribute('cx',x.toFixed(1)); dots[i].setAttribute('cy',y.toFixed(1));
-      if(halos[i]){ halos[i].setAttribute('cx',x.toFixed(1)); halos[i].setAttribute('cy',y.toFixed(1)); const ph=(rdT%1.6)/1.6; halos[i].setAttribute('r',(6+ph*12).toFixed(1)); halos[i].setAttribute('opacity',hit[i]?(.8*(1-ph)).toFixed(2):0); }
-      d+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1); }
-    poly.setAttribute('d',d+'Z'); nTxt.textContent=n; };
-  const newRead=()=>{ hit=hit.map(()=>false); lbls.forEach(l=>l.classList.remove('on')); tgt=VAL.map(v=>v[3]?-.42+Math.random()*.06:Math.max(.12,Math.min(.88,v[2]+(Math.random()-.5)*.18))); rdText(); };
+  const rot=(v)=>{ const [x0,y0,z0]=v, cy=Math.cos(ry), sy=Math.sin(ry), x1=x0*cy+z0*sy, z1=-x0*sy+z0*cy, cx=Math.cos(rx), sx=Math.sin(rx), y2=y0*cx-z1*sx, z2=y0*sx+z1*cx; return [x1,y2,z2]; };
+  const radar=(p,dt)=>{ if(!gv) return; gT+=dt; ry+=dt*.32; rx+=((.32+pit*.8)-rx)*.04;
+    const c=gW/2, R=gW*.235, Dc=3.6, prj=(v,r)=>{ const s=Dc/(Dc-v[2]*r); return [c+v[0]*r*R*s, c-v[1]*r*R*s, s]; };
+    const dark=document.body.classList.contains('dark'), ink=dark?'255,255,255':'10,10,10', acc=dark?'25,198,226':'0,160,196', wrn=dark?'255,180,67':'229,138,0';
+    gx.setTransform(gdpr,0,0,gdpr,0,0); gx.clearRect(0,0,gW,gW);
+    const yS=1.15-p*2.3; /* the scanning latitude, top → bottom */
+    /* the shell (reference range) */
+    const r0=R*(1+B0)*Dc/Math.sqrt(Dc*Dc-(1+B0)*(1+B0)), r1=R*(1+B1)*Dc/Math.sqrt(Dc*Dc-(1+B1)*(1+B1));
+    gx.beginPath(); gx.arc(c,c,r1,0,6.2832); gx.arc(c,c,r0,0,6.2832,true); gx.fillStyle=`rgba(${acc},.045)`; gx.fill();
+    gx.setLineDash([2,6]); gx.lineWidth=1; gx.strokeStyle=`rgba(${acc},.3)`; for(const r of [r0,r1]){ gx.beginPath(); gx.arc(c,c,r,0,6.2832); gx.stroke(); } gx.setLineDash([]);
+    /* needles: grow when the scan passes their latitude */
+    let n=0; const items=[];
+    VAL.forEach((v,i)=>{ if(!hit[i]&&p>0&&yS<=DIR[i][1]){ hit[i]=true; if(i===1) rdText(); }
+      if(hit[i]){ n++; len[i]+=(tgt[i]-len[i])*(1-Math.pow(.003,dt)); }
+      const d=rot(DIR[i]); items.push([d[2],1,i,d]); });
+    PTS.forEach(v=>{ const d=rot(v); items.push([d[2],0,v,d]); });
+    items.sort((a,b)=>a[0]-b[0]); /* back first */
+    for(const it of items){
+      const z=it[0], front=(z+1)/2;
+      if(it[1]===0){ const [sx,sy,s]=prj(it[3],1), near=Math.abs(it[2][1]-yS)<.07&&p>0?1:0;
+        gx.beginPath(); gx.arc(sx,sy,(.7+front*1.1)*s*(1+near*.6),0,6.2832); gx.fillStyle=near?`rgba(${acc},${(.5+front*.5).toFixed(3)})`:`rgba(${ink},${(.06+front*.4).toFixed(3)})`; gx.fill(); }
+      else { const i=it[2], d=it[3], w=!!VAL[i][3], col=w?wrn:acc, l=len[i]; if(l<.01) continue;
+        const [ax,ay]=prj(d,1), [bx,by,s]=prj(d,1+l), al=(.25+front*.75).toFixed(3);
+        gx.beginPath(); gx.moveTo(ax,ay); gx.lineTo(bx,by); gx.lineWidth=(1.2+front*1.2)*s; gx.strokeStyle=`rgba(${col},${al})`; gx.stroke();
+        gx.beginPath(); gx.arc(bx,by,(w?4.5:3.2)*s,0,6.2832); gx.fillStyle=dark?'#0A0A0A':'#FFFFFF'; gx.fill(); gx.lineWidth=2*s; gx.strokeStyle=`rgba(${col},${al})`; gx.stroke();
+        if(w){ const ph=(gT%1.6)/1.6; gx.beginPath(); gx.arc(bx,by,(5+ph*12)*s,0,6.2832); gx.lineWidth=1; gx.strokeStyle=`rgba(${col},${(.8*(1-ph)*front).toFixed(3)})`; gx.stroke(); }
+        /* label beside the tip, outward */
+        const ox=bx-c, oy=by-c, ol=Math.hypot(ox,oy)||1, lx=bx+ox/ol*14, ly=by+oy/ol*14;
+        gx.font='500 10px "JetBrains Mono",ui-monospace,monospace'; gx.textAlign=ox>8?'left':ox<-8?'right':'center'; gx.textBaseline='middle';
+        const lab=VAL[i][0]+' ', val=VAL[i][1]+(w?' ↓':''), wl=gx.measureText(lab).width, wv=gx.measureText(val).width, x0=gx.textAlign==='left'?lx:gx.textAlign==='right'?lx-wl-wv:lx-(wl+wv)/2;
+        gx.textAlign='left'; gx.fillStyle=w?`rgba(${col},${al})`:`rgba(${ink},${(.2+front*.4).toFixed(3)})`; gx.fillText(lab,x0,ly);
+        gx.fillStyle=w?`rgba(${col},${al})`:`rgba(${ink},${(.3+front*.65).toFixed(3)})`; gx.fillText(val,x0+wl,ly); }
+    }
+    /* the scanning ring on the sphere */
+    if(p>0&&p<1&&Math.abs(yS)<1){ const rr=Math.sqrt(1-yS*yS); gx.beginPath();
+      for(let q=0;q<=48;q++){ const f=q/48*6.2832, d=rot([Math.cos(f)*rr,yS,Math.sin(f)*rr]), [sx,sy]=prj(d,1.02); q?gx.lineTo(sx,sy):gx.moveTo(sx,sy); }
+      gx.lineWidth=1.4; gx.strokeStyle=`rgba(${acc},.85)`; gx.stroke(); }
+    gN.textContent=n; };
+  const newRead=()=>{ hit=hit.map(()=>false); tgt=VAL.map(v=>v[3]?.08+Math.random()*.06:Math.max(B0+.03,Math.min(B1-.03,v[2]+(Math.random()-.5)*.12))); rdText(); };
   const draw=(dt)=>{
     yaw+=(yawT-yaw)*.04; pit+=(pitT-pit)*.04;
     x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
