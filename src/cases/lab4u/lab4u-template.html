@@ -88,9 +88,6 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 /* ---------- frames: browser window, phone, tablet ---------- */
 .bw{margin:0;position:relative;min-width:0}
 .bw .win{border-radius:14px;overflow:hidden;background:var(--frame);border:1px solid var(--line);box-shadow:0 50px 90px -50px rgba(0,0,0,.45);transition:background .8s}
-.bw .bar{height:34px;display:flex;align-items:center;gap:6px;padding:0 14px;position:relative}
-.bw .bar i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
-.bw .bar span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:500 10px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3);background:var(--frame-2);padding:6px 16px;border-radius:99px;white-space:nowrap;transition:background .8s}
 .vp{position:relative;overflow:hidden;aspect-ratio:var(--ar,16/10);background:#fff}
 .vp img{width:100%;height:auto;display:block;filter:var(--shot);transition:filter .8s}
 .vp.scroll img,.scr.scroll img{will-change:transform}
@@ -445,7 +442,6 @@ section[id]{scroll-margin-top:20px}
   .prow{display:grid;grid-template-columns:1fr 1fr;gap:24px 12px}
   .prow .pf{max-width:none}
   .prow .pf:nth-child(even){margin-top:0}
-  .bw .bar{height:26px;padding:0 10px}.bw .bar i{width:7px;height:7px}.bw .bar span{padding:4px 10px;font-size:9px}
   .bw .win{border-radius:10px}
   .rules,.rules.r3{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rules > div:nth-child(odd){padding-left:0}.rules > div:nth-child(even){border-right:0}
@@ -513,7 +509,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
   </div>
   <div class="scene">
     <div class="blob"></div>
-    <div class="fl h-bw" data-sp="-.05"><figure class="bw"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp" style="--ar:1728/1080"><img {{img:home_d}} alt="Новая главная Lab4U" fetchpriority="high"></div></div></figure></div>
+    <div class="fl h-bw" data-sp="-.05"><figure class="bw"><div class="win"><div class="vp" style="--ar:1728/1080"><img {{img:home_d}} alt="Новая главная Lab4U" fetchpriority="high"></div></div></figure></div>
     <div class="fl h-ph" data-sp=".12"><figure class="pf"><div class="dev"><div class="scr"><img {{img:app_home2}} alt="Главная приложения Lab4U"></div></div></figure></div>
     <div class="fl chip c1" data-sp=".22"><i class="g">✓</i>Расшифровка готова</div>
     <div class="fl chip c2" data-sp="-.16"><i>%</i>До −50% к ценам клиник</div>
@@ -603,7 +599,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
         </ol>
       </div>
       <div class="st-stage">
-        <figure class="bw st-win scan in"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/health_insights</span></div><div class="vp" style="--ar:16/10"><img class="on" {{img:dec_upload}} alt="" loading="lazy" decoding="async"><img {{img:dec_recognized}} alt="" loading="lazy" decoding="async"><img class="long" {{img:dec_report}} alt="" loading="lazy" decoding="async"></div></div></figure>
+        <figure class="bw st-win scan in"><div class="win"><div class="vp" style="--ar:16/10"><img class="on" {{img:dec_upload}} alt="" loading="lazy" decoding="async"><img {{img:dec_recognized}} alt="" loading="lazy" decoding="async"><img class="long" {{img:dec_report}} alt="" loading="lazy" decoding="async"></div></div></figure>
         <figure class="pf st-ph"><div class="dev"><div class="scr"><img {{img:app_decoding}} alt="" loading="lazy" decoding="async"></div></div></figure>
       </div>
     </div>
@@ -620,8 +616,8 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap duo blk">
-    <figure class="bw r scan"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/catalog</span></div><div class="vp fit"><img {{img:ai_prescription}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Распознавание назначения врача</figcaption></figure>
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp scroll" style="--ar:1440/1024"><img {{img:ai_basket}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Сборка корзины с ИИ · точка входа на главной</figcaption></figure>
+    <figure class="bw r scan"><div class="win"><div class="vp fit"><img {{img:ai_prescription}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Распознавание назначения врача</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1440/1024"><img {{img:ai_basket}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Сборка корзины с ИИ · точка входа на главной</figcaption></figure>
   </div>
 </section>
 
@@ -655,7 +651,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap bp blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp scroll" style="--ar:1728/1080"><img {{img:home_d}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img {{img:home_d}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
     <figure class="tb r"><div class="dev"><div class="scr scroll"><img {{img:home_t}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Tablet · 744</figcaption></figure>
     <figure class="pf r"><div class="dev"><div class="scr scroll"><img {{img:home_m}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Mobile · 375</figcaption></figure>
   </div>
@@ -670,7 +666,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap bp blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/catalog</span></div><div class="vp scroll" style="--ar:1728/1080"><img {{img:cat_d}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img {{img:cat_d}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
     <figure class="tb r"><div class="dev"><div class="scr scroll"><img {{img:cat_t}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Tablet · 744</figcaption></figure>
     <figure class="pf r"><div class="dev"><div class="scr scroll"><img {{img:cat_m}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Mobile · 375</figcaption></figure>
   </div>
@@ -695,7 +691,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
   <div class="wrap combo blk">
     <div class="r" data-tabs>
       <div class="tabs"><button type="button" class="on">Корзина</button><button type="button">Комплекс выгоднее</button></div>
-      <figure class="bw"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/basket</span></div><div class="vp fit stack"><img class="on" {{img:basket}} alt="" loading="lazy" decoding="async"><img {{img:basket_upsell}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Корзина и предложение собрать комплекс</figcaption></figure>
+      <figure class="bw"><div class="win"><div class="vp fit stack"><img class="on" {{img:basket}} alt="" loading="lazy" decoding="async"><img {{img:basket_upsell}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Корзина и предложение собрать комплекс</figcaption></figure>
     </div>
     <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr scroll"><img {{img:app_basket}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · корзина 3.0</figcaption></figure></div>
   </div>
@@ -717,8 +713,8 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap duo blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/lk/orders</span></div><div class="vp scroll" style="--ar:2000/1504"><img {{img:lk_order}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Детальная заказа · подсказки перед визитом</figcaption></figure>
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/lk/certificates</span></div><div class="vp scroll" style="--ar:2000/1504"><img {{img:certificates}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Подарочные сертификаты <span class="soon">+43% продаж</span></figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:2000/1504"><img {{img:lk_order}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Детальная заказа · подсказки перед визитом</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:2000/1504"><img {{img:certificates}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Подарочные сертификаты <span class="soon">+43% продаж</span></figcaption></figure>
   </div>
 </section>
 
@@ -732,7 +728,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap combo blk">
-    <figure class="bw r mapt"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/address</span></div><div class="vp fit stack"><img class="on" {{img:medcenters}} alt="" loading="lazy" decoding="async"><img {{img:map_filters}} alt="" loading="lazy" decoding="async"><button class="tgl" type="button" aria-pressed="false"><i></i>Время приёма 09:00–19:00</button></div></div><figcaption>Фильтр по времени приёма: до и после · нажмите на переключатель</figcaption></figure>
+    <figure class="bw r mapt"><div class="win"><div class="vp fit stack"><img class="on" {{img:medcenters}} alt="" loading="lazy" decoding="async"><img {{img:map_filters}} alt="" loading="lazy" decoding="async"><button class="tgl" type="button" aria-pressed="false"><i></i>Время приёма 09:00–19:00</button></div></div><figcaption>Фильтр по времени приёма: до и после · нажмите на переключатель</figcaption></figure>
     <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img {{img:app_map}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · карта и список</figcaption></figure></div>
   </div>
 </section>
@@ -747,7 +743,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap combo blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp fit"><img {{img:notifications}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Уведомления <span class="soon">скоро</span></figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp fit"><img {{img:notifications}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Уведомления <span class="soon">скоро</span></figcaption></figure>
     <div class="side">
       <figure class="pf r fl" data-sp=".1"><div class="dev"><div class="scr"><img {{img:app_chat}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Чат с поддержкой</figcaption></figure>
     </div>
@@ -770,7 +766,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     </div>
   </div>
   <div class="wrap combo blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>partner.lab4u.ru</span></div><div class="vp scroll" style="--ar:1440/1000"><img {{img:partner_orders}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Заказы медцентра на день</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1440/1000"><img {{img:partner_orders}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Заказы медцентра на день</figcaption></figure>
     <div class="side"><figure class="paper r fl" data-sp=".1"><img {{img:inject_pdf}} alt="" loading="lazy" decoding="async"><figcaption>Направление LAB4INJECT · A4</figcaption></figure></div>
   </div>
 </section>
@@ -845,7 +841,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     <button class="flip r" type="button" data-flip><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="#fff"/></svg></i>Переключить тему страницы</button>
   </div>
   <div class="wrap blk">
-    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>Тест тёмной темы</span></div><div class="vp fit"><img {{img:ds_dark}} alt="" loading="lazy" decoding="async" style="filter:none"></div></div><figcaption>Личный кабинет в тёмной теме — те же компоненты, другие значения токенов</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp fit"><img {{img:ds_dark}} alt="" loading="lazy" decoding="async" style="filter:none"></div></div><figcaption>Личный кабинет в тёмной теме — те же компоненты, другие значения токенов</figcaption></figure>
   </div>
 </section>
 

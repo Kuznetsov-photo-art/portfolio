@@ -207,6 +207,13 @@ section{padding-block:clamp(80px,10vw,160px)}
 .row .th img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);transition:filter .4s}
 .row:hover .th img{filter:none}
 .row:hover .th{transform:scale(1.03)}
+.row .th.lg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;background:none;border-color:transparent;border-radius:0} /* company logos without a tile: monochrome at rest, brand colours on hover */
+.row .th.lg img{width:auto;height:auto;max-width:100%;max-height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:.55;transition:filter .45s,opacity .45s}
+:root[data-theme="light"] .row .th.lg img{filter:brightness(0);opacity:.5}
+.row .th.lg img.l{display:none}:root[data-theme="light"] .row .th.lg img.l{display:block}:root[data-theme="light"] .row .th.lg img.d{display:none}
+.row .th.lg img.lg-finamx,.row .th.lg img.lg-limex{max-height:19px}
+.row .th.lg img.lg-vtb,.row .th.lg img.lg-lab4u{max-height:38px}
+.row:hover .th.lg img,:root[data-theme="light"] .row:hover .th.lg img{filter:none;opacity:1}
 @media(max-width:760px){.row{grid-template-columns:minmax(0,1fr) 80px;column-gap:16px}.row .meta{gap:6px 16px;margin-top:8px}.row .th{grid-column:2;grid-row:1/5;width:80px;align-self:start;font-size:9px}.row:hover{padding-left:0}}
 
 /* ---------- focus (pinned): kinetic type ---------- */
@@ -558,12 +565,13 @@ const I18N = {
  }
 };
 const NAME={ru:['Андрей','Кузнецов'],en:['Andrew','Kuznetsov']};
+const LGL=['finamx','limex','vtb','yougile']; // logos with a separate version for the light theme (dark ink); the base file is for the dark theme
 const CASES = [
- {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025'}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
- {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25'},
- {ru:{t:'Lab4U — AI-расшифровка анализов',r:'одни из первых в России · №6 в рейтинге Forbes'},en:{t:'Lab4U — AI lab-results interpretation',r:'among the first in Russia · #6 in the Forbes ranking'},tags:['AI','Healthtech'],y:'2023',h:'/cases/lab4u/',i:'/cases/lab4u/img/cover.webp'}, // has a case page: the row is a link, no «soon» modal
- {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb'},
- {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp'},
+ {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025',lg:['finamx','limex']}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
+ {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25',lg:['yougile']},
+ {ru:{t:'Lab4U — AI-расшифровка анализов, приложение 2.0 и DS с нуля',r:'первый в России сервис · №6 в рейтинге Forbes · web + iOS + Android · 820 000+ клиентов'},en:{t:'Lab4U — AI lab-results interpretation, app 2.0 and a DS from scratch',r:'first in Russia · #6 in the Forbes ranking · web + iOS + Android · 820,000+ clients'},tags:['AI','Healthtech'],y:'2023',h:'/cases/lab4u/',lg:['lab4u']}, // has a case page: the row is a link, no «soon» modal
+ {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb',lg:['vtb']},
+ {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp',lg:['sber']},
 ];
 const ARCH = [
  {k:'sber',ru:'Сбер — sCommerce',en:'Sber — sCommerce',y:'2020',u:'https://www.behance.net/gallery/161837373/SBER',i:'/assets/archive/sber.webp'},
@@ -676,7 +684,7 @@ function render(){
     <a class="row${c.h?'':' soon'} rv" ${c.h?`href="${c.h}"`:'tabindex="0" role="button"'} data-k="${c.k||''}" data-cur="${c.h?d.case:d.wip}">
       <h3>${caseT(c[lang].t)}</h3>
       <span class="meta"><span class="res"><span class="yr">${c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
-      <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
+      ${c.lg?`<span class="th lg">${c.lg.map(n=>LGL.includes(n)?`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n} d"><img src="/assets/logos/${n}-l.svg" alt="" loading="lazy" class="lg-${n} l">`:`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n}">`).join('')}</span>`:`<span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>`}
     </a>`).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
