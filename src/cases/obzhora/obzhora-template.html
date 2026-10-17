@@ -171,7 +171,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .pal span.g b{font-weight:500;color:inherit}
 
 /* ---------- intro ---------- */
-.intro{padding:calc(var(--gutter)*2) 0;border-top:1px solid var(--line)} /* the hero's bottom edge (the donuts are clipped there) keeps its line */
+.intro{padding:calc(var(--gutter)*1.33) 0;border-top:1px solid var(--line)} /* the hero's bottom edge (the donuts are clipped there) keeps its line */
 .intro .g{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--gutter)}
 .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch}
 .intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
@@ -192,7 +192,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .specs b.go .sf{opacity:1;transform:none}
 
 /* ---------- sections ---------- */
-.sec{position:relative;padding:calc(var(--gutter)*2.5) 0} /* no divider lines between sections (14.10: tried without, roll back to iter-245-before-dividers) */
+.sec{position:relative;padding:calc(var(--gutter)*1.67) 0} /* no divider lines between sections (14.10: tried without, roll back to iter-245-before-dividers) */
 .sec-head{position:relative;z-index:3;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;column-gap:var(--gutter);row-gap:6px;align-items:end;margin-bottom:calc(var(--gutter)*1.2)}
 /* title aligned with the text below; section number big on the right with its label under it */
 .sec-head h2{grid-column:1;grid-row:1/3}
@@ -238,11 +238,11 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 
 /* dark section */
 .darksec{position:relative}
-.darksec .stage{height:clamp(560px,90vh,960px)}
+.darksec .stage{height:calc(clamp(560px,90vh,960px) - 100px)}
 .darksec .stage{--phw:calc(clamp(120px,14vw,240px)*1.3)} .darksec .stage .fl.phone .ph{--w:clamp(120px,14vw,240px)} /* five phones in a row need a smaller size to keep air between them */
 
 /* outro */
-.outro{padding:calc(var(--gutter)*3) 0 calc(var(--gutter)*2)}
+.outro{padding:calc(var(--gutter)*2) 0 calc(var(--gutter)*2)} /* section spacing ÷1.5 (14.10, after the dividers went) */
 .outro h2{font-size:clamp(44px,10vw,180px);font-weight:200;letter-spacing:-.06em;line-height:.9}
 .outro .nx{display:flex;justify-content:space-between;gap:24px;margin-top:calc(var(--gutter)*1.5);border-top:1px solid var(--line);padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
 .outro .nx a:hover{color:var(--ink)}
@@ -488,7 +488,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     <div class="sec-head"><span class="n">09</span><h2 class="r">Профиль<br> и настройки</h2><span class="m">Профиль</span></div>
     <p class="t r">Параметры тела, цели, уведомления, единицы измерения — всё в одном месте и без лишних экранов</p>
   </div>
-  <div class="wrap stage trio" style="height:clamp(520px,90vh,900px)">
+  <div class="wrap stage trio" style="height:calc(clamp(520px,90vh,900px) - 50px)">
     <div class="fl phone" style="left:10%;top:6%" data-sp="-.16"><div class="ph "><img class="l" src="{{mock:profile_l}}" alt=""><img class="d" src="{{mock:profile_d}}" alt=""></div><span class="pcap">Профиль</span></div>
     <div class="fl phone" style="left:38%;top:18%" data-sp=".22"><div class="ph "><img class="l" src="{{mock:goals_l}}" alt=""><img class="d" src="{{mock:goals_d}}" alt=""></div><span class="pcap">Мои цели</span></div>
     <div class="fl phone" style="left:66%;top:0" data-sp="-.08"><div class="ph "><img class="l" src="{{mock:reminders_l}}" alt=""><img class="d" src="{{mock:reminders_d}}" alt=""></div><span class="pcap">Напоминания</span></div>
