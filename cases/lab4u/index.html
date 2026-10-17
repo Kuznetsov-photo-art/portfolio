@@ -138,6 +138,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 75% at 22% 52%,var(--h-bg) 18%,color-mix(in srgb,var(--h-bg) 70%,transparent) 45%,transparent 75%)} /* a soft veil keeps the copy readable over the plate */
 .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18%;z-index:-1;pointer-events:none;background:linear-gradient(transparent,var(--bg))} /* the hero melts into the page */
 .h-copy{position:relative;z-index:2;max-width:680px}
+@media(min-width:861px){.h-copy{top:-3vh}} /* the copy sits a touch above the centre (Andrey, 18.10) */
 .h-eye{display:flex;align-items:center;gap:12px;font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--h-ink3);opacity:0;animation:hfade .9s .2s forwards}
 .h-logo{position:relative;display:block;margin:clamp(28px,3.2vw,48px) 0 0;width:min(100%,600px);aspect-ratio:637/145.44;clip-path:inset(-60% 100% -60% -20%);animation:hwipe 1.3s cubic-bezier(.65,0,.35,1) .35s forwards}
 .h-logo svg{width:100%;height:auto;display:block;overflow:visible} /* no glow under the logo (Andrey, 18.10) */
