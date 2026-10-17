@@ -188,7 +188,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 :root[data-theme="light"] .row .th.lg img{filter:brightness(0);opacity:.5}
 .row .th.lg img.l{display:none}:root[data-theme="light"] .row .th.lg img.l{display:block}:root[data-theme="light"] .row .th.lg img.d{display:none}
 .row .th.lg img.lg-lab4u{width:74%}.row .th.lg img.lg-yougile{width:74%}.row .th.lg img.lg-vtb{width:64%}.row .th.lg img.lg-sber{width:76%} /* widths balance the visual mass of each logo (VTB is tall and narrow, LAB4U wide and heavy) */
-.row .th.lg img.lg-finamx{width:74%}.row .th.lg img.lg-limex{width:44%}
+.row .th.lg img.lg-finamx{width:82%}.row .th.lg img.lg-limex{width:66%} /* DS «Logo/finam-x» 88×24 and «Logo/limex» 73×24 */
 .row:hover .th.lg img,:root[data-theme="light"] .row:hover .th.lg img{filter:none;opacity:1}
 .row:hover .th.lg img{animation:lgG .42s steps(1,end) 1} /* the logo flips to its colours through a short glitch — RGB split, slices and jitter, like the language switch */
 @keyframes lgG{
@@ -560,7 +560,7 @@ const I18N = {
  }
 };
 const NAME={ru:['Андрей','Кузнецов'],en:['Andrew','Kuznetsov']};
-const LGL=['limex','vtb']; // logos with a separate version for the light theme (dark ink); the base file is for the dark theme
+const LGL=['finamx','limex','vtb']; // logos with a separate version for the light theme (dark ink); the base file is for the dark theme
 const CASES = [
  {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025',lg:['finamx','limex']}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
  {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25',lg:['yougile']},
