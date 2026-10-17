@@ -147,7 +147,7 @@ body.dark .hero-ph .ph img.d{filter:none} /* hero phone stays at full brightness
 .fl .ph{filter:none}
 .fl .ph img{filter:none}
 .stage .fl.phone{width:auto}
-.pcap{display:none} /* short screen name under each phone — shown on phones (tile grid) */
+.pcap{position:absolute;left:6.24%;right:0;top:calc(89.8% + 12px);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center;white-space:nowrap} /* short screen name 12 px under the phone body (the png: body x 68–511, bottom 890 of 545×991), centred on the body */
 .stage .fl.phone .ph{--w:clamp(140px,17vw,280px)}
 .tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:none;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0}
 .tgl i{width:28px;height:14px;border:1px solid currentColor;border-radius:99px;position:relative;display:inline-block}
@@ -302,7 +302,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .hpin .sticky{align-items:flex-start;padding-top:68px} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
   .sec{padding-block:calc(var(--gutter)*2.5)}.sec:has(.hpin){padding-bottom:calc(var(--gutter)*1.25)}.sec:has(.hpin)+.sec{padding-top:calc(var(--gutter)*1.25)} /* phones: sections twice as far apart (40 + 40 px), except after the horizontal track — its own space is enough */
   .pal{display:flex;flex-wrap:wrap;gap:10px}.pal .row{display:contents} /* phones: the chips run one after another in their order, without a break between the colour groups */
-  .stage .pcap{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
+  .stage .pcap{position:static;display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
   .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{width:123.03%;margin:-3.61% 0 -22.8% -15.35%} /* the mockup png has transparent margins and a shadow: the phone body (x 68–511, y 16–890 of 545×991) fills the column exactly */
 }
 @media(prefers-reduced-motion:reduce){.fl{transform:none!important}.grain{animation:none}}
@@ -533,7 +533,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     <div class="fl phone" style="left:39%;top:20%" data-sp=".28"><div class="ph "><img class="l" src="/cases/obzhora/img/mock-category_l.webp" alt=""><img class="d" src="/cases/obzhora/img/mock-d3.webp" alt=""></div><span class="pcap">Категория</span></div>
     <div class="fl phone" style="left:59%;top:4%" data-sp="-.22"><div class="ph "><img class="l" src="/cases/obzhora/img/mock-editdish_l.webp" alt=""><img class="d" src="/cases/obzhora/img/mock-d4.webp" alt=""></div><span class="pcap">Блюдо</span></div>
     <div class="fl phone" style="left:79%;top:16%" data-sp=".1"><div class="ph "><img class="l" src="/cases/obzhora/img/mock-profile_l.webp" alt=""><img class="d" src="/cases/obzhora/img/mock-d6.webp" alt=""></div><span class="pcap">Профиль</span></div>
-    <div class="fl donut" style="left:31%;top:76%;width:clamp(100px,12vw,200px)" data-sp=".3" data-rot="-1"><img src="/cases/obzhora/img/donut.webp" alt=""></div>
+    <div class="fl donut" style="left:31%;top:80%;width:clamp(100px,12vw,200px)" data-sp=".12" data-rot="-1"><img src="/cases/obzhora/img/donut.webp" alt=""></div>
   </div>
 </section>
 
