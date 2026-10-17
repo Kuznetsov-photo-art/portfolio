@@ -252,6 +252,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
   .specs div:nth-child(odd){padding-left:0}
+  .specs div:nth-child(even){border-right:0}.specs div:nth-child(n+3){border-bottom:0}.intro{padding-bottom:0} /* phones 2×2: no line at the screen edge, no second line under the last row — the section's full-width line sits right under the numbers */
   .h-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px} /* spread across the width instead of a left column */
   .h-copy>.mono{display:none}
   .rl-r{display:none}
