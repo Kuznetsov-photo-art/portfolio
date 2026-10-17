@@ -94,7 +94,7 @@ body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre —
 .navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
 @media(max-width:760px){.navfx{height:calc(84px + env(safe-area-inset-top,0px))}}
 .navfx::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:240px;background:var(--bg)} /* iOS Safari scrolls content under its top bar, above top:0 — keep that strip covered, same colour as the solid top of the fade */
-@media(max-width:760px){.nav{height:56px}:root{--nav-h:56px}}
+@media(max-width:760px){.nav{height:56px}:root{--nav-h:56px}section[id]{scroll-margin-top:56px}} /* anchors land below the blurred header */
 .ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square} /* arrow = cap height of the mono label, same as on case pages */
 .ctrls{display:flex;gap:16px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .ctrls button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;letter-spacing:inherit;text-transform:inherit}
@@ -117,7 +117,7 @@ body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre —
 .hero .gridlines{position:absolute;inset:0 calc(var(--hp) - var(--gutter));z-index:-1;pointer-events:none;background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/12) 100%;opacity:.5;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
 .spec{position:absolute;right:var(--hp);top:calc(env(safe-area-inset-top,0px) + 96px + var(--nav-h));display:grid;gap:6px;text-align:right;z-index:1}
 .spec .mono,.h-meta .mono{color:var(--ink-2);text-shadow:0 0 6px var(--bg),0 0 2px var(--bg)} /* a halo in the page colour keeps the small mono lines readable when a bright ink cloud passes behind them */
-.h-name{font-family:var(--display);font-size:clamp(52px,11.5vw,196px);font-weight:300;letter-spacing:-.05em;line-height:.86;position:relative;display:block}
+.h-name{font-family:var(--display);font-size:min(196px,max(11.5vw,min(52px,calc((100vw - 2*var(--gutter))*.153))));font-weight:300;letter-spacing:-.05em;line-height:.86;position:relative;display:block}
 .h-name .ln{display:block;white-space:nowrap}
 .h-name .ch{display:inline-block;font-variation-settings:'wght' var(--w,300);transition:font-variation-settings .35s cubic-bezier(.2,.8,.2,1);will-change:font-variation-settings}
 .h-name .ln.b .ch{--w:300}
@@ -141,7 +141,7 @@ body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre —
 .h-sub p{font-size:clamp(18px,1.9vw,26px);line-height:1.3;margin:0;max-width:24ch;font-weight:500;letter-spacing:-.01em}
 .h-meta{display:grid;gap:8px;justify-items:start}
 .h-meta .mono{display:flex;gap:10px;align-items:center}
-.h-meta .mono::before{content:'';width:18px;height:1px;background:var(--red)}
+.h-meta .mono::before{content:'';flex:none;width:18px;height:1px;background:var(--red)} /* flex:none: the dash keeps 18 px when the line wraps */
 @media(max-width:860px){.h-sub{grid-template-columns:1fr}.hero{padding-block:calc(40px + var(--nav-h)) 48px;min-height:auto} /* phones: height follows content, no empty top */.spec{position:static;text-align:left;margin-bottom:48px}.rl-left,.rl-top{display:none}}
 
 /* ---------- marquee (dual, scroll-driven) ---------- */
@@ -238,7 +238,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
-@media(hover:none){.a-item .cap{opacity:1}}
+@media(hover:none){.a-item .cap{opacity:1;padding-top:40px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.93) 38%,#000 62%)}}
 @media(max-width:640px){.a-item{width:62vw}}
 .a-note{margin-top:22px;color:var(--ink-3);font-size:14px;max-width:70ch}
 
@@ -620,7 +620,8 @@ const TL = [
  ['2012 – 2017','Purple Bear','Purple Bear','Graphic Designer','Логотипы, брендбуки, UI-киты, вёрстка','Logos, brand books, UI kits, layout',0],
 ];
 const SKILLS = ['Figma','Design Systems','Tokens & Variables','UX Research','CJM · JTBD','Prototyping','Claude · ChatGPT · Cursor','Branding','Illustration','Adobe CC'];
-const MQ = ['Сбер','ВТБ','Финам','Limex','Lab4U','YouGile','VK','Росбанк','Билайн','PrimeXBT','Rubetek','Yota Arena'];
+const MQ = {ru:['Сбер','ВТБ','Финам','Limex','Lab4U','YouGile','VK','Росбанк','Билайн','PrimeXBT','Rubetek','Yota Arena'],
+            en:['Sber','VTB','Finam','Limex','Lab4U','YouGile','VK','Rosbank','Beeline','PrimeXBT','Rubetek','Yota Arena']};
 
 let lang='ru';
 lang=document.documentElement.lang==='en'?'en':'ru';   // decided in <head> before the first paint (saved choice, else the browser language)
@@ -660,7 +661,7 @@ function render(){
     <div class="tl ${t[6]?'now':''}"><span class="y">${t[0]}</span><span class="c">${lang==='ru'?t[1]:t[2]}<small>${t[3]}</small></span><span class="d">${NB(lang==='ru'?t[4]:t[5])}</span></div>`).join('');
   document.getElementById('skills').innerHTML = SKILLS.map(s=>`<span>${s}</span>`).join('');
   const mqh=(arr)=>[...arr,...arr,...arr].map((s,i)=>`<span class="${i%2?'o':''}">${s}</span>`).join('');
-  document.getElementById('mq').innerHTML = mqh(MQ); document.getElementById('mq2').innerHTML = mqh([...MQ].reverse());
+  document.getElementById('mq').innerHTML = mqh(MQ[lang]); document.getElementById('mq2').innerHTML = mqh([...MQ[lang]].reverse());
   lockLines(); bindCursor(); setupReveal(); tlReveal(); setupArch(); kinetic(); aboutWords(); aboutStats();
 }
 /* language switch effect: the language flips instantly, a short glitch runs over the page */
