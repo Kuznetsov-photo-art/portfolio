@@ -133,7 +133,7 @@ body.dark .blob{background:radial-gradient(circle at 40% 40%,rgba(59,206,150,.35
 .scroll-hint i{width:1px;height:40px;background:var(--line-2);position:relative;overflow:hidden}
 .scroll-hint i::after{content:'';position:absolute;inset:0;background:var(--ink);animation:drop 1.8s cubic-bezier(.7,0,.3,1) infinite}
 @keyframes drop{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
-@media(max-width:860px){.hero{grid-template-columns:1fr;padding-top:calc(var(--gutter)*3)}.scene{height:60vh;min-height:380px;order:2}.h-meta{grid-template-columns:1fr 1fr;gap:16px}.dn2{width:52%}}
+@media(max-width:860px){.hero{grid-template-columns:1fr;padding-top:calc(var(--gutter)*3)}.scene{height:60vh;min-height:380px;order:2;margin-top:24px}.h-meta{grid-template-columns:1fr 1fr;gap:16px}.dn2{width:52%}}
 
 /* ---------- CSS phone mockup ---------- */
 .ph{--w:clamp(150px,19vw,300px);width:calc(var(--w)*1.3);position:relative}
@@ -222,7 +222,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .sec p.t+p.t{margin-top:12px}
 
 /* stage with floating phones */
-.stage{position:relative;overflow:visible;width:calc(100% - 2*var(--gutter) - var(--phw));margin-left:var(--gutter)!important;--phw:calc(clamp(140px,17vw,280px)*1.3);height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
+.stage{position:relative;overflow:visible;width:calc(100% - 2*var(--gutter) - var(--phw));margin-left:var(--gutter)!important;--phw:calc(clamp(140px,17vw,280px)*1.3);height:clamp(520px,80vh,860px);margin-top:calc(var(--gutter)*1.2 + 64px);margin-bottom:0} /* phones drift up with parallax; a full-viewport stage left a big empty tail */
 .stage .fl img{width:100%}
 .stage .cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center}
 .stage .cap i{width:60px;height:1px;background:var(--line-2)}
@@ -283,7 +283,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .sec-head .n{grid-row:1/3;align-self:start;font-size:28px}
   .rules{grid-template-columns:1fr}
   /* phones: two-column grid instead of a free-floating scatter (no overlaps on narrow screens) */
-  .stage,.darksec .stage{height:auto;width:auto;margin-left:0!important;padding-inline:var(--gutter);display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;align-items:start}
+  .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 24px);padding-inline:var(--gutter);display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;align-items:start}
   .stage > .fl:not(.phone),.stage .cap{display:none}
   .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
   .stage > .fl.phone:nth-child(even){margin-top:48px}
@@ -601,7 +601,7 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 $$('.r').forEach(el=>io.observe(el));
 
 /* floating layers */
-const fls=$$('.fl').map(el=>({el,sp:+el.dataset.sp||0,dx:+el.dataset.dx||0,rot:+el.dataset.rot||0,y:0,base:el.classList.contains('hero-ph')?'translate(-50%,-50%) rotate(-7deg)':''}));
+const fls=$$('.fl').map(el=>({el,stage:!!el.closest('.stage'),sp:+el.dataset.sp||0,dx:+el.dataset.dx||0,rot:+el.dataset.rot||0,y:0,base:el.classList.contains('hero-ph')?'translate(-50%,-50%) rotate(-7deg)':''}));
 $$('.dn, .hero-ph').forEach((el,i)=>{const w=el.firstElementChild; w.classList.add('bob'); w.style.setProperty('--tilt',getComputedStyle(el).getPropertyValue('--tilt')||'0deg'); w.style.setProperty('--d',(6+i*1.3)+'s'); w.style.setProperty('--dl',(-i*1.7)+'s')});
 const drifts=$$('[data-drift]').map(el=>({el,d:+el.dataset.drift}));
 const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:el.scrollWidth/2}));
@@ -625,7 +625,7 @@ function frame(t){
     for(const f of fls){
       const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; const d=(c-vh/2);
       if(c<-vh||c>vh*2) continue;
-      const lim=Math.min(120,vh*.12); f.y=Math.max(-lim,Math.min(lim,-d*f.sp)); /* capped so floating items never drift into the next section */
+      const lim=f.stage?(innerWidth<=860?24:64):(innerWidth<=860&&f.el.classList.contains('hero-ph'))?0:Math.min(120,vh*.12); /* phones: the hero phone does not drift up over the hero facts */ /* stage phones: small drift, and .stage keeps exactly this much extra room above — a phone never reaches the text */ f.y=Math.max(-lim,Math.min(lim,-d*f.sp)); /* capped so floating items never drift into the next section */
       const rot=f.rot?(d*0.03*f.rot):0;
       f.el.style.transform=(f.base||'')+` translate3d(${f.y*f.dx}px,${f.y}px,0) rotate(${rot}deg)`;
     }
