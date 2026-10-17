@@ -199,8 +199,8 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch}
 .intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
 .specs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.5);position:relative}
-.specs::before,.specs::after,.rules::before{content:'';position:absolute;left:calc(50% - 50vw);width:100vw;height:1px;background:var(--line);pointer-events:none} /* the block's lines run edge to edge */
-.specs::before,.rules::before{top:0}.specs::after{bottom:0}
+.specs::before,.specs::after,.rules::before,.rules::after{content:'';position:absolute;left:calc(50% - 50vw);width:100vw;height:1px;background:var(--line);pointer-events:none} /* the block's lines run edge to edge */
+.specs::before,.rules::before{top:0}.specs::after,.rules::after{bottom:0}
 .specs div{padding:22px 20px 26px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
 .specs div:first-child{padding-left:0} /* first cell lines up with the text above; others keep air from the divider */
 .specs div:last-child{border-right:0}
@@ -239,7 +239,8 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .icq{overflow:hidden;display:grid;gap:22px;margin-top:calc(var(--gutter)*1.2);padding-block:12px;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .icq .row{display:flex;gap:46px;will-change:transform;width:max-content}
 .icq img{width:clamp(34px,4vw,64px);height:auto;flex:none}
-.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.2);padding-block:clamp(32px,4.5vw,64px);position:relative}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);margin-top:calc(var(--gutter)*1.2);position:relative} /* same frame as the metrics block: lines edge to edge, dividers between the cells */
+.rules > div{padding:22px 20px 26px clamp(16px,2vw,32px);border-right:1px solid var(--line)}.rules > div:first-child{padding-left:0}.rules > div:last-child{border-right:0}
 .sec:has(> .rules:last-child){padding-bottom:0} /* centre the specs between the rule above and the next section's line */
 .rules b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3.4vw,56px);letter-spacing:-.04em;line-height:1;margin-bottom:8px}
 .rules span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
@@ -288,8 +289,9 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .sec-head{column-gap:16px}
   .sec-head .m{display:none}
   .sec-head .n{grid-row:1/3;align-self:start;font-size:28px}
-  .rules{grid-template-columns:repeat(3,auto);justify-content:space-between;gap:12px} /* phones: 24×24 · 1 px · 16 → 48 in one row */
-  .rules b{font-size:clamp(20px,6.6vw,28px);white-space:nowrap}
+  .rules{grid-template-columns:repeat(3,minmax(0,1fr))} /* phones: 24×24 · 1 px · 16 → 48 in one row, with the same dividers */
+  .rules > div{padding:18px 6px 20px 10px}.rules > div:first-child{padding-left:0}
+  .rules b{font-size:clamp(17px,5.3vw,26px);white-space:nowrap}
   /* phones: an even tile grid — two per row, phone bodies 16 px from the screen edges and 12 px apart both ways; an odd last phone is centred */
   .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 4px);padding-inline:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;align-items:start}
   .stage > .fl:not(.phone),.stage .cap{display:none}
