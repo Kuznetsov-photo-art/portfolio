@@ -79,8 +79,6 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:var(--gutter);padding:calc(var(--gutter)*2.4) var(--gutter) var(--gutter);overflow:hidden;isolation:isolate}
 .hero .gridlines{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/12) 100%;opacity:.5;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 75%,transparent)}
-.h-idx{position:absolute;top:max(calc(var(--gutter)*1.8),116px);left:var(--gutter);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:18px;align-items:center}
-.h-idx i{width:120px;height:1px;background:var(--line-2);display:block}
 .rl{position:absolute;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--red);text-transform:uppercase;z-index:2}
 .rl-r{right:var(--gutter);top:calc(var(--gutter)*1.8);text-align:right;display:grid;gap:6px}
 .scene{position:relative;height:min(78vh,760px);min-height:460px;margin-right:8%}
@@ -251,8 +249,6 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .nav .c i{display:none}
   .tgl span{display:none}
   .hero{padding-top:124px}
-  .h-idx{top:84px}
-  .h-idx i{width:40px}
   .intro .g{grid-template-columns:1fr}
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
@@ -306,7 +302,6 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
 <!-- ============ HERO ============ -->
 <header class="hero" id="hero">
   <div class="gridlines"></div>
-  <div class="h-idx"><span>Case 01</span><i></i><span>iOS · 2020</span></div>
   <div class="rl rl-r"><span>Montserrat Alternates</span><span>#3BCE96 → #08D586</span><span>83+ icons · 60+ screens</span></div>
 
   <div class="scene">
