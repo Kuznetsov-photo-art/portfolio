@@ -288,8 +288,9 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .sec-head{column-gap:16px}
   .sec-head .m{display:none}
   .sec-head .n{grid-row:1/3;align-self:start;font-size:28px}
-  .rules{grid-template-columns:repeat(3,minmax(0,1fr))} /* phones: 24×24 · 1 px · 16 → 48 in one row, with the same dividers */
-  .rules > div{padding:18px 6px 20px 10px}.rules > div:first-child{padding-left:0}
+  .rules{grid-template-columns:auto auto minmax(0,1fr)} /* phones: 24×24 · 1 px · 16 → 48 in one row, with the same dividers; the last column takes the rest, so «диапазон размеров» stays on one line */
+  .rules span{white-space:nowrap}
+  .rules > div{padding:18px clamp(8px,3.6vw,16px) 20px clamp(8px,3.2vw,14px)}.rules > div:first-child{padding-left:0}
   .rules b{font-size:clamp(17px,5.3vw,26px);white-space:nowrap}
   /* phones: an even tile grid — two per row, phone bodies 16 px from the screen edges and 12 px apart both ways; an odd last phone is centred */
   .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 4px);padding-inline:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;align-items:start}
