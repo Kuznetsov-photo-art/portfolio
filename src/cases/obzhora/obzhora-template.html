@@ -579,7 +579,7 @@ $$('.r').forEach(el=>io.observe(el));
 const fls=$$('.fl').map(el=>({el,stage:!!el.closest('.stage'),sp:+el.dataset.sp||0,dx:+el.dataset.dx||0,rot:+el.dataset.rot||0,y:0,base:el.classList.contains('hero-ph')?'translate(-50%,-50%) rotate(-7deg)':''}));
 $$('.dn, .hero-ph').forEach((el,i)=>{const w=el.firstElementChild; w.classList.add('bob'); w.style.setProperty('--tilt',getComputedStyle(el).getPropertyValue('--tilt')||'0deg'); w.style.setProperty('--d',(6+i*1.3)+'s'); w.style.setProperty('--dl',(-i*1.7)+'s')});
 const drifts=$$('[data-drift]').map(el=>({el,d:+el.dataset.drift}));
-const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:el.scrollWidth/2}));
+const rows=$$('.icq .row').map(el=>({el,dir:+el.dataset.dir,x:0,w:1}));
 const hpin=$('#hpin'), track=$('#track'); const trackPh=track?[...track.querySelectorAll('figure .ph')]:[];
 const darksec=$('#darksec'); const prog=$('#prog'); let manual=true; try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); /* theme is site-wide: same 'theme' key as home and privacy, dark by default */ /* theme switch: the new theme opens as a circle from the switch (View Transitions API), instant without it or with reduced motion */
 function circleTheme(btn,flip){ if(!document.startViewTransition||matchMedia('(prefers-reduced-motion: reduce)').matches||circleTheme.busy){ if(!circleTheme.busy) flip(); return; }
@@ -614,7 +614,10 @@ function frame(t){
   requestAnimationFrame(frame);
 }
 // duplicate icon rows for seamless loop
-rows.forEach(r=>{r.el.innerHTML+=r.el.innerHTML; r.w=r.el.scrollWidth/2; if(r.dir<0) r.x=-r.w/2});
+/* the loop step is the exact distance from an icon to its copy (scrollWidth/2 was half a gap short → a 23 px jump on every wrap); re-measured on resize */
+const period=r=>{ const k=r.el.children, n=k.length/2; return k[n].offsetLeft-k[0].offsetLeft; };
+rows.forEach(r=>{r.el.innerHTML+=r.el.innerHTML; r.w=period(r); if(r.dir<0) r.x=-r.w/2});
+addEventListener('resize',()=>rows.forEach(r=>{ const w=period(r); if(w>0&&w!==r.w){ r.x=r.x/r.w*w; r.w=w; } }));
 requestAnimationFrame(frame);
 })();
 
