@@ -201,7 +201,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .specs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.5);position:relative}
 .specs::before,.specs::after,.rules::before,.rules::after{content:'';position:absolute;left:calc(50% - 50vw);width:100vw;height:1px;background:var(--line);pointer-events:none} /* the block's lines run edge to edge */
 .specs::before,.rules::before{top:0}.specs::after,.rules::after{bottom:0}
-.specs div{padding:22px 20px 26px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
+.specs div{padding:22px 20px 22px clamp(16px,2vw,32px);border-right:1px solid var(--line)} /* the visible gap under the caption = the gap above the number */
 .specs div:first-child{padding-left:0} /* first cell lines up with the text above; others keep air from the divider */
 .specs div:last-child{border-right:0}
 .specs b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,4.6vw,72px);letter-spacing:-.05em;line-height:1}
@@ -281,7 +281,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
   .specs div:nth-child(odd){padding-left:0}
-  .specs div:nth-child(even){border-right:0}.intro{padding-bottom:calc(var(--gutter)*2.5)} /* = the gap after the icon specs (80 px to the next heading) */
+  .specs div{padding-bottom:18.5px}.specs div:nth-child(even){border-right:0}.intro{padding-bottom:calc(var(--gutter)*2.5)} /* = the gap after the icon specs (80 px to the next heading) */
   .specs div:first-child{position:relative}.specs div:first-child::after{content:'';position:absolute;left:calc(-1*var(--gutter));bottom:0;width:100vw;height:1px;background:var(--line)} /* phones: the line between the two rows, edge to edge */ /* phones 2×2: no line at the screen edge, no second line under the last row — the section's full-width line sits right under the numbers */
   .h-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px} /* spread across the width instead of a left column */
   .h-copy>.mono{display:none}
