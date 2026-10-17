@@ -999,8 +999,9 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
   const wells=[]; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) wells.push({X:c-(COLS-1)/2,Z:(ROWS-1)/2-r,lit:0,k:0,hov:0});
   let W=1,H=1,dpr=1,mx=-1e4,my=-1e4,yaw=0,yawT=0,col={};
   const theme=()=>{ const d=document.body.classList.contains('dark');
-    col=d?{ring:'rgba(233,248,252,.13)',ok:[25,198,226],warn:[255,180,67],empty:'rgba(233,248,252,.05)',beam:'25,198,226',hi:'255,255,255'}
-         :{ring:'rgba(5,34,45,.15)',ok:[0,170,204],warn:[229,138,0],empty:'rgba(5,34,45,.04)',beam:'0,170,204',hi:'255,255,255'}; };
+    /* black and white plate (Andrey, 18.10): a normal result is a bright well, a deviation a dimmer one with a strong ring */
+    col=d?{ring:'rgba(255,255,255,.12)',ok:[255,255,255,.82],warn:[255,255,255,.32],empty:'rgba(255,255,255,.04)',beam:'255,255,255',hi:'255,255,255',hiA:.5}
+         :{ring:'rgba(0,0,0,.13)',ok:[12,12,12,.72],warn:[12,12,12,.26],empty:'rgba(0,0,0,.035)',beam:'0,0,0',hi:'255,255,255',hiA:.35}; };
   theme(); new MutationObserver(theme).observe(document.body,{attributes:true,attributeFilter:['class']});
   const size=()=>{ dpr=Math.min(2,devicePixelRatio||1); W=hero.clientWidth; H=hero.clientHeight; cv.width=W*dpr; cv.height=H*dpr; };
   size(); addEventListener('resize',size);
@@ -1023,8 +1024,9 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
       x.beginPath(); x.ellipse(sx,sy,rx,ry,0,0,6.2832);
       x.lineWidth=Math.max(.6,rx*.09); x.strokeStyle=col.ring; x.stroke();
       const a=Math.min(1,w.lit*.92+w.hov*.35);
-      if(a>.01){ const c=w.k===2?col.warn:col.ok; x.fillStyle=w.k===0?col.empty:`rgba(${c[0]},${c[1]},${c[2]},${a})`; x.fill();
-        if(w.k&&a>.08){ x.beginPath(); x.ellipse(sx-rx*.25,sy-ry*.3,rx*.32,ry*.22,0,0,6.2832); x.fillStyle=`rgba(${col.hi},${a*.45})`; x.fill(); } }
+      if(a>.01){ const c=w.k===2?col.warn:col.ok; x.fillStyle=w.k===0?col.empty:`rgba(${c[0]},${c[1]},${c[2]},${a*c[3]})`; x.fill();
+        if(w.k===2&&a>.08){ x.lineWidth=Math.max(1,rx*.16); x.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${a*.9})`; x.stroke(); }
+        if(w.k&&a>.08){ x.beginPath(); x.ellipse(sx-rx*.25,sy-ry*.3,rx*.32,ry*.22,0,0,6.2832); x.fillStyle=`rgba(${col.hi},${a*col.hiA})`; x.fill(); } }
       w.lit*=Math.pow(.62,dt);
     }
     // the beam: a lit line across the plate with a soft trailing curtain
