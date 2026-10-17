@@ -561,7 +561,7 @@ const NAME={ru:['Андрей','Кузнецов'],en:['Andrew','Kuznetsov']};
 const CASES = [
  {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025'}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
  {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25'},
- {ru:{t:'Lab4U — AI-расшифровка анализов',r:'первый в России сервис'},en:{t:'Lab4U — AI lab-results interpretation',r:'first in Russia'},tags:['AI','Healthtech'],y:'2023'},
+ {ru:{t:'Lab4U — AI-расшифровка анализов',r:'одни из первых в России · №6 в рейтинге Forbes'},en:{t:'Lab4U — AI lab-results interpretation',r:'among the first in Russia · #6 in the Forbes ranking'},tags:['AI','Healthtech'],y:'2023',h:'/cases/lab4u/',i:'/cases/lab4u/img/cover.webp'}, // has a case page: the row is a link, no «soon» modal
  {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb'},
  {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp'},
 ];
@@ -655,7 +655,7 @@ const root=document.documentElement;
 let focusUpdate=null, focusBuild=null;
 
 /* typography: glue 1–2 letter words to the next word and keep dashes off the line start — no hanging «и», «в», «—» */
-const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
+const NB=s=>{ for(let k=0;k<3;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I) /g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
 /* case titles: NB glue and the separator never starts a line (hyphens may still break: a no-break «AI-расшифровка» is wider than the phone column and ran under the cover) */
 const caseT=t=>NB(t).replace(/ ([•·])/g,'\u00a0$1').replace(/ → /g,'\u00a0→\u00a0').replace(/DS с /,'DS\u00a0с '); // «Sketch → Figma» and «DS с нуля» never split
 function render(){
@@ -673,7 +673,7 @@ function render(){
   hn.innerHTML = rls + NAME[lang].map((w,i)=>`<span class="ln ${i?'b':'a'}">${[...w].map(c=>`<span class="ch">${c}</span>`).join('')}</span>`).join('');
   // work index
   document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
-    <a class="row soon rv" tabindex="0" role="button" data-k="${c.k||''}" data-cur="${d.wip}">
+    <a class="row${c.h?'':' soon'} rv" ${c.h?`href="${c.h}"`:'tabindex="0" role="button"'} data-k="${c.k||''}" data-cur="${c.h?d.case:d.wip}">
       <h3>${caseT(c[lang].t)}</h3>
       <span class="meta"><span class="res"><span class="yr">${c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
       <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>

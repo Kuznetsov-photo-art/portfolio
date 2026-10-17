@@ -1,0 +1,1129 @@
+<title>Lab4U — Andrew Kuznetsov</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preload" href="/assets/fonts/unbounded-cyrillic-25.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<script>/* language before the first paint: the saved choice, else Russian only for a Russian browser/system; an English visitor sees no Russian flash (safety net 1.5 s) */
+var L0=(function(){try{var s=localStorage.getItem('lang');if(s==='ru'||s==='en')return s;}catch(e){}return /^ru(-|$)/i.test(navigator.language||'')?'ru':'en';})(); document.documentElement.lang=L0; if(L0==='en'){ document.documentElement.classList.add('i18n-wait'); setTimeout(function(){document.documentElement.classList.remove('i18n-wait');},1500); }</script>
+<style>
+html.i18n-wait body{visibility:hidden}
+:root{
+  --bg:#FFFFFF; --bg-2:#F6F7F8; --bg-3:#EBEBEB;
+  --ink:#0A0A0A; --ink-2:#4A4A4A; --ink-3:#8A8A8A;
+  --line:rgba(10,10,10,.10); --line-2:rgba(10,10,10,.22); --red:rgba(10,10,10,.55);
+  --display:'Unbounded',system-ui,sans-serif;
+  --body:'Golos Text',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --roboto:Roboto,'Helvetica Neue',Arial,system-ui,sans-serif;
+  --gutter:clamp(16px,4vw,56px);
+  --acc:#00B6D3; --acc2:#0592D2; --accg:linear-gradient(135deg,#00B6D3,#0592D2); /* Lab4U logo turquoise → blue */
+  --frame:#F1F2F4; --frame-2:#FFFFFF; /* Lab4U Background/BG/Base and Surface/Base, light */
+  --shot:brightness(1);
+  color-scheme:light;
+}
+:root[data-theme="dark"], body.dark{
+  --bg:#0A0A0A; --bg-2:#111214; --bg-3:#1A1A1A;
+  --ink:#F2F2F2; --ink-2:#A3A3A3; --ink-3:#6B6B6B;
+  --line:rgba(242,242,242,.10); --line-2:rgba(242,242,242,.22); --red:rgba(242,242,242,.55);
+  --frame:#1B1D23; --frame-2:#030204; /* the same tokens, dark values */
+  --shot:brightness(.9) saturate(.95); /* light product screens read too bright on near-black */
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;transition:background .8s cubic-bezier(.2,.8,.2,1),color .8s}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+img{height:auto} /* images carry width/height for layout stability — let CSS widths keep their proportions */
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0;letter-spacing:-.03em}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.wrap{padding-inline:var(--gutter);max-width:1560px;margin-inline:auto}
+::selection{background:var(--ink);color:var(--bg)}
+
+/* grain */
+.grain{position:fixed;inset:-50%;z-index:90;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1.2s steps(6) infinite}
+body.dark .grain{mix-blend-mode:screen;opacity:.05}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-4%)}60%{transform:translate(-4%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+
+/* cursor */
+.cur{position:fixed;z-index:120;left:0;top:0;width:10px;height:10px;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,opacity .3s;mix-blend-mode:difference;background:#fff}
+@media(hover:none){.cur{display:none}}
+
+/* progress */
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:110;background:transparent}
+.prog i{display:block;height:100%;background:var(--accg);transform-origin:0 50%;transform:scaleX(0)}
+
+/* nav — same as the other case pages */
+.nav{position:fixed;inset-inline:0;top:env(safe-area-inset-top,0px);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px;padding:0 var(--gutter);mix-blend-mode:difference;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.nav a{position:relative;white-space:nowrap}
+.nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s}
+.nav a:hover::after{right:0}
+.nav .c{display:flex;gap:10px;align-items:center}
+.nav .ctr{display:flex;gap:22px;align-items:center}
+.lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:inherit;cursor:pointer;white-space:nowrap}.lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px}
+.nav .pager{gap:16px;position:absolute;left:50%;transform:translateX(-50%)}
+.nav .pn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;opacity:.7;transition:opacity .3s,transform .3s}
+.nav .pn:hover{opacity:1}
+.nav .pn:first-child:hover{transform:translateX(-3px)}.nav .pn:last-child:hover{transform:translateX(3px)}
+.nav .pn::after{display:none}
+.nav .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
+.nav .ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square}
+.navfx{position:fixed;z-index:99;inset:0 0 auto 0;height:calc(108px + env(safe-area-inset-top,0px));pointer-events:none}
+.navfx i,.navfx::after{position:absolute;inset:0}
+.navfx i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.navfx i:nth-child(2){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 30%,transparent 70%);mask-image:linear-gradient(#000 30%,transparent 70%)}
+.navfx i:nth-child(3){-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(#000 10%,transparent 45%);mask-image:linear-gradient(#000 10%,transparent 45%)}
+.navfx::after{content:'';background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 75%,transparent) 30%,color-mix(in srgb,var(--bg) 25%,transparent) 65%,transparent)}
+.navfx::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:240px;background:var(--bg)}
+@media(max-width:760px){.navfx{height:calc(84px + env(safe-area-inset-top,0px))}}
+/* theme switch: moon in the knob on dark, sun on light */
+.sw{position:relative;flex:none;width:48px;height:26px;border-radius:99px;border:1px solid currentColor;background:none;padding:0;color:inherit;cursor:pointer}
+.sw .k{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:currentColor;display:grid;place-items:center;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw svg{grid-area:1/1;width:14px;height:14px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.sw .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+.sw .moon path,.sw .sun circle{fill:#000}
+body:not(.dark) .sw .k{transform:translateX(22px)}
+body:not(.dark) .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+body:not(.dark) .sw .sun{opacity:1;transform:none}
+
+/* ---------- frames: browser window, phone, tablet ---------- */
+.bw{margin:0;position:relative;min-width:0}
+.bw .win{border-radius:14px;overflow:hidden;background:var(--frame);border:1px solid var(--line);box-shadow:0 50px 90px -50px rgba(0,0,0,.45);transition:background .8s}
+.bw .bar{height:34px;display:flex;align-items:center;gap:6px;padding:0 14px;position:relative}
+.bw .bar i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.bw .bar span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:500 10px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3);background:var(--frame-2);padding:6px 16px;border-radius:99px;white-space:nowrap;transition:background .8s}
+.vp{position:relative;overflow:hidden;aspect-ratio:var(--ar,16/10);background:#fff}
+.vp img{width:100%;height:auto;display:block;filter:var(--shot);transition:filter .8s}
+.vp.scroll img,.scr.scroll img{will-change:transform}
+.vp.fit{aspect-ratio:auto}
+.pf{margin:0;position:relative;flex:none;width:var(--pw,clamp(150px,17vw,290px))}
+.pf .dev,.tb .dev{position:relative;background:#0E0F12;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 0 0 1px var(--line),0 50px 80px -40px rgba(0,0,0,.5)}
+.pf .dev{padding:3.2%;border-radius:15.5% / 7.2%}
+.pf .scr{position:relative;overflow:hidden;aspect-ratio:375/812;border-radius:12.5% / 5.8%;background:#fff}
+.pf .scr img,.tb .scr img{width:100%;height:auto;display:block;filter:var(--shot);transition:filter .8s}
+.tb{margin:0;position:relative;min-width:0}
+.tb .dev{padding:3%;border-radius:7% / 4.6%}
+.tb .scr{position:relative;overflow:hidden;aspect-ratio:744/1133;border-radius:4% / 2.6%;background:#fff}
+.cap,figcaption{display:block;margin-top:16px;font:10px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.pf figcaption{text-align:center}
+.cap b,figcaption b{font-weight:500;color:var(--ink-2)}
+.soon{display:inline-block;vertical-align:1px;margin-left:8px;padding:3px 8px;border-radius:99px;border:1px solid var(--acc);color:var(--acc);font:500 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* ---------- hero ---------- */
+.hero{--hx:max(var(--gutter),calc((100% - 1560px)/2 + var(--gutter)));position:relative;min-height:100svh;display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:calc(var(--gutter)*1.2);padding:calc(var(--gutter)*2.4) var(--hx) var(--gutter);overflow:hidden;isolation:isolate} /* side padding = the sections' 1560 px column */
+.hero .gridlines{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/12) 100%;opacity:.5;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 75%,transparent)}
+.rl{position:absolute;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--red);text-transform:uppercase;z-index:2}
+.rl-r{right:var(--hx,var(--gutter));top:calc(var(--gutter)*1.8);text-align:right;display:grid;gap:6px}
+.h-copy{position:relative;z-index:3}
+.h-title{font-family:var(--display);font-size:clamp(64px,9.4vw,168px);font-weight:200;letter-spacing:-.06em;line-height:.9}
+.h-title b{font-weight:700;background:var(--accg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-title .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-right:.04em}
+.h-title .w span{display:inline-block;transform:translateY(110%);animation:up 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes up{to{transform:none}}
+.h-sub{font-family:var(--display);font-weight:300;font-size:clamp(18px,2vw,30px);letter-spacing:-.02em;line-height:1.2;margin:16px 0 0;color:var(--ink-2);max-width:20ch}
+.h-sub b{font-weight:600;color:var(--ink)}
+.h-sub::after{content:'';display:block;width:120px;height:3px;background:var(--accg);margin-top:22px}
+.h-meta{display:grid;grid-template-columns:repeat(3,max-content);gap:32px;margin-top:34px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.h-meta b{display:block;color:var(--ink-3);font-weight:400;margin-bottom:4px}
+.scene{position:relative;height:min(74vh,700px);min-height:440px}
+.blob{position:absolute;left:12%;top:4%;width:80%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 45% 45%,rgba(0,182,211,.42),rgba(5,146,210,.14) 55%,transparent 72%);filter:blur(4px);animation:breathe 9s ease-in-out infinite;z-index:-1}
+body.dark .blob{background:radial-gradient(circle at 45% 45%,rgba(0,182,211,.28),rgba(5,146,210,.08) 55%,transparent 72%)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.fl{will-change:transform}
+.scene .fl{position:absolute}
+.h-bw{left:0;right:0;top:9%}
+.h-bw .vp img{animation:hscroll 30s cubic-bezier(.65,0,.35,1) infinite} /* the home page scrolls by itself inside the hero window */
+@keyframes hscroll{0%,6%{transform:translateY(0)}46%,54%{transform:translateY(var(--mx,0px))}94%,100%{transform:translateY(0)}}
+.h-ph{right:-1%;bottom:-2%;z-index:2}
+.h-ph .pf{--pw:clamp(130px,13.5vw,236px)}
+.chip{z-index:3;display:flex;align-items:center;gap:10px;padding:11px 16px 11px 12px;border-radius:99px;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;box-shadow:0 20px 40px -20px rgba(0,0,0,.35)}
+.chip i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--accg);color:#fff;font-style:normal;font-size:11px}
+.chip i.g{background:#00CC84}
+.c1{left:-6%;top:58%}.c2{left:20%;top:1%}.c3{right:24%;bottom:6%}
+.scroll-hint{position:absolute;left:var(--hx,var(--gutter));bottom:var(--gutter);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:10px;align-items:center;z-index:4}
+.scroll-hint i{width:1px;height:40px;background:var(--line-2);position:relative;overflow:hidden}
+.scroll-hint i::after{content:'';position:absolute;inset:0;background:var(--ink);animation:drop 1.8s cubic-bezier(.7,0,.3,1) infinite}
+@keyframes drop{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
+
+/* ---------- intro ---------- */
+.intro{padding:calc(var(--gutter)*1.33) 0;border-top:1px solid var(--line)}
+.intro .g{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--gutter)}
+.lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch;margin:0}
+.intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.5);position:relative}
+.specs::before,.specs::after,.rules::before,.rules::after{content:'';position:absolute;left:calc(50% - 50vw);width:100vw;height:1px;background:var(--line);pointer-events:none}
+.specs::before,.rules::before{top:0}.specs::after,.rules::after{bottom:0}
+.specs div{padding:22px 20px 22px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
+.specs div:first-child{padding-left:0}
+.specs div:last-child{border-right:0}
+.specs b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,4.4vw,70px);letter-spacing:-.05em;line-height:1;white-space:nowrap}
+.specs span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.specs b span{font:inherit;letter-spacing:inherit;text-transform:none;color:inherit}
+.specs b .od{display:inline-block;height:1em;overflow:hidden;vertical-align:top;position:relative}
+.specs b .od .w{visibility:hidden} /* the box takes the width of its final digit — a narrow «1» no longer sits in a wide slot */
+.specs b .od i{position:absolute;left:0;right:0;top:0;text-align:center;display:block;font-style:normal;transform:translateY(0);transition:transform var(--t,1.6s) cubic-bezier(.16,1,.3,1) var(--dl,0s)}
+.specs b .od i span{display:block;height:1em;line-height:1}
+.specs b .sf{display:inline-block;opacity:0;transform:translateY(.25em) scale(.6);transition:opacity .5s,transform .7s cubic-bezier(.34,1.56,.64,1);transition-delay:var(--dl,0s);white-space:pre}
+.specs b.go .sf{opacity:1;transform:none}
+.src{margin-top:14px;font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+/* the path: app 2.0 → design system → the whole product */
+.path{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.6)}
+.path > div{position:relative;padding-top:22px;border-top:1px solid var(--line-2)}
+.path > div::before{content:'';position:absolute;left:0;top:-4px;width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.path > div:not(:last-child)::after{content:'→';position:absolute;right:calc(var(--gutter)/-2);top:-13px;transform:translateX(50%);font-family:var(--body);font-weight:300;font-size:20px;color:var(--ink-3);background:var(--bg);padding:0 6px;line-height:1;transition:background .8s}
+.path .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
+.path b{display:block;margin:10px 0 8px;font-family:var(--display);font-weight:400;font-size:clamp(20px,1.9vw,28px);letter-spacing:-.03em;line-height:1.1}
+.path p{margin:0;color:var(--ink-2);font-size:16px;max-width:34ch}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:calc(var(--gutter)*1.1);font:11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.facts span{display:flex;align-items:center;gap:10px}
+.facts span::before{content:'';width:18px;height:1px;background:var(--line-2)}
+
+/* ---------- sections ---------- */
+.sec{position:relative;padding:calc(var(--gutter)*1.6) 0}
+.sec-head{position:relative;z-index:3;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;column-gap:var(--gutter);row-gap:6px;align-items:end;margin-bottom:calc(var(--gutter)*1.1)}
+.sec-head h2{grid-column:1;grid-row:1/3;min-width:0;font-size:clamp(34px,6vw,96px);font-weight:300;letter-spacing:-.05em;line-height:.95;text-wrap:balance}
+@media(min-width:1100px){.sec-head h2 br{display:none}}
+.sec-head .n{grid-column:2;grid-row:1;justify-self:end;align-self:end;font-family:var(--display);font-weight:200;font-size:clamp(36px,4.4vw,72px);letter-spacing:-.04em;line-height:1;color:var(--ink-3)}
+.sec-head .m{grid-column:2;grid-row:2;justify-self:end;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right}
+.txt{display:grid;grid-template-columns:1fr 1fr;gap:12px var(--gutter);align-items:start}
+.txt p{color:var(--ink-2);max-width:56ch;margin:0}
+.txt p:only-child{grid-column:1}
+.blk{margin-top:calc(var(--gutter)*1.2)}
+.r{transform:translateY(40px);opacity:0;transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.r.in{transform:none;opacity:1}
+
+/* layouts */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.6vw,44px);align-items:start}
+.combo{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(24px,4vw,72px);align-items:start}
+.combo > .side{display:flex;gap:clamp(16px,2vw,32px);align-items:flex-start}
+.combo .pf{--pw:clamp(150px,16vw,270px)}
+/* breakpoints at one scale: 1728 · 744 · 375 px wide columns */
+.bp{display:grid;grid-template-columns:1728fr 744fr 375fr;gap:clamp(14px,2.2vw,36px);align-items:end}
+.bp .pf{width:auto}
+.prow{display:flex;justify-content:space-between;gap:clamp(12px,2vw,32px);align-items:flex-start}
+.prow .pf{--pw:auto;flex:1 1 0;max-width:290px}
+.prow .pf:nth-child(even){margin-top:clamp(24px,5vw,80px)}
+/* feature cells */
+.feats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.2);border-top:1px solid var(--line)}
+.feats > div{padding:22px clamp(16px,2vw,28px) 6px;border-right:1px solid var(--line)}
+.feats > div:first-child{padding-left:0}.feats > div:last-child{border-right:0}
+.feats .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--acc)}
+.feats b{display:block;margin:10px 0 6px;font-family:var(--display);font-weight:400;font-size:clamp(17px,1.5vw,22px);letter-spacing:-.02em;line-height:1.15}
+.feats p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
+.feats.f3{grid-template-columns:repeat(3,1fr)}
+/* three big values in a row (same frame as the metrics) */
+.rules{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.2);position:relative}
+.rules.r3{grid-template-columns:repeat(3,1fr)}
+.rules > div{padding:22px 20px 18px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
+.rules > div:first-child{padding-left:0}.rules > div:last-child{border-right:0}
+.rules b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3.4vw,56px);letter-spacing:-.04em;line-height:1;margin-bottom:6px;white-space:nowrap}
+.rules span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+/* tabs over one window (basket) */
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);background:none;border:1px solid var(--line-2);border-radius:99px;padding:9px 14px;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stack{position:relative}
+.stack img{transition:opacity .6s cubic-bezier(.2,.8,.2,1),filter .8s}
+.stack img+img{position:absolute;left:0;top:0}
+.stack img:not(.on){opacity:0}
+/* map: filter off / on */
+.mapt .tgl{position:absolute;z-index:2;left:63.5%;bottom:5%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 14px 9px 10px;border-radius:99px;border:0;background:#fff;color:#030204;font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+.mapt .tgl i{width:28px;height:16px;border-radius:99px;background:rgba(3,2,4,.18);position:relative;transition:background .3s}
+.mapt .tgl i::after{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.mapt.on .tgl i{background:#00AACC}.mapt.on .tgl i::after{transform:translateX(12px)}
+.stores{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.store{display:inline-flex;align-items:center;gap:12px;height:58px;padding:0 18px 0 16px;border:1px solid var(--line-2);border-radius:14px;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
+.store .si{width:24px;height:24px;fill:currentColor;flex:none}
+.store span{display:grid;gap:4px;line-height:1}
+.store small{font:10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);transition:color .3s}
+.store b{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:-.02em}
+.store .ar2{width:10px;height:10px;margin-left:6px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:square;opacity:.6}
+@media(hover:hover){.store:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}.store:hover small{color:color-mix(in srgb,var(--bg) 60%,transparent)}}
+.h-meta a{border-bottom:1px solid var(--line-2);transition:border-color .3s,color .3s}.h-meta a:hover{color:var(--ink);border-color:var(--acc)}
+/* review sheet floating without a phone */
+.sheet{margin:0;width:clamp(150px,16vw,270px);flex:none}
+.sheet img{width:100%;border-radius:18px;box-shadow:0 0 0 1px var(--line),0 40px 70px -30px rgba(0,0,0,.45);filter:var(--shot);transition:filter .8s}
+/* A4 paper */
+.paper{margin:0;width:clamp(200px,21vw,340px);flex:none}
+.paper img{width:100%;border-radius:4px;box-shadow:0 0 0 1px var(--line),0 50px 80px -40px rgba(0,0,0,.5);transform:rotate(1.6deg);filter:var(--shot);transition:filter .8s}
+/* light panels for design-system docs */
+.panel{margin:0;border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--line)}
+.panel img{width:100%;filter:var(--shot);transition:filter .8s}
+
+/* design system: tokens that flip with the page theme */
+.dsg{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,72px);align-items:start}
+.toks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tok{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;min-width:0}
+.tok i{display:block;height:58px;border-radius:7px;background:var(--l);box-shadow:inset 0 0 0 1px var(--line);transition:background .8s}
+body.dark .tok i{background:var(--d,var(--l))}
+.tok b{font:500 10px/1.3 var(--mono);letter-spacing:.04em;color:var(--ink);overflow-wrap:anywhere}
+.tok span{font:10px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)}
+.tok .d{display:none}body.dark .tok .d{display:inline}body.dark .tok .l.x{display:none}
+.lbl{display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+/* input demo — Lab4U inputLG from the DS: 48 px, radius-8, fill Wrapper/Black Inverse/A4, Body/L value, Body/M label and hint, Action/Primary focus, State hovered 80 · disabled 35 */
+.inp{--srf:#FFFFFF;--t:#030204;--t2:rgba(3,2,4,.56);--t3:rgba(3,2,4,.32);--w:rgba(3,2,4,.04);--neg:#EF5350;--negbg:rgba(239,83,80,.12);border:1px solid var(--line);border-radius:14px;padding:clamp(20px,3vw,40px);background:var(--srf);transition:background .8s}
+body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255,255,255,.32);--w:rgba(255,255,255,.06);--neg:#D64A48;--negbg:rgba(214,74,72,.16)}
+.fld{max-width:360px;height:48px;border-radius:8px;background:var(--w);box-shadow:inset 0 0 0 1px transparent;display:flex;align-items:center;gap:8px;padding:0 12px;font-family:var(--roboto);color:var(--t);transition:box-shadow .25s,background .25s,opacity .25s}
+.fld .il{width:24px;height:24px;flex:none;fill:none;stroke:var(--t2);stroke-width:1.6;stroke-linejoin:round;transition:stroke .25s}
+.fld .tx{flex:1;min-width:0;display:grid}
+.fld .lb{font:400 14px/20px var(--roboto);color:var(--t2);transition:color .25s}
+.fld .v{display:none;align-items:center;font:400 14px/20px var(--roboto);color:var(--t);white-space:pre}
+.fld .v .ph{color:var(--t3)}
+.fld .caret{display:inline-block;width:1px;height:17px;background:var(--t);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.fld .lock{display:none;width:20px;height:20px;flex:none;fill:var(--t2)}
+.inp.lift .lb{font-size:12px;line-height:16px}.inp.lift .v{display:flex}
+.hint{max-width:360px;margin-top:4px;font:400 12px/16px var(--roboto);color:var(--t2);transition:color .25s,opacity .25s}
+.inp[data-s$="overed"] .fld{opacity:.8}
+.inp[data-s="focused"] .fld,.inp[data-s="typing"] .fld{background:var(--srf);box-shadow:inset 0 0 0 1px #00AACC}
+.inp[data-s="focused"] .il,.inp[data-s="typing"] .il{stroke:var(--t)}
+.inp[data-s^="error"] .fld{background:var(--negbg)}
+.inp[data-s^="error"] .lb,.inp[data-s^="error"] .hint{color:var(--neg)}.inp[data-s^="error"] .il{stroke:var(--neg)}
+.inp[data-s="errorFocused"] .fld{background:var(--srf);box-shadow:inset 0 0 0 1px var(--neg)}
+.inp[data-s="readonly"] .lock{display:block}
+.inp[data-s="disabled"] .fld,.inp[data-s="disabled"] .hint{opacity:.35}
+.inp .now{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:22px;font:10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.inp .now b{font:500 13px/1 var(--mono);letter-spacing:.02em;text-transform:none;color:var(--ink)}
+.dots{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.dots button{width:22px;height:22px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.dots button::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--line-2);transition:background .3s,transform .3s}
+.dots button.on::after{background:var(--acc);transform:scale(1.5)}
+/* type scale in Roboto sizes */
+.tscale{display:grid;gap:0;margin-top:calc(var(--gutter)*1.1);border-top:1px solid var(--line)}
+.tscale div{display:grid;grid-template-columns:minmax(150px,1fr) 3fr;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.tscale span{font:10px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tscale p{margin:0;font-family:var(--roboto);color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* AI story: the chapter pins, steps change on the left, the window switches on the right */
+.story{position:relative;height:420vh;margin-top:calc(var(--gutter)*.6)}
+.story .sticky{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.5fr);gap:clamp(24px,4vw,72px);align-items:center;padding-top:62px;padding-bottom:24px}
+.st-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:28px}
+.st-bar i{height:2px;background:var(--line-2);position:relative;overflow:hidden}
+.st-bar i::after{content:'';position:absolute;inset:0;background:var(--accg);transform-origin:0 50%;transform:scaleX(var(--f,0))}
+.st-steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.st-steps li{padding:14px 0 14px 18px;border-left:1px solid var(--line);opacity:.38;transition:opacity .5s,border-color .5s}
+.st-steps li.on{opacity:1;border-color:var(--acc)}
+.st-steps .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--acc)}
+.st-steps b{display:block;margin:8px 0 6px;font-family:var(--display);font-weight:400;font-size:clamp(20px,2vw,30px);letter-spacing:-.03em;line-height:1.1}
+.st-steps p{margin:0;color:var(--ink-2);font-size:16px;max-width:38ch}
+.st-stage{position:relative;min-width:0}
+.st-win{transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .8s,opacity .8s}
+.st-win .vp img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;opacity:0;transition:opacity .7s cubic-bezier(.2,.8,.2,1),filter .8s}
+.st-win .vp img.long{height:auto;object-fit:fill;will-change:transform}
+.st-win .vp img.on{opacity:1}
+.story.s3 .st-win{transform:scale(.94) translateX(-4%);filter:brightness(.7)}
+.st-ph{position:absolute;right:-2%;bottom:-6%;--pw:clamp(150px,15vw,260px);opacity:0;transform:translateY(40%) rotate(4deg);transition:opacity .7s,transform .9s cubic-bezier(.2,.8,.2,1);z-index:2}
+.story.s3 .st-ph{opacity:1;transform:none}
+.st-ph .scr img{will-change:transform}
+@media(min-width:861px) and (max-width:1199px),(min-width:861px) and (max-height:820px){.st-steps li:not(.on) p{display:none}.st-steps li{padding-block:10px}}
+.story .sticky{padding-top:84px}
+/* windows lean a little toward the cursor */
+@media(hover:hover) and (min-width:861px){.bw .win{transition:transform .5s cubic-bezier(.2,.8,.2,1),background .8s}.tilt .win{transform:perspective(1400px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}}
+/* the task: pains → what I did, each row links to its chapter */
+.pains{border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.1)}
+.pains a{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.4fr) 64px;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .4s cubic-bezier(.2,.8,.2,1),background .3s}
+.pains a:hover{padding-left:12px}
+.pains .p{font-family:var(--display);font-weight:300;font-size:clamp(18px,1.9vw,28px);letter-spacing:-.03em;line-height:1.15}
+.pains .ar{font-family:var(--body);font-weight:300;font-size:22px;color:var(--acc);line-height:1}
+.pains .s{color:var(--ink-2);font-size:16px}
+.pains .n{justify-self:end;font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
+.pains a:hover .n{color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(16px,2vw,28px);margin-top:calc(var(--gutter)*.6)}
+.steps > div{border-top:1px solid var(--line-2);padding-top:16px}
+.steps .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--acc)}
+.steps b{display:block;margin:10px 0 6px;font-family:var(--display);font-weight:400;font-size:clamp(16px,1.4vw,20px);letter-spacing:-.02em;line-height:1.15}
+.steps p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
+.sub{margin-top:calc(var(--gutter)*1.4);font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+/* awards timeline */
+.awards{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:calc(var(--gutter)*.6);border-top:1px solid var(--line)}
+.awards > div{padding:20px clamp(16px,2vw,28px) 4px;border-right:1px solid var(--line)}
+.awards > div:first-child{padding-left:0}.awards > div:last-child{border-right:0}
+.awards time{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
+.awards b{display:block;margin:10px 0 6px;font-family:var(--display);font-weight:400;font-size:clamp(17px,1.5vw,22px);letter-spacing:-.02em;line-height:1.15}
+.awards p{margin:0;color:var(--ink-2);font-size:15px}
+/* chapter nav: thin ticks along the right edge, the current one lit; number and title show on hover (desktop) */
+.toc{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:50;display:grid;gap:0;opacity:0;pointer-events:none;transition:opacity .4s}
+.toc.on{opacity:1;pointer-events:auto}
+.toc a{position:relative;display:flex;align-items:center;justify-content:flex-end;width:28px;height:14px;color:var(--ink-3)}
+.toc a i{width:8px;height:1px;background:currentColor;opacity:.6;transition:width .3s,opacity .3s,background .3s}
+.toc a:hover i{width:14px;opacity:1}
+.toc a span{position:absolute;right:26px;white-space:nowrap;padding:6px 9px;border-radius:6px;background:var(--bg-2);border:1px solid var(--line);font:10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);opacity:0;transform:translateX(6px);pointer-events:none;transition:opacity .25s,transform .25s}
+.toc a span b{font-weight:400;color:var(--ink-3);margin-right:8px}
+.toc a:hover span{opacity:1;transform:none}
+.toc a.on i{width:18px;opacity:1;background:var(--acc)}
+@media(max-width:1199px){.toc{display:none}}
+section[id]{scroll-margin-top:20px}
+/* big running line of chapters, nudged by scroll speed */
+.mq{overflow:hidden;padding-block:clamp(28px,4vw,56px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq .row{display:flex;width:max-content;will-change:transform}
+.mq span{flex:none;padding-right:.6em;font-family:var(--display);font-weight:200;font-size:clamp(40px,7vw,120px);letter-spacing:-.05em;line-height:1;white-space:nowrap;color:transparent;-webkit-text-stroke:1px var(--ink-3)}
+.mq span:nth-child(3n+1){color:var(--ink);-webkit-text-stroke:0}
+.mq span em{font-style:normal;background:var(--accg);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:0}
+/* AI frames: a scanning beam passes over the document while the frame is on screen */
+.scan .vp::after{content:'';position:absolute;left:0;right:0;top:0;height:22%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,182,211,.10) 70%,rgba(0,182,211,.55) 98%,rgba(255,255,255,.9));mix-blend-mode:screen;opacity:0;transform:translateY(-100%)}
+.scan.in .vp::after{animation:scan 3.6s cubic-bezier(.45,0,.55,1) .6s infinite}
+@keyframes scan{0%{transform:translateY(-100%);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateY(460%);opacity:0}}
+@media(prefers-reduced-motion:reduce){.scan.in .vp::after{animation:none}}
+/* hero entrance */
+.hero .h-bw > *{animation:rise 1.4s cubic-bezier(.2,.8,.2,1) .25s both}
+.hero .h-ph > *{animation:rise 1.4s cubic-bezier(.2,.8,.2,1) .55s both}
+.hero .chip{animation:pop .8s cubic-bezier(.34,1.56,.64,1) both}.hero .c1{animation-delay:1.1s}.hero .c2{animation-delay:1.3s}.hero .c3{animation-delay:1.5s}
+@keyframes rise{from{opacity:0;transform:translateY(60px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+@media(prefers-reduced-motion:reduce){.hero .h-bw > *,.hero .h-ph > *,.hero .chip{animation:none}}
+/* theme flip button in the dark-theme chapter */
+.flip{display:inline-flex;align-items:center;gap:12px;margin-top:28px;height:52px;padding:0 20px 0 8px;border-radius:99px;border:1px solid var(--line-2);background:none;color:var(--ink);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+.flip i{width:36px;height:36px;border-radius:50%;background:var(--accg);display:grid;place-items:center}
+.flip i svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round}
+@media(hover:hover){.flip:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
+/* what's next */
+.next{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);margin-top:calc(var(--gutter)*.8)}
+.next > div{padding:22px clamp(16px,2vw,28px) 4px;border-right:1px solid var(--line)}
+.next > div:first-child{padding-left:0}.next > div:last-child{border-right:0}
+.next b{display:block;margin-top:12px;font-family:var(--display);font-weight:400;font-size:clamp(17px,1.5vw,22px);letter-spacing:-.02em;line-height:1.15}
+.next p{margin:8px 0 0;color:var(--ink-2);font-size:15px}
+.next .soon{margin-left:0}
+
+/* outro */
+.outro{padding:calc(var(--gutter)*2) 0}
+.outro h2{font-size:clamp(44px,10vw,180px);font-weight:200;letter-spacing:-.06em;line-height:.9}
+.outro .nx{display:flex;justify-content:space-between;gap:24px;margin-top:calc(var(--gutter)*1.5);border-top:1px solid var(--line);padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.outro .nx a:hover{color:var(--ink)}
+
+/* back to top */
+.totop{position:fixed;right:var(--gutter);bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1),background .3s,color .3s,border-color .3s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+@media(hover:hover){.totop:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}.totop:hover svg{transform:translateY(-2px)}}
+
+@media(min-width:861px) and (max-width:1199px){.c2,.c3{display:none}.h-ph{bottom:4%}.c1{left:-4%;top:62%}}
+@media(max-width:1100px){
+  .feats{grid-template-columns:repeat(2,1fr)}
+  .feats > div:nth-child(2){border-right:0}
+  .feats > div:nth-child(3){padding-left:0}
+  .feats > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}
+  .feats.f3{grid-template-columns:repeat(3,1fr)}.feats.f3 > div:nth-child(2){border-right:1px solid var(--line)}.feats.f3 > div:nth-child(3){padding-left:clamp(16px,2vw,28px);border-top:0;margin-top:0}
+  .next{grid-template-columns:repeat(2,1fr)}
+  .next > div:nth-child(2){border-right:0}.next > div:nth-child(3){padding-left:0}
+  .next > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}
+  .dsg{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .awards{grid-template-columns:repeat(2,1fr)}.awards > div:nth-child(2){border-right:0}.awards > div:nth-child(3){padding-left:0}.awards > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}
+}
+@media(max-width:860px){
+  .nav{height:56px;gap:12px;font-size:10px;letter-spacing:.1em}
+  .nav .ctr:first-of-type{display:none}
+  .nav .ctr{gap:14px}
+  .nav .ext{display:none}
+  .hero{grid-template-columns:1fr;padding-top:89px;gap:28px;min-height:0;padding-bottom:calc(var(--gutter)*2)}
+  .rl-r,.scroll-hint{display:none}
+  .h-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px;margin-top:26px}
+  .scene{height:auto;min-height:0;padding-bottom:16%}
+  .scene .h-bw{position:relative;left:auto;right:auto;top:auto}
+  .h-ph{right:-2%;bottom:0}
+  .h-ph .pf{--pw:28vw}
+  .c2,.c3{display:none}
+  .c1{left:auto;right:30vw;top:auto;bottom:4%}
+  .intro .g,.txt{grid-template-columns:1fr}
+  .specs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .specs div:nth-child(odd){padding-left:0}
+  .specs div:nth-child(even){border-right:0}
+  .specs div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .path{grid-template-columns:1fr;gap:28px}
+  .path > div:not(:last-child)::after{display:none}
+  .sec{padding-block:calc(var(--gutter)*2.5)}
+  .sec-head{column-gap:16px}
+  .sec-head .m{display:none}
+  .sec-head .n{grid-row:1/3;align-self:start;font-size:28px}
+  .duo{grid-template-columns:1fr;gap:28px}
+  .combo{grid-template-columns:1fr;gap:28px}
+  .combo > .side{justify-content:center}
+  .combo .pf,.sheet{--pw:42vw;width:42vw}
+  .paper{width:min(78vw,400px);margin-inline:auto}
+  .mapt .tgl{left:50%;bottom:4%;padding:6px 10px 6px 8px;gap:8px;font-size:8.5px;white-space:nowrap}.mapt .tgl i{width:24px;height:14px}.mapt .tgl i::after{width:10px;height:10px}.mapt.on .tgl i::after{transform:translateX(10px)}
+  .bp{grid-template-columns:744fr 375fr;row-gap:24px}
+  .bp > .bw{grid-column:1/-1}
+  .prow{display:grid;grid-template-columns:1fr 1fr;gap:24px 12px}
+  .prow .pf{max-width:none}
+  .prow .pf:nth-child(even){margin-top:0}
+  .bw .bar{height:26px;padding:0 10px}.bw .bar i{width:7px;height:7px}.bw .bar span{padding:4px 10px;font-size:9px}
+  .bw .win{border-radius:10px}
+  .rules,.rules.r3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules > div:nth-child(odd){padding-left:0}.rules > div:nth-child(even){border-right:0}
+  .rules > div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .rules.r3 > div:nth-child(3){grid-column:1/-1;border-right:0}
+  .feats,.feats.f3,.next{grid-template-columns:1fr}
+  .feats > div,.feats.f3 > div,.next > div{padding:18px 0 4px!important;border-right:0!important;border-top:0;margin-top:0!important}
+  .feats > div+div,.next > div+div{border-top:1px solid var(--line)!important;margin-top:14px!important}
+  .toks{grid-template-columns:repeat(2,1fr)}
+  .story{height:360vh}
+  .story .sticky{grid-template-columns:1fr;align-content:center;gap:18px;padding-top:66px}
+  .st-l{min-height:178px}
+  .st-steps li:not(.on){display:none}.st-steps li{padding:0;border:0;opacity:1}.st-steps p{font-size:15px}
+  .st-bar{margin-bottom:14px}
+  .st-ph{--pw:34vw;right:0;bottom:-14%}
+  .story.s3 .st-win{transform:scale(.96) translateX(-6%)}
+  .pains a{grid-template-columns:1fr auto;gap:6px 12px}.pains .ar{display:none}.pains .s{grid-column:1/-1;grid-row:2}.pains .n{grid-column:2;grid-row:1}
+  .steps{grid-template-columns:1fr;gap:18px}
+  .awards{grid-template-columns:1fr}.awards > div{padding:16px 0 4px!important;border-right:0!important;margin-top:0!important}.awards > div+div{border-top:1px solid var(--line)!important;margin-top:12px!important}
+  .tscale div{grid-template-columns:1fr;gap:6px}.tscale p{white-space:normal}
+  .outro h2{font-size:clamp(34px,11.5vw,180px)}
+  .outro .nx{flex-direction:column;gap:14px}
+  .totop{width:44px;height:44px}
+}
+@media(max-width:360px){.specs b{font-size:28px}.rules b{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.fl{transform:none!important}.grain,.h-bw .vp img,.blob{animation:none}}
+html{background:var(--bg)}
+body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.nav{padding-left:calc(var(--gutter) + env(safe-area-inset-left,0px));padding-right:calc(var(--gutter) + env(safe-area-inset-right,0px))}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
+/* language glitch (same as the home page) */
+html.glitch :is(section,header.hero){animation:glx .28s steps(1,end) 1}
+html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption):not(.h-title *,.h-title),html.glitch .nav *{animation:gls .28s steps(1,end) 1}
+@keyframes glx{0%{transform:translateX(-4px)}18%{transform:translateX(5px) skewX(-2deg)}36%{transform:translateX(-2px)}54%{transform:translateX(3px)}72%{transform:translateX(-1px)}90%,100%{transform:none}}
+@keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
+</style>
+
+<div class="grain"></div><script>document.body.classList.add("dark")</script>
+<div class="cur" id="cur"></div>
+<button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
+<div class="prog"><i id="prog"></i></div>
+
+<nav class="toc" id="toc" aria-label="Главы кейса"></nav>
+<div class="navfx" aria-hidden="true"><i></i><i></i><i></i></div>
+<nav class="nav">
+  <a href="/" class="c" data-back><b class="ar">←</b>На главную</a>
+  <div class="ctr pager"><a class="pn" href="/#cases" data-back title="Все кейсы" aria-label="Все кейсы"><b class="ar">←</b></a><span>Кейс · Lab4U</span><a class="pn" href="https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes" target="_blank" rel="noopener" title="Следующий проект: ВТБ Бизнес (Behance)" aria-label="Следующий проект"><b class="ar">→</b></a></div>
+  <div class="ctr"><button class="lang" id="lang" type="button" aria-label="Сменить язык"><b>RU</b> / EN</button><button class="sw" id="tgl" aria-label="Переключить тему"><i class="k"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i></button><a class="ext" href="https://lab4u.ru/" target="_blank" rel="noopener">lab4u.ru<svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a></div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="gridlines"></div>
+  <div class="rl rl-r"><span>Roboto · #00B6D3 → #0592D2</span><span>Web 1728 · 744 · 375</span><span>iOS · Android</span></div>
+  <div class="h-copy">
+    <div class="mono" style="margin-bottom:18px">2023 — сейчас · Healthtech · AI</div>
+    <h1 class="h-title"><span class="w"><span>Lab4<b>U</b></span></span></h1>
+    <p class="h-sub">онлайн‑лаборатория с <b>AI‑расшифровкой</b> анализов</p>
+    <div class="h-meta">
+      <div><b>Роль</b>Lead Product Designer</div>
+      <div><b>Команда</b>Единственный дизайнер</div>
+      <div><b>Платформы</b>Web · <a href="https://apps.apple.com/ru/app/lab4u-%D1%81%D0%B4%D0%B0%D1%82%D1%8C-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D1%8B/id1599966953" target="_blank" rel="noopener">iOS</a> · <a href="https://play.google.com/store/apps/details?id=ru.lab4u.android" target="_blank" rel="noopener">Android</a></div>
+    </div>
+  </div>
+  <div class="scene">
+    <div class="blob"></div>
+    <div class="fl h-bw" data-sp="-.05"><figure class="bw"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp" style="--ar:1728/1080"><img src="/cases/lab4u/img/home_d.webp" width="2000" height="5096" alt="Новая главная Lab4U" fetchpriority="high"></div></div></figure></div>
+    <div class="fl h-ph" data-sp=".12"><figure class="pf"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home2.webp" width="640" height="1386" alt="Главная приложения Lab4U"></div></div></figure></div>
+    <div class="fl chip c1" data-sp=".22"><i class="g">✓</i>Расшифровка готова</div>
+    <div class="fl chip c2" data-sp="-.16"><i>%</i>До −50% к ценам клиник</div>
+    <div class="fl chip c3" data-sp=".3"><i>6</i>Forbes · ИИ в медицине</div>
+  </div>
+  <div class="scroll-hint"><span>Листайте</span><i></i></div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section class="intro">
+  <div class="wrap g">
+    <p class="lead r">Онлайн‑лаборатория, где анализы дешевле до 50%, а результаты объясняет ИИ</p>
+    <div class="r">
+      <p>Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение</p>
+      <p>Меня позвали сделать приложение 2.0 — прежнее было неудобным и устаревшим. Потом я собрал с нуля дизайн‑систему, одну на веб и приложение, и меня подключили ко всему продукту. Я единственный дизайнер в компании: задачи веду вместе с продактом, многое решаю напрямую с разработкой</p>
+    </div>
+  </div>
+  <div class="wrap specs r">
+    <div><b>820 000+</b><span>активных клиентов</span></div>
+    <div><b data-en="9.5M+">9,5 млн+</b><span>заказов</span></div>
+    <div><b>900+</b><span>клиник‑партнёров в 117 городах</span></div>
+    <div><b>−50%</b><span>к ценам клиник</span></div>
+  </div>
+  <div class="wrap src">Цифры — Lab4U, 2026</div>
+  <div class="wrap path">
+    <div class="r"><span class="k">01</span><b>Приложение 2.0</b><p>Полный редизайн: структура, навигация, разделы и визуальный язык</p></div>
+    <div class="r"><span class="k">02</span><b>Дизайн‑система</b><p>С нуля, одна на веб и приложение, светлая и тёмная темы на токенах</p></div>
+    <div class="r"><span class="k">03</span><b>Весь продукт</b><p>Сайт на трёх брейкпоинтах, личный кабинет, AI‑сервисы и кабинет медцентров</p></div>
+  </div>
+  <div class="wrap facts r"><span>1 дизайнер на весь продукт</span><span>Команда выросла с ~30 до 50–60 человек</span><span>Около половины заказов — через приложение</span></div>
+</section>
+
+<div class="mq" aria-hidden="true"><div class="row" id="mq"><span>AI‑расшифровка</span><span>Приложение 2.0</span><span><em>Lab4U</em></span><span>Дизайн‑система</span><span>Тёмная тема</span><span>Кабинет медцентров</span><span>Новая главная</span><span>Каталог</span><span>Карта</span></div></div>
+
+<!-- ============ 00 THE TASK ============ -->
+<section class="sec" id="task">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">00</span><h2 class="r">Задача</h2><span class="m">Боли → решения</span></div>
+    <div class="txt r">
+      <p>Рынок коммерческой лабораторной диагностики — 205 млрд ₽ в 2026 году, и он растёт на 12,5% в год. Пациенты уходят в цифру: на сайты лабораторий, в агрегаторы и приложения, — и выигрывает тот, с кем проще</p>
+      <p>Основатель Lab4U ещё в 2019 году перечислял, что мешает людям сдавать анализы онлайн. За время работы я закрыл почти каждую из этих болей — где‑то новым сервисом, где‑то переделкой целого раздела</p>
+    </div>
+    <div class="pains r">
+      <a href="#basket"><span class="p">В клиниках дорого</span><span class="ar">→</span><span class="s">Скидка до 50% видна сразу, корзина подсказывает выгодный комплекс</span><span class="n">06</span></a>
+      <a href="#map"><span class="p">Привычка идти в ближайшую клинику</span><span class="ar">→</span><span class="s">900+ медцентров на карте с фильтрами по времени, цене и метро</span><span class="n">08</span></a>
+      <a href="#app"><span class="p">Онлайн‑заказ непривычен</span><span class="ar">→</span><span class="s">Приложение 2.0 и новая главная: от поиска до оплаты — короче и понятнее</span><span class="n">03</span></a>
+      <a href="#visit"><span class="p">Анализы сдают раз в год и забывают</span><span class="ar">→</span><span class="s">Чекапы, комплексы, уведомления и чат с поддержкой</span><span class="n">09</span></a>
+      <a href="#ai"><span class="p">Результаты непонятны</span><span class="ar">→</span><span class="s">AI‑расшифровка простым языком: что в норме и что делать дальше</span><span class="n">01</span></a>
+      <a href="#ai2"><span class="p">Почерк врача не разобрать</span><span class="ar">→</span><span class="s">Назначение распознаётся по фото и сразу превращается в корзину</span><span class="n">02</span></a>
+    </div>
+    <div class="sub r">Как я работаю</div>
+    <div class="steps r">
+      <div><span class="k">01</span><b>Разбираю рынок</b><p>Конкуренты и лучшие практики — например, перед каталогом</p></div>
+      <div><span class="k">02</span><b>Черновики с ИИ</b><p>Варианты блоков быстро собираю с Claude и ChatGPT, лучшие довожу руками</p></div>
+      <div><span class="k">03</span><b>Сразу в системе</b><p>Новые экраны — из компонентов DS и сразу в двух темах</p></div>
+      <div><span class="k">04</span><b>С командой</b><p>Ежедневные созвоны с продактом, вопросы с разработкой напрямую, дизайн‑ревью сборок</p></div>
+      <div><span class="k">05</span><b>Выпуск по частям</b><p>Главную и разделы внедряем поблочно, не ломая живой сайт</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 AI DECODING ============ -->
+<section class="sec" id="ai">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">01</span><h2 class="r">AI‑расшифровка<br> анализов</h2><span class="m">С нуля · web + app</span></div>
+    <div class="txt r">
+      <p>Главная фича, которую я спроектировал с нуля. Пациент загружает результаты из любой лаборатории или выбирает свои из Lab4U, подтверждает показатели и получает расшифровку простым языком: что в норме, к каким врачам идти, какие анализы досдать и что поменять в образе жизни</p>
+      <p>37% клиентов Lab4U сдают анализы, ни разу не побывав у врача, — им особенно важно понять результаты. Сервис запустили в апреле 2024 года на собственной LLM, обученной на 15+ млн обезличенных анализов: Lab4U — одни из первых в России с такой расшифровкой, а в 2025 году Forbes поставил её на 6‑е место среди российских ИИ‑решений для здравоохранения</p>
+    </div>
+  </div>
+  <div class="wrap rules r">
+    <div><b>+40%</b><span>вовлечённость пациентов за квартал</span></div>
+    <div><b>342 789</b><span>расшифровок на сайте</span></div>
+    <div><b>37%</b><span>результатов разбирает своя LLM</span></div>
+    <div><b>№ 6</b><span>Forbes · ИИ в здравоохранении</span></div>
+  </div>
+  <div class="wrap src">Smart Ranking, I кв. 2025 · lab4u.ru · Forbes, 2025</div>
+  <div class="story" id="story">
+    <div class="sticky wrap">
+      <div class="st-l">
+        <div class="st-bar"><i></i><i></i><i></i><i></i></div>
+        <ol class="st-steps">
+          <li class="on"><span class="k">01</span><b>Загрузка</b><p>Результаты из любой лаборатории — PDF или фото, либо свои анализы из Lab4U</p></li>
+          <li><span class="k">02</span><b>Проверка показателей</b><p>Сервис распознаёт документ, пациент подтверждает значения и правит то, что распознано неточно</p></li>
+          <li><span class="k">03</span><b>Расшифровка</b><p>Общий вывод, показатели с нормами, к каким врачам идти, какие анализы досдать и что поменять в образе жизни</p></li>
+          <li><span class="k">04</span><b>В приложении</b><p>Тот же сценарий в мобильном приложении — от загрузки до расшифровки</p></li>
+        </ol>
+      </div>
+      <div class="st-stage">
+        <figure class="bw st-win scan in"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/health_insights</span></div><div class="vp" style="--ar:16/10"><img class="on" src="/cases/lab4u/img/dec_upload.webp" width="2000" height="1185" alt="" loading="lazy" decoding="async"><img src="/cases/lab4u/img/dec_recognized.webp" width="2000" height="1453" alt="" loading="lazy" decoding="async"><img class="long" src="/cases/lab4u/img/dec_report.webp" width="2000" height="4626" alt="" loading="lazy" decoding="async"></div></div></figure>
+        <figure class="pf st-ph"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_decoding.webp" width="640" height="3581" alt="" loading="lazy" decoding="async"></div></div></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 AI AROUND THE ORDER ============ -->
+<section class="sec" id="ai2">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">02</span><h2 class="r">ИИ вокруг<br> заказа</h2><span class="m">Назначения · корзина</span></div>
+    <div class="txt r">
+      <p>Ещё в 2019 году одной из болей пациентов был почерк врача. Теперь достаточно загрузить фото направления: сервис распознаёт назначения, подбирает анализы и сразу кладёт их в корзину</p>
+      <p>Вторая фича — сборка корзины с ИИ: угадываем, что может понадобиться пациенту, и предлагаем собрать корзину в одно действие. Точки входа — главная, поиск, каталог, пустая корзина и кабинет без активных заказов</p>
+    </div>
+  </div>
+  <div class="wrap duo blk">
+    <figure class="bw r scan"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/catalog</span></div><div class="vp fit"><img src="/cases/lab4u/img/ai_prescription.webp" width="2000" height="1422" alt="" loading="lazy" decoding="async"></div></div><figcaption>Распознавание назначения врача</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp scroll" style="--ar:1440/1024"><img src="/cases/lab4u/img/ai_basket.webp" width="2000" height="1881" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сборка корзины с ИИ · точка входа на главной</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 03 APP 2.0 ============ -->
+<section class="sec" id="app">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">03</span><h2 class="r">Приложение<br> 2.0</h2><span class="m">iOS · Android</span></div>
+    <div class="txt r">
+      <p>С приложения всё началось. В 2.0 я поменял буквально всё: структуру, навигацию, разделы и визуальный язык. Новые фичи с тех пор выходят вместе с обновлением разделов, и сейчас через приложение идёт около половины заказов</p>
+    </div>
+    <div class="stores r">
+      <a class="store" href="https://apps.apple.com/ru/app/lab4u-%D1%81%D0%B4%D0%B0%D1%82%D1%8C-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D1%8B/id1599966953" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 1.43c0 1.14-.49 2.27-1.18 3.08-.74.9-1.99 1.57-2.99 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.57-2.27 1.21-2.98.8-.94 2.14-1.64 3.25-1.68.03.13.05.28.05.43zm4.56 15.71c-.03.07-.46 1.58-1.52 3.12-.94 1.34-1.94 2.71-3.43 2.71-1.52 0-1.9-.88-3.63-.88-1.7 0-2.3.91-3.67.91-1.38 0-2.33-1.26-3.43-2.8-1.29-1.82-2.32-4.63-2.32-7.28 0-4.28 2.8-6.55 5.55-6.55 1.45 0 2.68.95 3.6.95.87 0 2.22-1.01 3.9-1.01.61 0 2.89.06 4.37 2.19-.13.09-2.38 1.37-2.38 4.19 0 3.26 2.85 4.42 2.96 4.45z"/></svg><span><small>Скачать в</small><b>App Store</b></span><svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a>
+      <a class="store" href="https://play.google.com/store/apps/details?id=ru.lab4u.android" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 1.8 13.8 12 3.6 22.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1zm11.6 11.6 2.6 2.6-11.7 6.6 9.1-9.2zm3.9-3.9 2.9 1.6c.9.5.9 1.4 0 1.9l-2.9 1.7-2.8-2.7 2.8-2.5zM6.1 1.4l11.7 6.6-2.6 2.6-9.1-9.2z"/></svg><span><small>Доступно в</small><b>Google Play</b></span><svg class="ar2" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 9L9 1M3 1h6v6"/></svg></a>
+    </div>
+  </div>
+  <div class="wrap prow blk">
+    <figure class="pf r fl" data-sp=".1"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home1.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Пациент не добавлен</figcaption></figure>
+    <figure class="pf r fl" data-sp="-.12"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home2.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Главная</figcaption></figure>
+    <figure class="pf r fl" data-sp=".16"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home3.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Свёрнутая шапка</figcaption></figure>
+    <figure class="pf r fl" data-sp="-.08"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home4.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Выбор города</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 04 NEW HOME ============ -->
+<section class="sec" id="home">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">04</span><h2 class="r">Новая<br> главная</h2><span class="m">1728 · 744 · 375</span></div>
+    <div class="txt r">
+      <p>Главная собрана заново на трёх брейкпоинтах: поиск и загрузка назначения прямо в первом экране, чекапы, карта медцентров и честное объяснение, почему дешевле без потери качества. На живом сайте её внедряют поблочно</p>
+      <p>Первые варианты блоков я собирал вместе с Claude и ChatGPT — пять итераций и мини‑лендинг «О сервисе», — а финал доводил руками</p>
+    </div>
+  </div>
+  <div class="wrap bp blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp scroll" style="--ar:1728/1080"><img src="/cases/lab4u/img/home_d.webp" width="2000" height="5096" alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
+    <figure class="tb r"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/home_t.webp" width="900" height="4452" alt="" loading="lazy" decoding="async"></div></div><figcaption>Tablet · 744</figcaption></figure>
+    <figure class="pf r"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/home_m.webp" width="600" height="8133" alt="" loading="lazy" decoding="async"></div></div><figcaption>Mobile · 375</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 05 CATALOG & SEARCH ============ -->
+<section class="sec" id="catalog">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">05</span><h2 class="r">Каталог<br> и поиск</h2><span class="m">Каталог · поиск</span></div>
+    <div class="txt r">
+      <p>Задача — каталог удобнее, чем у конкурентов. Я разобрал лучшие практики и связал всё между собой: категории переключаются без перехода на другие страницы, фильтры работают вместе, а поиск ведёт прямо в выдачу каталога</p>
+    </div>
+  </div>
+  <div class="wrap bp blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/catalog</span></div><div class="vp scroll" style="--ar:1728/1080"><img src="/cases/lab4u/img/cat_d.webp" width="2000" height="2407" alt="" loading="lazy" decoding="async"></div></div><figcaption>Desktop · 1728</figcaption></figure>
+    <figure class="tb r"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/cat_t.webp" width="900" height="1367" alt="" loading="lazy" decoding="async"></div></div><figcaption>Tablet · 744</figcaption></figure>
+    <figure class="pf r"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/cat_m.webp" width="600" height="1616" alt="" loading="lazy" decoding="async"></div></div><figcaption>Mobile · 375</figcaption></figure>
+  </div>
+  <div class="wrap combo blk" style="align-items:center">
+    <div class="feats f3 r" style="margin-top:0">
+      <div><span class="k">01</span><b>Категории на месте</b><p>Переключаются без перехода на другую страницу, рядом — счётчик анализов</p></div>
+      <div><span class="k">02</span><b>Фильтры</b><p>Пол, биоматериал, заболевания, диагностика и органы — в одной строке</p></div>
+      <div><span class="k">03</span><b>Поиск → каталог<span class="soon">скоро</span></b><p>Из поиска сразу в выдачу с фильтрами — одна воронка вместо тупика</p></div>
+    </div>
+    <div class="side"><figure class="pf r fl" data-sp=".12"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/app_search_ai.webp" width="640" height="1625" alt="" loading="lazy" decoding="async"></div></div><figcaption>Поиск находит расшифровки</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- ============ 06 BASKET ============ -->
+<section class="sec" id="basket">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">06</span><h2 class="r">Корзина</h2><span class="m">Web · app</span></div>
+    <div class="txt r">
+      <p>Корзина умеет больше, чем хранить список: предлагает заменить несколько анализов одним комплексом, если так выгоднее, сохраняет списки в избранное и даёт поделиться корзиной по ссылке. В приложении я пересобрал её в версии 3.0 — с редактированием уже оформленного заказа</p>
+    </div>
+  </div>
+  <div class="wrap combo blk">
+    <div class="r" data-tabs>
+      <div class="tabs"><button type="button" class="on">Корзина</button><button type="button">Комплекс выгоднее</button></div>
+      <figure class="bw"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/basket</span></div><div class="vp fit stack"><img class="on" src="/cases/lab4u/img/basket.webp" width="2000" height="1422" alt="" loading="lazy" decoding="async"><img src="/cases/lab4u/img/basket_upsell.webp" width="2000" height="1422" alt="" loading="lazy" decoding="async"></div></div><figcaption>Корзина и предложение собрать комплекс</figcaption></figure>
+    </div>
+    <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr scroll"><img src="/cases/lab4u/img/app_basket.webp" width="640" height="2437" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · корзина 3.0</figcaption></figure></div>
+  </div>
+  <div class="wrap feats r">
+    <div><span class="k">01</span><b>Собрать в комплекс</b><p>Если отдельные анализы входят в комплекс, предлагаем его — дешевле и полнее</p></div>
+    <div><span class="k">02</span><b>Расформировать</b><p>Обратное действие: комплекс распадается на отдельные анализы</p></div>
+    <div><span class="k">03</span><b>Избранное</b><p>Анализы, комплексы и медцентры можно лайкать и собирать в списки</p></div>
+    <div><span class="k">04</span><b>Поделиться</b><p>Корзину можно отправить ссылкой, например близким</p></div>
+  </div>
+</section>
+
+<!-- ============ 07 PERSONAL ACCOUNT ============ -->
+<section class="sec" id="lk">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">07</span><h2 class="r">Личный<br> кабинет</h2><span class="m">ЛК · сертификаты</span></div>
+    <div class="txt r">
+      <p>Кабинет стал рабочим инструментом: несколько пациентов в одном аккаунте, заказы по статусам, детальная заказа с подсказками перед визитом — «Возьмите паспорт», «Подтвердите запись», — и графики показателей</p>
+      <p>Подарочных сертификатов в Lab4U раньше не было — я спроектировал их целиком: покупка, активация, список и PDF. В I квартале 2025 года продажи сертификатов выросли на 43%</p>
+    </div>
+  </div>
+  <div class="wrap duo blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/lk/orders</span></div><div class="vp scroll" style="--ar:2000/1504"><img src="/cases/lab4u/img/lk_order.webp" width="2000" height="1504" alt="" loading="lazy" decoding="async"></div></div><figcaption>Детальная заказа · подсказки перед визитом</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/lk/certificates</span></div><div class="vp scroll" style="--ar:2000/1504"><img src="/cases/lab4u/img/certificates.webp" width="2000" height="1721" alt="" loading="lazy" decoding="async"></div></div><figcaption>Подарочные сертификаты <span class="soon">+43% продаж</span></figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 08 MEDCENTRES & MAP ============ -->
+<section class="sec" id="map">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">08</span><h2 class="r">Медцентры<br> и карта</h2><span class="m">900+ точек</span></div>
+    <div class="txt r">
+      <p>Карту медцентров я сделал удобнее и функциональнее: фильтры по дате и времени приёма, возрасту пациента, цене забора и метро. У каждого фильтра продуманы состояния — от наведения до применённого диапазона</p>
+      <p>Понравившиеся медцентры можно добавить в избранное, а в приложении карта и список переключаются одним тапом</p>
+    </div>
+  </div>
+  <div class="wrap combo blk">
+    <figure class="bw r mapt"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru/address</span></div><div class="vp fit stack"><img class="on" src="/cases/lab4u/img/medcenters.webp" width="2000" height="1422" alt="" loading="lazy" decoding="async"><img src="/cases/lab4u/img/map_filters.webp" width="2000" height="1422" alt="" loading="lazy" decoding="async"><button class="tgl" type="button" aria-pressed="false"><i></i>Время приёма 09:00–19:00</button></div></div><figcaption>Фильтр по времени приёма: до и после · нажмите на переключатель</figcaption></figure>
+    <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_map.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · карта и список</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- ============ 09 AROUND THE VISIT ============ -->
+<section class="sec" id="visit">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">09</span><h2 class="r">Вокруг<br> визита</h2><span class="m">Чат · отзывы · уведомления</span></div>
+    <div class="txt r">
+      <p>Раньше в Lab4U не было ни чата, ни уведомлений. Чат с поддержкой я сделал для приложения, на сайте он работает через веб‑интерфейс. Систему уведомлений спроектировал целиком — от списка в шапке до раздела в кабинете, она скоро выйдет</p>
+      <p>После визита пациент оценивает медцентр и может оставить чаевые медсестре через CloudTips — медсёстры начали получать деньги</p>
+    </div>
+  </div>
+  <div class="wrap combo blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>lab4u.ru</span></div><div class="vp fit"><img src="/cases/lab4u/img/notifications.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"></div></div><figcaption>Уведомления <span class="soon">скоро</span></figcaption></figure>
+    <div class="side">
+      <figure class="pf r fl" data-sp=".1"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_chat.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Чат с поддержкой</figcaption></figure>
+    </div>
+  </div>
+  <div class="wrap duo blk" style="align-items:center">
+    <div class="feats f3 r" style="grid-template-columns:1fr;margin-top:0;border-top:0">
+      <div style="padding-left:0;border-right:0"><span class="k">CloudTips</span><b>Отзыв и чаевые в одном шаге</b><p>Оценка, быстрые теги «Безболезненно», «Удобное приложение» и кнопка «Оставить чаевые медсестре» — без лишних экранов</p></div>
+    </div>
+    <div style="display:flex;justify-content:center"><figure class="sheet r fl" data-sp="-.1"><img src="/cases/lab4u/img/app_review.webp" width="640" height="1124" alt="" loading="lazy" decoding="async"><figcaption style="text-align:center">Как прошёл ваш визит?</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- ============ 10 B2B ============ -->
+<section class="sec" id="b2b">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">10</span><h2 class="r">Кабинет<br> медцентров</h2><span class="m">B2B · LAB4INJECT</span></div>
+    <div class="txt r">
+      <p>Когда пациент приходит в медцентр, медсестра ведёт заказ в партнёрском кабинете: отмечает визит, проверяет паспорт, вводит адрес регистрации, печатает наклейки, выдаёт результаты. Я полностью переделал кабинет — с новым UX работать стало намного удобнее</p>
+      <p>LAB4INJECT — одно из главных направлений 2026–27 годов: платформа роста назначений и контроля терапии, которая превращает препарат в управляемый процесс лечения, с консультациями врачей и телемедициной. Для неё я сделал флоу записи и направление‑памятку в PDF</p>
+    </div>
+  </div>
+  <div class="wrap combo blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>partner.lab4u.ru</span></div><div class="vp scroll" style="--ar:1440/1000"><img src="/cases/lab4u/img/partner_orders.webp" width="2000" height="3051" alt="" loading="lazy" decoding="async"></div></div><figcaption>Заказы медцентра на день</figcaption></figure>
+    <div class="side"><figure class="paper r fl" data-sp=".1"><img src="/cases/lab4u/img/inject_pdf.webp" width="1190" height="1684" alt="" loading="lazy" decoding="async"><figcaption>Направление LAB4INJECT · A4</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- ============ 11 DESIGN SYSTEM ============ -->
+<section class="sec" id="ds">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">11</span><h2 class="r">Дизайн‑<br>система</h2><span class="m">Web &amp; App DS</span></div>
+    <div class="txt r">
+      <p>Одна система на веб и приложение. Нейтрали — альфа‑шкала одного почти чёрного #030204, поэтому тёмная тема строится на токенах, а не перекраской. Каждый компонент проверяется в светлой и тёмной теме</p>
+      <p>Легаси переезжает на новый API с понятными именами — buttonPrimaryMD, inputLG, linkNegativeSM, — старое помечено и скрыто от публикации</p>
+    </div>
+  </div>
+  <div class="wrap rules r">
+    <div><b>670+</b><span>компонентов и вариантов</span></div>
+    <div><b>197</b><span>иконок · outline + solid</span></div>
+    <div><b>13 × 3</b><span>состояний × размеров инпута</span></div>
+    <div><b>2</b><span>темы на токенах</span></div>
+  </div>
+  <div class="wrap dsg blk">
+    <div class="r">
+      <div class="lbl"><span>Токены</span><span>Переключите тему в шапке</span></div>
+      <div class="toks">
+        <div class="tok"><i style="--l:linear-gradient(135deg,#00B6D3,#0592D2)"></i><b>New logo gradient</b><span>#00B6D3 → #0592D2</span></div>
+        <div class="tok"><i style="--l:#00AACC"></i><b>Action/Primary</b><span>#00AACC</span></div>
+        <div class="tok"><i style="--l:#F1F2F4;--d:#030204"></i><b>BG/Base</b><span><em class="l x">#F1F2F4</em><em class="d">#030204</em></span></div>
+        <div class="tok"><i style="--l:#FFFFFF;--d:#1B1D23"></i><b>Surface/Base</b><span><em class="l x">#FFFFFF</em><em class="d">#1B1D23</em></span></div>
+        <div class="tok"><i style="--l:#030204;--d:#FFFFFF"></i><b>Text/Black Inverse/A100</b><span><em class="l x">#030204</em><em class="d">#FFFFFF</em></span></div>
+        <div class="tok"><i style="--l:rgba(3,2,4,.56);--d:rgba(255,255,255,.6)"></i><b>Text/Black Inverse/A56</b><span><em class="l x">#030204 · 56%</em><em class="d">#FFFFFF · 60%</em></span></div>
+        <div class="tok"><i style="--l:#00CC84"></i><b>Status/Success</b><span>#00CC84</span></div>
+        <div class="tok"><i style="--l:#FFA500"></i><b>Status/Warning</b><span>#FFA500</span></div>
+        <div class="tok"><i style="--l:#EF5350;--d:#D64A48"></i><b>Status/Negative</b><span><em class="l x">#EF5350</em><em class="d">#D64A48</em></span></div>
+      </div>
+    </div>
+    <div class="r">
+      <div class="lbl"><span>inputLG · 13 состояний</span><span>Нажмите на точку</span></div>
+      <div class="inp" id="inp" data-s="default">
+        <div class="fld"><svg class="il" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.3 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/></svg><span class="tx"><span class="lb">Город</span><span class="v"></span></span><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A1.5 1.5 0 0 1 19 11.5v8a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-8A1.5 1.5 0 0 1 6.5 10H7zm2 0h6V8a3 3 0 0 0-6 0v2z"/></svg></div>
+        <div class="hint"></div>
+        <div class="now"><span>state</span><b id="inpS">default</b></div>
+        <div class="dots" id="inpD"></div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap tscale r">
+    <div><span>Title/8XL · 48/64 · Bold</span><p style="font-size:clamp(28px,3.4vw,48px);line-height:1.33;font-weight:700">Анализы со скидкой до 50%</p></div>
+    <div><span>Title/2XL · 18/24 · Bold</span><p style="font-size:18px;line-height:24px;font-weight:700">Расшифровка готова</p></div>
+    <div><span>Title/L · 14/20 · SemiBold</span><p style="font-size:14px;line-height:20px;font-weight:600">Клинический анализ крови с лейкоцитарной формулой</p></div>
+    <div><span>Body/XL · 16/24</span><p style="font-size:16px;line-height:24px">Результаты придут в личный кабинет и приложение</p></div>
+    <div><span>Body/M · 12/16</span><p style="font-size:12px;line-height:16px;color:var(--ink-2)">Результаты с 30.05 по 08.06 · 3–5 дней</p></div>
+  </div>
+  <div class="wrap blk">
+    <figure class="panel r"><img src="/cases/lab4u/img/ds_tiles.webp" width="1600" height="642" alt="" loading="lazy" decoding="async"></figure>
+    <span class="cap">15 категорий анализов с 3D‑иллюстрациями · фильтры на фоне и на карте</span>
+  </div>
+  <div class="wrap feats r">
+    <div><span class="k">01</span><b>Тёмная тема на токенах</b><p>Black Inverse — #030204 в светлой теме и #FFFFFF в тёмной, Fixed не меняется</p></div>
+    <div><span class="k">02</span><b>Из легаси в систему</b><p>Маркеры ✅ «новый компонент» и ❌ depreciated, старые наборы скрыты от публикации</p></div>
+    <div><span class="k">03</span><b>Слоты Figma</b><p>Сегменты, пункты меню и карточки заказа собираются из слотов без раздувания вариантов</p></div>
+    <div><span class="k">04</span><b>Состояния — тоже токены</b><p>hovered 80 · disabled 35 — одна логика интерактивности для всех компонентов</p></div>
+  </div>
+</section>
+
+<!-- ============ 12 DARK THEME ============ -->
+<section class="sec" id="dark">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">12</span><h2 class="r">Тёмная тема<br> по своей инициативе</h2><span class="m">Инициатива</span></div>
+    <div class="txt r">
+      <p>В Lab4U не было тёмной темы, и никто её не просил. Я завёл под неё все токены и начал собирать новые экраны и компоненты сразу на них, чтобы всё переключалось само</p>
+      <p>Разработчики и продукт увидели это между делом — понравилось всем, и тёмную тему решили выкатить как можно скорее. Теперь все новые макеты я делаю сразу в двух темах</p>
+    </div>
+    <button class="flip r" type="button" data-flip><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="#fff"/></svg></i>Переключить тему страницы</button>
+  </div>
+  <div class="wrap blk">
+    <figure class="bw r"><div class="win"><div class="bar"><i></i><i></i><i></i><span>Тест тёмной темы</span></div><div class="vp fit"><img src="/cases/lab4u/img/ds_dark.webp" width="1440" height="925" alt="" loading="lazy" decoding="async" style="filter:none"></div></div><figcaption>Личный кабинет в тёмной теме — те же компоненты, другие значения токенов</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ 13 LOGO ============ -->
+<section class="sec" id="logo">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">13</span><h2 class="r">Логотип<br> и новый язык</h2><span class="m">2026</span></div>
+    <div class="txt r">
+      <p>Новый логотип Lab4U я сделал в 2026 году — он прижился везде, от иконки приложения до фавикона. Вокруг него строится новый визуальный язык с округлыми формами</p>
+    </div>
+  </div>
+  <div class="wrap blk">
+    <figure class="panel r"><img src="/cases/lab4u/img/ds_logo.webp" width="1600" height="375" alt="" loading="lazy" decoding="async"></figure>
+    <span class="cap">App icon · формы иконки · favicon · док&nbsp;iOS</span>
+  </div>
+</section>
+
+<!-- ============ 14 RESULTS ============ -->
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">14</span><h2 class="r">Результаты</h2><span class="m">2023 — 2026</span></div>
+    <div class="txt r">
+      <p>Продукт вырос из сайта с приложением в экосистему: AI‑сервисы, кабинет медцентров, новые направления. Дизайн при этом держится на одной системе и одном дизайнере</p>
+    </div>
+  </div>
+  <div class="wrap sub r">Продукт</div>
+  <div class="wrap specs r" style="margin-top:14px">
+    <div><b>≈50%</b><span>заказов через приложение</span></div>
+    <div><b>+40%</b><span>вовлечённость после AI‑расшифровки</span></div>
+    <div><b>4</b><span>сервиса с нуля: чат, уведомления, сертификаты, чаевые</span></div>
+    <div><b>+43%</b><span>продажи подарочных сертификатов за квартал</span></div>
+  </div>
+  <div class="wrap sub r">Компания</div>
+  <div class="wrap specs r" style="margin-top:14px">
+    <div><b>820 000+</b><span>активных клиентов</span></div>
+    <div><b data-en="9.5M+">9,5 млн+</b><span>заказов</span></div>
+    <div><b data-en="4.9">4,9</b><span>CSI — удовлетворённость клиентов</span></div>
+    <div><b>+43%</b><span>выручка за год · 1,7 млрд ₽</span></div>
+  </div>
+  <div class="wrap src">Lab4U, 2026 · Smart Ranking, I кв. 2025</div>
+  <div class="wrap">
+    <div class="sub r">Награды Lab4U за время моей работы</div>
+    <div class="awards r">
+      <div><time>28.10.2024</time><b>Smart Ranking</b><p>ТОП‑6 MedTech‑компаний России</p></div>
+      <div><time>07.08.2025</time><b>«Марка №1»</b><p>Диагностическая лаборатория, народное голосование</p></div>
+      <div><time>12.12.2025</time><b>Forbes</b><p>6‑е место среди российских ИИ‑решений для здравоохранения</p></div>
+      <div><time>27.07.2026</time><b>Smart Ranking MedTech 2025</b><p>Лидер сегмента исследований</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 TAKEAWAYS ============ -->
+<section class="sec" id="takeaways">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">15</span><h2 class="r">Выводы</h2><span class="m">Что я вынес</span></div>
+  </div>
+  <div class="wrap feats f3 r">
+    <div><span class="k">01</span><b>Система — множитель</b><p>Один дизайнер тянет веб, приложение и B2B, потому что всё собирается из одной библиотеки и токенов</p></div>
+    <div><span class="k">02</span><b>Инициатива сильнее ТЗ</b><p>Тёмную тему никто не заказывал — теперь её ждут все</p></div>
+    <div><span class="k">03</span><b>ИИ в продукте и в процессе</b><p>В продукте — расшифровка, назначения и корзина, в работе — быстрые черновики, которые я довожу руками</p></div>
+  </div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="sec" id="next">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">→</span><h2 class="r">Что<br> в работе</h2><span class="m">2026</span></div>
+  </div>
+  <div class="wrap next r">
+    <div><span class="soon">в работе</span><b>Поиск + каталог</b><p>Единая воронка: из поиска сразу в выдачу с фильтрами</p></div>
+    <div><span class="soon">скоро</span><b>Уведомления</b><p>Система целиком: шапка, кабинет, приложение</p></div>
+    <div><span class="soon">дальше</span><b>Страница анализа</b><p>Следующая на редизайн</p></div>
+    <div><span class="soon">в работе</span><b>Округлый язык</b><p>Новые формы вокруг логотипа по всему продукту</p></div>
+  </div>
+</section>
+
+<!-- ============ OUTRO ============ -->
+<section class="outro">
+  <div class="wrap">
+    <h2 class="r">Спасибо<br>за внимание</h2>
+    <div class="nx">
+      <a href="/#cases" data-back>← Все работы</a>
+      <span>Lab4U · 2023 — сейчас</span>
+      <a href="https://www.behance.net/gallery/226015267/dizajn-sistema-vtb-biznes" target="_blank" rel="noopener">Следующий проект → ВТБ Бизнес ↗</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+/* back to home: if we came from the home page, go back in history so the browser restores the scroll position */
+$$('[data-back]').forEach(a=>a.addEventListener('click',e=>{
+  try{const r=new URL(document.referrer); if(r.origin===location.origin && r.pathname==='/' && history.length>1){e.preventDefault(); history.back()}}catch(_){}
+}));
+const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* metrics odometer: digits spin and settle; numbers with a unit («9,5 млн+») are rebuilt in the page language */
+(()=>{
+  const bs=$$('.specs b'); if(!bs.length) return;
+  const set=(b,k)=>{
+    const L=document.documentElement.lang==='en'?'en':'ru'; if(!b.dataset.ru) b.dataset.ru=b.textContent;
+    const txt=L==='en'&&b.dataset.en?b.dataset.en:b.dataset.ru, done=b.classList.contains('go'); b.setAttribute('aria-label',txt); b.textContent='';
+    const digits=[...txt].filter(c=>/\d/.test(c)).length; let di=0;
+    [...txt].forEach(c=>{
+      if(/\d/.test(c)){
+        const od=document.createElement('span'); od.className='od'; od.setAttribute('aria-hidden','true');
+        const col=document.createElement('i'); const turns=2+(digits-1-di);
+        for(let n=0;n<=turns*10+ +c;n++){const s=document.createElement('span'); s.textContent=n%10; col.append(s);}
+        col.dataset.to=turns*10+ +c; col.style.setProperty('--dl',(k*.12+di*.08)+'s'); col.style.setProperty('--t',(1.4+di*.25)+'s');
+        if(done){ col.style.transition='none'; col.style.transform=`translateY(-${col.dataset.to}em)`; }
+        const w=document.createElement('span'); w.className='w'; w.textContent=c; od.append(w,col); b.append(od); di++;
+      } else { const s=document.createElement('span'); s.className='sf'; s.textContent=c; s.setAttribute('aria-hidden','true'); s.style.setProperty('--dl',(k*.12+1.3)+'s'); b.append(s); }
+    });
+  };
+  bs.forEach(set);
+  const go=b=>{ b.classList.add('go'); b.querySelectorAll('.od i').forEach(i=>i.style.transform=`translateY(-${i.dataset.to}em)`); };
+  document.addEventListener('langchange',()=>bs.forEach((b,k)=>{ if(b.dataset.en) set(b,k); }));
+  if(rm){ bs.forEach(b=>{b.querySelectorAll('.od i').forEach(i=>i.style.transition='none'); go(b);}); return; }
+  const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ go(e.target); o.unobserve(e.target); } }),{threshold:.6});
+  bs.forEach(b=>o.observe(b));
+})();
+
+/* cursor */
+const cur=$('#cur'); let cx=innerWidth/2,cy=innerHeight/2,tx=cx,ty=cy;
+addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY});
+let curEl=null; const setCur=t=>{ const hit=t&&t.closest&&t.closest('a,button,[role="button"],label,summary,.sw'); if(hit===curEl) return; curEl=hit; cur.style.width=cur.style.height=hit?'24px':''; };
+document.addEventListener('pointerover',e=>setCur(e.target)); document.addEventListener('pointerout',e=>{ if(!e.relatedTarget) setCur(null); });
+
+/* reveals */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+$$('.r').forEach(el=>io.observe(el));
+
+/* theme: site-wide 'theme' key, dark by default; the new theme opens as a circle from the switch */
+let manual=true; try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual);
+function circleTheme(btn,flip){ if(!document.startViewTransition||matchMedia('(prefers-reduced-motion: reduce)').matches||circleTheme.busy){ if(!circleTheme.busy) flip(); return; }
+  const r=btn.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2, R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+  circleTheme.busy=true; const vt=document.startViewTransition(flip);
+  vt.ready.then(()=>document.documentElement.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:700,easing:'cubic-bezier(.65,0,.35,1)',pseudoElement:'::view-transition-new(root)'}));
+  vt.finished.finally(()=>{circleTheme.busy=false;}); }
+const flipTheme=()=>{manual=!document.body.classList.contains('dark'); document.body.classList.toggle('dark',manual); try{localStorage.setItem('theme',manual?'':'light')}catch(e){}};
+const tgl=$('#tgl'); tgl.addEventListener('click',()=>circleTheme(tgl,flipTheme));
+$$('[data-flip]').forEach(b=>b.addEventListener('click',()=>circleTheme(b,flipTheme))); /* the dark-theme chapter flips the whole page from its own button */
+addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='light'; }catch(e){} document.body.classList.toggle('dark',manual); });
+
+/* hero window: how far the home page scrolls inside it */
+const hv=$('.h-bw .vp'), himg=hv&&hv.querySelector('img');
+const hfit=()=>{ if(himg&&himg.naturalWidth){ hv.style.setProperty('--mx',-(himg.offsetHeight-hv.clientHeight)+'px'); } };
+if(himg){ himg.complete?hfit():himg.addEventListener('load',hfit); addEventListener('resize',hfit); }
+
+/* tabs over one window */
+$$('[data-tabs]').forEach(w=>{ const bs=[...w.querySelectorAll('.tabs button')], ims=[...w.querySelectorAll('.stack img')];
+  bs.forEach((b,i)=>b.addEventListener('click',()=>{ bs.forEach((x,k)=>x.classList.toggle('on',k===i)); ims.forEach((x,k)=>x.classList.toggle('on',k===i)); })); });
+
+/* map: filter off / on — flips by itself while on screen until the visitor takes over */
+$$('.mapt').forEach(m=>{ const b=m.querySelector('.tgl'), ims=[...m.querySelectorAll('.stack img')]; let auto=!rm, vis=false;
+  const set=on=>{ m.classList.toggle('on',on); b.setAttribute('aria-pressed',on); ims[0].classList.toggle('on',!on); ims[1].classList.toggle('on',on); };
+  b.addEventListener('click',()=>{ auto=false; set(!m.classList.contains('on')); });
+  new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting),{threshold:.4}).observe(m);
+  setInterval(()=>{ if(auto&&vis) set(!m.classList.contains('on')); },2800); });
+
+/* input demo: the DS inputLG walks through its 13 states (texts follow the page language) */
+(()=>{ const box=$('#inp'); if(!box) return; const v=box.querySelector('.v'), lb=box.querySelector('.lb'), hint=box.querySelector('.hint'), sN=$('#inpS'), dots=$('#inpD');
+  const T={ru:{lb:'Город',ph:'Введите город',hint:'Например, Москва',e1:'Укажите город',e2:'Город не найден',typing:'Моск',ok:'Москва',bad:'Мсква'},
+           en:{lb:'City',ph:'Enter a city',hint:'For example, Moscow',e1:'City is required',e2:'City not found',typing:'Mosc',ok:'Moscow',bad:'Mscow'}};
+  /* state, value, caret ('<' before a placeholder, '>' after the value), hint */
+  const S=[['default','',0,'hint'],['hovered','',0,'hint'],['focused','ph','<','hint'],['typing','typing','>','hint'],['entered','ok',0,'hint'],['enteredHovered','ok',0,'hint'],
+           ['error','',0,'e1'],['errorHovered','',0,'e1'],['errorFilled','bad',0,'e2'],['errorFilledHovered','bad',0,'e2'],['errorFocused','bad','>','e2'],['readonly','ok',0,'hint'],['disabled','',0,'hint']];
+  let i=0, auto=!rm, vis=false;
+  S.forEach((s,k)=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label',s[0]); b.addEventListener('click',()=>{ auto=false; show(k); }); dots.append(b); });
+  function show(k){ i=k; const [st,val,car,h]=S[k], t=T[document.documentElement.lang==='en'?'en':'ru'];
+    box.dataset.s=st; sN.textContent=st; lb.textContent=t.lb; hint.textContent=t[h]; box.classList.toggle('lift',!!val);
+    v.innerHTML=!val?'':val==='ph'?'<i class="caret"></i><span class="ph">'+t.ph+'</span>':t[val]+(car==='>'?'<i class="caret"></i>':'');
+    [...dots.children].forEach((d,n)=>d.classList.toggle('on',n===k)); }
+  show(0); document.addEventListener('langchange',()=>show(i));
+  new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting),{threshold:.5}).observe(box);
+  setInterval(()=>{ if(auto&&vis) show((i+1)%S.length); },1300);
+})();
+
+/* chapter nav: one tick per section, labelled with its heading */
+(()=>{ const toc=$('#toc'); if(!toc) return; const secs=$$('section.sec[id]');
+  const build=()=>{ toc.innerHTML=secs.map(s=>{ const n=s.querySelector('.sec-head .n').textContent, h=s.querySelector('.sec-head h2').textContent.replace(/\s+/g,' ').trim();
+    return `<a href="#${s.id}" data-id="${s.id}" aria-label="${n} ${h}"><span><b>${n}</b>${h}</span><i></i></a>`; }).join(''); };
+  build(); document.addEventListener('langchange',build);
+  let cur=''; const upd=()=>{ const y=innerHeight*.4; let id=''; for(const s of secs){ const r=s.getBoundingClientRect(); if(r.top<y) id=s.id; }
+    toc.classList.toggle('on',scrollY>innerHeight*.8 && !!id);
+    if(id!==cur){ cur=id; toc.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.id===id)); } };
+  addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
+})();
+
+/* AI story: progress through the pinned block picks the step; on the report step the long page scrolls inside the window */
+const story=$('#story'); const st=story&&{li:[...story.querySelectorAll('.st-steps li')],bar:[...story.querySelectorAll('.st-bar i')],im:[...story.querySelectorAll('.st-win .vp img')],vp:story.querySelector('.st-win .vp'),ph:story.querySelector('.st-ph .scr img'),phs:story.querySelector('.st-ph .scr'),k:-1,ry:0,py:0};
+const storyStep=()=>{ if(!st) return; const r=story.getBoundingClientRect(), span=Math.max(1,r.height-innerHeight), p=Math.max(0,Math.min(.9999,-r.top/span)), f=p*4, k=Math.floor(f), sub=f-k;
+  st.bar.forEach((b,i)=>b.style.setProperty('--f',i<k?1:i===k?sub:0));
+  if(k!==st.k){ st.k=k; st.li.forEach((l,i)=>l.classList.toggle('on',i===k)); st.im.forEach((m,i)=>m.classList.toggle('on',i===Math.min(k,2))); story.classList.toggle('s3',k===3); }
+  const rep=st.im[2], max=Math.max(0,rep.offsetHeight-st.vp.clientHeight), to=k<2?0:k===2?-max*Math.min(1,sub*1.15):-max;
+  st.ry+=(to-st.ry)*(rm?1:.12); rep.style.transform=`translate3d(0,${st.ry.toFixed(1)}px,0)`;
+  const pmax=Math.max(0,st.ph.offsetHeight-st.phs.clientHeight), pto=k===3?-pmax*Math.min(1,sub*1.1):0; st.py+=(pto-st.py)*(rm?1:.12); st.ph.style.transform=`translate3d(0,${st.py.toFixed(1)}px,0)`; };
+/* windows lean toward the cursor (desktop) */
+if(matchMedia('(hover:hover) and (min-width:861px)').matches&&!rm) $$('.bw').forEach(b=>{ if(b.closest('.story')) return; b.classList.add('tilt');
+  b.addEventListener('pointermove',e=>{ const r=b.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; b.style.setProperty('--ry',(x*4).toFixed(2)+'deg'); b.style.setProperty('--rx',(-y*3).toFixed(2)+'deg'); });
+  b.addEventListener('pointerleave',()=>{ b.style.setProperty('--ry','0deg'); b.style.setProperty('--rx','0deg'); }); });
+
+/* running line of chapters */
+const mq=$('#mq'); let mqx=0, mqw=0; if(mq){ mq.innerHTML+=mq.innerHTML; const per=()=>{ const k=mq.children, n=k.length/2; mqw=k[n].offsetLeft-k[0].offsetLeft; }; per(); addEventListener('resize',per); (document.fonts&&document.fonts.ready||Promise.resolve()).then(per); document.addEventListener('langchange',per); }
+let lastY=scrollY, smv=0;
+/* scroll-through windows: a long screen moves inside its frame while the frame passes the screen */
+const scr=$$('.vp.scroll,.scr.scroll').map(el=>({el,img:el.querySelector('img'),y:0}));
+const fls=$$('.fl').map(el=>({el,sp:+el.dataset.sp||0,hero:!!el.closest('.hero'),y:0}));
+const prog=$('#prog');
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function frame(){
+  const y=scrollY, vh=innerHeight;
+  cx+=(tx-cx)*.2; cy+=(ty-cy)*.2; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+  prog.style.transform=`scaleX(${y/Math.max(1,document.body.scrollHeight-vh)})`;
+  for(const s of scr){ const r=s.el.getBoundingClientRect(); if(r.bottom<-200||r.top>vh+200) continue;
+    const p=Math.max(0,Math.min(1,((vh-r.top)/(vh+r.height)-.18)/.64)); const max=Math.max(0,s.img.offsetHeight-s.el.clientHeight);
+    const to=-max*ease(p); s.y+=(to-s.y)*(rm?1:.14); s.img.style.transform=`translate3d(0,${s.y.toFixed(1)}px,0)`; }
+  const vel=y-lastY; lastY=y; smv+=(vel-smv)*.1; storyStep();
+  if(mq&&mqw&&!rm){ mqx-=.5+Math.min(Math.abs(smv),40)*.15; if(mqx<-mqw) mqx+=mqw; mq.style.transform=`translate3d(${mqx.toFixed(1)}px,0,0)`; }
+  if(!rm) for(const f of fls){ const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; if(c<-vh||c>vh*2) continue;
+    const d=c-vh/2, lim=innerWidth<=860?(f.hero?8:6):(f.hero?60:40), t=Math.max(-1,Math.min(1,d/(vh*.75))), k=Math.max(-1,Math.min(1,f.sp/.2));
+    f.y+=(-lim*t*k-f.y)*.12; f.el.style.transform=`translate3d(0,${f.y.toFixed(1)}px,0)`; }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+
+/* phones: a section heading with a long unbreakable word shrinks just enough to fit next to its number */
+(()=>{const hs=[...document.querySelectorAll('.sec-head h2')];
+  const fit=()=>hs.forEach(h=>{ h.style.fontSize=''; if(innerWidth>860) return; const f=parseFloat(getComputedStyle(h).fontSize);
+    if(h.scrollWidth>h.clientWidth+1) h.style.fontSize=Math.max(20,Math.floor(f*h.clientWidth/h.scrollWidth*10)/10)+'px'; });
+  (document.fonts&&document.fonts.ready||Promise.resolve()).then(fit); let t; addEventListener('resize',()=>{clearTimeout(t); t=setTimeout(fit,150);}); fit();
+  document.addEventListener('langchange',fit);
+})();
+
+/* back to top */
+(()=>{const b=document.getElementById('totop'); if(!b) return;
+  const line=document.querySelector('.outro .nx'); let base=0; const measure=()=>{ b.style.bottom=''; base=parseFloat(getComputedStyle(b).bottom)||0; };
+  const upd=()=>{ b.classList.toggle('on',scrollY>innerHeight);
+    if(line){ const lift=innerHeight-line.getBoundingClientRect().top-b.offsetHeight/2; b.style.bottom=Math.max(base,lift)+'px'; } };
+  measure(); addEventListener('scroll',upd,{passive:true}); addEventListener('resize',()=>{measure();upd();}); upd();
+  b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+})();
+</script>
+<script>
+/* language: site-wide 'lang' key. EN swaps text nodes and labels by dictionary, RU restores the originals (with short words glued to the next one) */
+(()=>{
+  const EN={"Наверх": "Back to top", "На главную": "Home", "Все кейсы": "All cases", "Кейс · Lab4U": "Case · Lab4U", "Следующий проект: ВТБ Бизнес (Behance)": "Next project: VTB Business (Behance)", "Следующий проект": "Next project", "Сменить язык": "Switch language", "Переключить тему": "Toggle theme", "2023 — сейчас · Healthtech · AI": "2023 — now · Healthtech · AI", "онлайн‑лаборатория с": "an online lab with", "AI‑расшифровкой": "AI interpretation", "анализов": "of lab results", "Роль": "Role", "Команда": "Team", "Единственный дизайнер": "The only designer", "Платформы": "Platforms", "Новая главная Lab4U": "The new Lab4U home page", "Главная приложения Lab4U": "The Lab4U app home screen", "Расшифровка готова": "Interpretation ready", "До −50% к ценам клиник": "Up to −50% vs clinic prices", "Forbes · ИИ в медицине": "Forbes · AI in healthcare", "Листайте": "Scroll", "Онлайн‑лаборатория, где анализы дешевле до 50%, а результаты объясняет ИИ": "An online lab where tests cost up to 50% less and AI explains the results", "Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение": "Lab4U has been running since 2012: its own laboratory plus a network of partner medical centers. Patients order and pay for tests online, give samples at the nearest center, and the tubes travel to the Lab4U lab. No clinics of its own means lower prices. Results arrive in the personal account and the app", "Меня позвали сделать приложение 2.0 — прежнее было неудобным и устаревшим. Потом я собрал с нуля дизайн‑систему, одну на веб и приложение, и меня подключили ко всему продукту. Я единственный дизайнер в компании: задачи веду вместе с продактом, многое решаю напрямую с разработкой": "I was brought in to build app 2.0 — the old one was clumsy and dated. Then I built a design system from scratch, one for web and app, and took on the whole product. I'm the only designer in the company: I plan the work with the product manager and settle a lot directly with the developers", "к ценам клиник": "vs clinic prices", "медцентров‑партнёров": "partner medical centers", "городов": "cities", "AI‑расшифровок": "AI interpretations", "Цифры — lab4u.ru, октябрь 2026": "Figures — lab4u.ru, October 2026", "Приложение 2.0": "App 2.0", "Полный редизайн: структура, навигация, разделы и визуальный язык": "A full redesign: structure, navigation, sections and visual language", "Дизайн‑система": "Design system", "С нуля, одна на веб и приложение, светлая и тёмная темы на токенах": "From scratch, one for web and app, light and dark themes built on tokens", "Весь продукт": "The whole product", "Сайт на трёх брейкпоинтах, личный кабинет, AI‑сервисы и кабинет медцентров": "The website on three breakpoints, the personal account, AI services and the medical-center portal", "1 дизайнер на весь продукт": "1 designer for the whole product", "Команда выросла с ~30 до 50–60 человек": "The company grew from ~30 to 50–60 people", "Около половины заказов — через приложение": "About half of all orders come through the app", "AI‑расшифровка": "AI interpretation", "С нуля · web + app": "From scratch · web + app", "Главная фича, которую я спроектировал с нуля. Пациент загружает результаты из любой лаборатории или выбирает свои из Lab4U, подтверждает показатели и получает расшифровку простым языком: что в норме, к каким врачам идти, какие анализы досдать и что поменять в образе жизни": "The key feature, designed from scratch. A patient uploads results from any lab or picks their Lab4U ones, confirms the values and gets an interpretation in plain language: what's normal, which doctors to see, which tests to add and what to change in their lifestyle", "Lab4U — одни из первых в России, кто запустил такой сервис. В 2025 году Forbes поставил его на 6‑е место среди российских ИИ‑решений для здравоохранения": "Lab4U was among the first in Russia to launch such a service. In 2025 Forbes ranked it 6th among Russian AI solutions for healthcare", "Forbes · ИИ в здравоохранении · 2025": "Forbes · AI in healthcare · 2025", "расшифровок на сайте": "interpretations on the site", "результатов разбирает своя LLM": "of results read by its own LLM", "ИИ вокруг": "AI around", "заказа": "the order", "Назначения · корзина": "Prescriptions · basket", "Ещё в 2019 году одной из болей пациентов был почерк врача. Теперь достаточно загрузить фото направления: сервис распознаёт назначения, подбирает анализы и сразу кладёт их в корзину": "Back in 2019 one of the patients' pains was the doctor's handwriting. Now a photo of the referral is enough: the service recognizes the prescriptions, matches the tests and puts them straight into the basket", "Вторая фича — сборка корзины с ИИ: угадываем, что может понадобиться пациенту, и предлагаем собрать корзину в одно действие. Точки входа — главная, поиск, каталог, пустая корзина и кабинет без активных заказов": "The second feature is AI basket assembly: we guess what a patient may need and offer to build the basket in one action. Entry points — the home page, search, the catalog, an empty basket and an account with no active orders", "Сборка корзины с ИИ · точка входа на главной": "AI basket assembly · entry point on the home page", "Приложение": "App", "С приложения всё началось. В 2.0 я поменял буквально всё: структуру, навигацию, разделы и визуальный язык. Новые фичи с тех пор выходят вместе с обновлением разделов, и сейчас через приложение идёт около половины заказов": "It all started with the app. In 2.0 I changed literally everything: structure, navigation, sections and visual language. Since then new features ship together with section updates, and about half of all orders now go through the app", "Пациент не добавлен": "No patient added", "Главная": "Home", "Свёрнутая шапка": "Collapsed header", "Выбор города": "City picker", "Новая": "New", "главная": "home page", "Главная собрана заново на трёх брейкпоинтах: поиск и загрузка назначения прямо в первом экране, чекапы, карта медцентров и честное объяснение, почему дешевле без потери качества. На живом сайте её внедряют поблочно": "The home page is rebuilt on three breakpoints: search and prescription upload right on the first screen, check-ups, the medical-center map and an honest explanation of why it's cheaper without losing quality. The live site is adopting it block by block", "Первые варианты блоков я собирал вместе с Claude и ChatGPT — пять итераций и мини‑лендинг «О сервисе», — а финал доводил руками": "I built the first versions of the blocks together with Claude and ChatGPT — five iterations and an “About the service” mini-landing — and polished the final by hand", "Каталог": "Catalog", "и поиск": "and search", "Каталог · поиск": "Catalog · search", "Задача — каталог удобнее, чем у конкурентов. Я разобрал лучшие практики и связал всё между собой: категории переключаются без перехода на другие страницы, фильтры работают вместе, а поиск ведёт прямо в выдачу каталога": "The goal — a catalog easier to use than the competitors'. I studied the best practices and tied everything together: categories switch without leaving the page, filters work together, and search leads straight into the catalog results", "Категории на месте": "Categories in place", "Переключаются без перехода на другую страницу, рядом — счётчик анализов": "They switch without going to another page, with a test count next to each", "Фильтры": "Filters", "Пол, биоматериал, заболевания, диагностика и органы — в одной строке": "Sex, biomaterial, conditions, diagnostics and organs — in one row", "Поиск → каталог": "Search → catalog", "скоро": "soon", "Из поиска сразу в выдачу с фильтрами — одна воронка вместо тупика": "From search straight to filtered results — one funnel instead of a dead end", "Поиск находит расшифровки": "Search finds interpretations", "Корзина": "Basket", "Корзина умеет больше, чем хранить список: предлагает заменить несколько анализов одним комплексом, если так выгоднее, сохраняет списки в избранное и даёт поделиться корзиной по ссылке. В приложении я пересобрал её в версии 3.0 — с редактированием уже оформленного заказа": "The basket does more than keep a list: it offers to replace several tests with one bundle when that's cheaper, saves lists to favorites and lets you share the basket by link. In the app I rebuilt it as version 3.0 — with editing of an order already placed", "Комплекс выгоднее": "A bundle is cheaper", "Приложение · корзина 3.0": "App · basket 3.0", "Собрать в комплекс": "Make a bundle", "Если отдельные анализы входят в комплекс, предлагаем его — дешевле и полнее": "If separate tests are part of a bundle, we offer the bundle — cheaper and more complete", "Расформировать": "Unbundle", "Обратное действие: комплекс распадается на отдельные анализы": "The reverse: a bundle splits back into separate tests", "Избранное": "Favorites", "Анализы, комплексы и медцентры можно лайкать и собирать в списки": "Tests, bundles and medical centers can be liked and collected into lists", "Поделиться": "Share", "Корзину можно отправить ссылкой, например близким": "A basket can be sent as a link, say to family", "Личный": "Personal", "кабинет": "account", "ЛК · сертификаты": "Account · certificates", "Кабинет стал рабочим инструментом: несколько пациентов в одном аккаунте, заказы по статусам, детальная заказа с подсказками перед визитом — «Возьмите паспорт», «Подтвердите запись», — и графики показателей": "The account became a real tool: several patients in one account, orders by status, an order page with tips before the visit — “Bring your passport”, “Confirm the appointment” — and charts of the values", "Детальная заказа · подсказки перед визитом": "Order page · tips before the visit", "Подарочные сертификаты": "Gift certificates", "новое": "new", "Медцентры": "Medical centers", "и карта": "and the map", "900+ точек": "900+ locations", "Карту медцентров я сделал удобнее и функциональнее: фильтры по дате и времени приёма, возрасту пациента, цене забора и метро. У каждого фильтра продуманы состояния — от наведения до применённого диапазона": "I made the medical-center map easier and more capable: filters by visit date and time, patient age, sampling price and metro. Every filter has its states worked out — from hover to an applied range", "Понравившиеся медцентры можно добавить в избранное, а в приложении карта и список переключаются одним тапом": "Favorite centers can be saved, and in the app the map and the list switch with one tap", "Время приёма 09:00–19:00": "Visit time 09:00–19:00", "Фильтр по времени приёма: до и после · нажмите на переключатель": "Visit-time filter: before and after · tap the switch", "Приложение · карта и список": "App · map and list", "Вокруг": "Around", "визита": "the visit", "Чат · отзывы · уведомления": "Chat · reviews · notifications", "Раньше в Lab4U не было ни чата, ни уведомлений. Чат с поддержкой я сделал для приложения, на сайте он работает через веб‑интерфейс. Систему уведомлений спроектировал целиком — от списка в шапке до раздела в кабинете, она скоро выйдет": "Lab4U used to have neither chat nor notifications. I made the support chat for the app; on the website it works through a web interface. I designed the whole notification system — from the header dropdown to a section in the account; it ships soon", "После визита пациент оценивает медцентр и может оставить чаевые медсестре через CloudTips — медсёстры начали получать деньги": "After the visit a patient rates the center and can tip the nurse via CloudTips — the nurses started getting paid", "Уведомления": "Notifications", "Чат с поддержкой": "Support chat", "Отзыв и чаевые в одном шаге": "Review and tip in one step", "Оценка, быстрые теги «Безболезненно», «Удобное приложение» и кнопка «Оставить чаевые медсестре» — без лишних экранов": "A rating, quick tags like “Painless” and “Handy app” and a “Tip the nurse” button — no extra screens", "Как прошёл ваш визит?": "How was your visit?", "Кабинет": "Medical-center", "медцентров": "portal", "Когда пациент приходит в медцентр, медсестра ведёт заказ в партнёрском кабинете: отмечает визит, проверяет паспорт, вводит адрес регистрации, печатает наклейки, выдаёт результаты. Я полностью переделал кабинет — с новым UX работать стало намного удобнее": "When a patient comes to a medical center, the nurse runs the order in the partner portal: marks the visit, checks the passport, enters the registration address, prints the labels and hands out results. I redesigned the portal completely — with the new UX the work is much easier", "LAB4INJECT — новое направление: помимо анализов Lab4U открывает консультации врачей, телемедицину и медуслуги. Для него я сделал флоу записи и направление‑памятку в PDF": "LAB4INJECT is a new direction: beyond lab tests, Lab4U opens up doctor consultations, telemedicine and medical services. For it I designed the booking flow and a referral memo in PDF", "Дизайн‑": "Design ", "система": "system", "Одна система на веб и приложение. Нейтрали — альфа‑шкала одного почти чёрного #030204, поэтому тёмная тема строится на токенах, а не перекраской. Каждый компонент проверяется в светлой и тёмной теме": "One system for web and app. The neutrals are an alpha scale of a single near-black #030204, so the dark theme is built on tokens rather than repainting. Every component is checked in both the light and the dark theme", "Легаси переезжает на новый API с понятными именами — buttonPrimaryMD, inputLG, linkNegativeSM, — старое помечено и скрыто от публикации": "Legacy moves to a new API with clear names — buttonPrimaryMD, inputLG, linkNegativeSM — and the old parts are marked and hidden from publishing", "компонентов и вариантов": "components and variants", "иконок · outline + solid": "icons · outline + solid", "состояний × размеров инпута": "input states × sizes", "темы на токенах": "themes on tokens", "Токены": "Tokens", "Переключите тему в шапке": "Switch the theme in the header", "inputLG · 13 состояний": "inputLG · 13 states", "Нажмите на точку": "Tap a dot", "Город": "City", "Город не найден": "City not found", "Анализы со скидкой до 50%": "Lab tests up to 50% off", "Клинический анализ крови с лейкоцитарной формулой": "Complete blood count with differential", "Результаты придут в личный кабинет и приложение": "Results will arrive in your account and the app", "Результаты с 30.05 по 08.06 · 3–5 дней": "Results from 30.05 to 08.06 · 3–5 days", "Тест тёмной темы": "Dark theme test", "Личный кабинет в тёмной теме — те же компоненты, другие значения токенов": "The personal account in the dark theme — the same components, other token values", "15 категорий анализов с 3D‑иллюстрациями · фильтры на фоне и на карте": "15 test categories with 3D illustrations · filters on a background and on the map", "Тёмная тема на токенах": "Dark theme on tokens", "Black Inverse — #030204 в светлой теме и #FFFFFF в тёмной, Fixed не меняется": "Black Inverse — #030204 in the light theme and #FFFFFF in the dark one, Fixed never changes", "Из легаси в систему": "From legacy to a system", "Маркеры ✅ «новый компонент» и ❌ depreciated, старые наборы скрыты от публикации": "Markers ✅ “new component” and ❌ deprecated, old sets hidden from publishing", "Слоты Figma": "Figma slots", "Сегменты, пункты меню и карточки заказа собираются из слотов без раздувания вариантов": "Segments, menu items and order cards are assembled from slots without a variant explosion", "Состояния — тоже токены": "States are tokens too", "hovered 80 · disabled 35 — одна логика интерактивности для всех компонентов": "hovered 80 · disabled 35 — one interaction logic for every component", "Логотип": "The logo", "и новый язык": "and a new language", "App icon · формы иконки · favicon · док iOS": "App icon · icon shapes · favicon · iOS dock", "Что": "What's", "в работе": "in progress", "Поиск + каталог": "Search + catalog", "Единая воронка: из поиска сразу в выдачу с фильтрами": "One funnel: from search straight to filtered results", "Система целиком: шапка, кабинет, приложение": "The whole system: header, account, app", "дальше": "next", "Страница анализа": "Test page", "Следующая на редизайн": "Next in line for a redesign", "Округлый язык": "Rounded language", "Новые формы вокруг логотипа по всему продукту": "New shapes around the logo across the product", "Спасибо": "Thank you", "за внимание": "for watching", "← Все работы": "← All work", "Lab4U · 2023 — сейчас": "Lab4U · 2023 — now", "Следующий проект → ВТБ Бизнес ↗": "Next project → VTB Business ↗", "Новый логотип Lab4U я сделал в 2026 году — он прижился везде, от иконки приложения до фавикона. Вокруг него строится новый визуальный язык с округлыми формами": "I made the new Lab4U logo in 2026 — it took root everywhere, from the app icon to the favicon. A new visual language with rounded shapes is growing around it", "Распознавание назначения врача": "Prescription recognition", "Корзина и предложение собрать комплекс": "The basket and the bundle offer", "Заказы медцентра на день": "A medical center’s orders for the day", "Направление LAB4INJECT · A4": "LAB4INJECT referral · A4", "Скачать в": "Download on the", "Доступно в": "Get it on", "Тёмная тема": "Dark theme", "по своей инициативе": "on my own initiative", "Инициатива": "Initiative", "В Lab4U не было тёмной темы, и никто её не просил. Я завёл под неё все токены и начал собирать новые экраны и компоненты сразу на них, чтобы всё переключалось само": "Lab4U had no dark theme, and nobody asked for one. I set up all the tokens for it and started building new screens and components on them right away, so everything switches by itself", "Разработчики и продукт увидели это между делом — понравилось всем, и тёмную тему решили выкатить как можно скорее. Теперь все новые макеты я делаю сразу в двух темах": "The developers and the product team came across it — everyone loved it, and the dark theme is now set to ship as soon as possible. Every new mockup I make comes in both themes", "Главы кейса": "Case chapters", "Задача": "The task", "Боли → решения": "Pains → solutions", "Основатель Lab4U ещё в 2019 году перечислял, что мешает людям сдавать анализы онлайн. За время работы я закрыл почти каждую из этих болей — где‑то новым сервисом, где‑то переделкой целого раздела": "Back in 2019 the founder of Lab4U listed what keeps people from getting tests online. Over my time here I've closed almost every one of those pains — some with a new service, some by rebuilding a whole section", "В клиниках дорого": "Clinics are expensive", "Скидка до 50% видна сразу, корзина подсказывает выгодный комплекс": "The up-to-50% discount is visible at once, and the basket suggests a cheaper bundle", "Привычка идти в ближайшую клинику": "The habit of going to the nearest clinic", "900+ медцентров на карте с фильтрами по времени, цене и метро": "900+ medical centers on a map with filters by time, price and metro", "Онлайн‑заказ непривычен": "Ordering online feels unusual", "Приложение 2.0 и новая главная: от поиска до оплаты — короче и понятнее": "App 2.0 and the new home page: from search to payment, shorter and clearer", "Анализы сдают раз в год и забывают": "People test once a year and forget", "Чекапы, комплексы, уведомления и чат с поддержкой": "Check-ups, bundles, notifications and a support chat", "Результаты непонятны": "Results are hard to read", "AI‑расшифровка простым языком: что в норме и что делать дальше": "AI interpretation in plain language: what's normal and what to do next", "Почерк врача не разобрать": "The doctor's handwriting is unreadable", "Назначение распознаётся по фото и сразу превращается в корзину": "A prescription is recognized from a photo and turns straight into a basket", "Как я работаю": "How I work", "Разбираю рынок": "Study the market", "Конкуренты и лучшие практики — например, перед каталогом": "Competitors and best practices — for example, before the catalog", "Черновики с ИИ": "Drafts with AI", "Варианты блоков быстро собираю с Claude и ChatGPT, лучшие довожу руками": "I draft block options quickly with Claude and ChatGPT and polish the best ones by hand", "Сразу в системе": "Straight in the system", "Новые экраны — из компонентов DS и сразу в двух темах": "New screens are built from DS components, in both themes from the start", "С командой": "With the team", "Ежедневные созвоны с продактом, вопросы с разработкой напрямую, дизайн‑ревью сборок": "Daily calls with the product manager, direct work with developers, design reviews of builds", "Выпуск по частям": "Ship in parts", "Главную и разделы внедряем поблочно, не ломая живой сайт": "The home page and sections roll out block by block without breaking the live site", "Результаты": "Results", "Продукт вырос из сайта с приложением в экосистему: AI‑сервисы, кабинет медцентров, новые направления. Дизайн при этом держится на одной системе и одном дизайнере": "The product grew from a website with an app into an ecosystem: AI services, a medical-center portal, new directions. And the design still rests on one system and one designer", "заказов через приложение": "of orders via the app", "сервиса с нуля: чат, уведомления, сертификаты, чаевые": "services from scratch: chat, notifications, certificates, tips", "темы — тёмная готовится к релизу": "themes — the dark one is getting ready to ship", "Награды Lab4U за время моей работы": "Lab4U awards during my time there", "ТОП‑6 MedTech‑компаний России": "Top 6 MedTech companies in Russia", "«Марка №1»": "“Brand No. 1”", "Диагностическая лаборатория, народное голосование": "Diagnostic laboratory, public vote", "6‑е место среди российских ИИ‑решений для здравоохранения": "6th among Russian AI solutions for healthcare", "Лидер сегмента исследований": "Leader of the lab-testing segment", "Выводы": "Takeaways", "Что я вынес": "What I learned", "Система — множитель": "A system multiplies", "Один дизайнер тянет веб, приложение и B2B, потому что всё собирается из одной библиотеки и токенов": "One designer carries web, app and B2B because everything is built from one library and one set of tokens", "Инициатива сильнее ТЗ": "Initiative beats a brief", "Тёмную тему никто не заказывал — теперь её ждут все": "Nobody ordered the dark theme — now everyone is waiting for it", "ИИ в продукте и в процессе": "AI in the product and in the process", "В продукте — расшифровка, назначения и корзина, в работе — быстрые черновики, которые я довожу руками": "In the product — interpretation, prescriptions and the basket; in my work — quick drafts that I finish by hand", "Кабинет медцентров": "Medical-center portal", "Новая главная": "New home page", "Карта": "Map", "Переключить тему страницы": "Switch the page theme", "Загрузка": "Upload", "Результаты из любой лаборатории — PDF или фото, либо свои анализы из Lab4U": "Results from any lab — a PDF or a photo — or your own Lab4U tests", "Проверка показателей": "Checking the values", "Сервис распознаёт документ, пациент подтверждает значения и правит то, что распознано неточно": "The service recognizes the document; the patient confirms the values and fixes anything read inaccurately", "Расшифровка": "Interpretation", "Общий вывод, показатели с нормами, к каким врачам идти, какие анализы досдать и что поменять в образе жизни": "A summary, values against the norms, which doctors to see, which tests to add and what to change in your lifestyle", "В приложении": "In the app", "Тот же сценарий в мобильном приложении — от загрузки до расшифровки": "The same flow in the mobile app — from upload to interpretation", "активных клиентов": "active clients", "заказов": "orders", "Цифры — Lab4U, 2026": "Figures — Lab4U, 2026", "37% клиентов Lab4U сдают анализы, ни разу не побывав у врача, — им особенно важно понять результаты. Сервис запустили в апреле 2024 года на собственной LLM, обученной на 15+ млн обезличенных анализов: Lab4U — одни из первых в России с такой расшифровкой, а в 2025 году Forbes поставил её на 6‑е место среди российских ИИ‑решений для здравоохранения": "37% of Lab4U clients get tested without ever seeing a doctor — understanding the results matters to them most. The service launched in April 2024 on Lab4U's own LLM trained on 15M+ anonymized tests: Lab4U was among the first in Russia with this kind of interpretation, and in 2025 Forbes ranked it 6th among Russian AI solutions for healthcare", "вовлечённость пациентов за квартал": "patient engagement in a quarter", "Forbes · ИИ в здравоохранении": "Forbes · AI in healthcare", "Smart Ranking, I кв. 2025 · lab4u.ru · Forbes, 2025": "Smart Ranking, Q1 2025 · lab4u.ru · Forbes, 2025", "Рынок коммерческой лабораторной диагностики — 205 млрд ₽ в 2026 году, и он растёт на 12,5% в год. Пациенты уходят в цифру: на сайты лабораторий, в агрегаторы и приложения, — и выигрывает тот, с кем проще": "The commercial lab-testing market is worth ₽205 billion in 2026 and grows 12.5% a year. Patients are going digital — to lab websites, aggregators and apps — and whoever is easiest to use wins", "LAB4INJECT — одно из главных направлений 2026–27 годов: платформа роста назначений и контроля терапии, которая превращает препарат в управляемый процесс лечения, с консультациями врачей и телемедициной. Для неё я сделал флоу записи и направление‑памятку в PDF": "LAB4INJECT is one of the key directions for 2026–27: a platform for prescription growth and therapy control that turns a drug into a managed course of treatment, with doctor consultations and telemedicine. For it I designed the booking flow and a referral memo in PDF", "Продукт": "Product", "вовлечённость после AI‑расшифровки": "engagement after AI interpretation", "Компания": "Company", "CSI — удовлетворённость клиентов": "CSI — customer satisfaction", "выручка за год · 1,7 млрд ₽": "revenue in a year · ₽1.7 billion", "Lab4U, 2026 · Smart Ranking, I кв. 2025": "Lab4U, 2026 · Smart Ranking, Q1 2025", "Подарочных сертификатов в Lab4U раньше не было — я спроектировал их целиком: покупка, активация, список и PDF. В I квартале 2025 года продажи сертификатов выросли на 43%": "Lab4U had no gift certificates before — I designed the whole feature: purchase, activation, the list and the PDF. In Q1 2025 certificate sales grew 43%", "+43% продаж": "+43% sales", "продажи подарочных сертификатов за квартал": "gift certificate sales in a quarter", "клиник‑партнёров в 117 городах": "partner clinics in 117 cities", "9,5 млн+": "9.5M+"};
+  const NB=s=>{ for(let k=0;k<3;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}) /g,'$1$2 '); return s.replace(/ ([—–])/g,' $1'); };
+  const orig=new Map(), btn=document.getElementById('lang'), ATTRS=['title','aria-label','alt'];
+  const norm=t=>t.replace(/\s+/g,' ').trim();
+  function apply(l){
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT); let n;
+    while((n=w.nextNode())){
+      if(n.parentElement&&n.parentElement.closest('script,style,#inp')) continue;
+      if(!orig.has(n)){ if(!/[а-яёА-ЯЁ]/.test(n.nodeValue)) continue; orig.set(n,n.nodeValue); }
+      const o=orig.get(n), k=norm(o);
+      if(l==='en'&&EN[k]!=null){ const lead=o.match(/^\s*/)[0], tail=o.match(/\s*$/)[0]; n.nodeValue=lead+EN[k]+tail; }
+      else n.nodeValue=l==='en'?o:NB(o);
+    }
+    document.querySelectorAll(ATTRS.map(a=>'['+a+']').join(',')).forEach(el=>ATTRS.forEach(a=>{
+      if(!el.hasAttribute(a)) return; const key='data-ru-'+a;
+      if(!el.hasAttribute(key)){ if(!/[а-яёА-ЯЁ]/.test(el.getAttribute(a))) return; el.setAttribute(key,el.getAttribute(a)); }
+      const o=el.getAttribute(key); el.setAttribute(a,l==='en'&&EN[norm(o)]!=null?EN[norm(o)]:o);
+    }));
+    document.documentElement.lang=l; document.title='Lab4U — Andrew Kuznetsov';
+    btn.innerHTML=l==='en'?'RU / <b>EN</b>':'<b>RU</b> / EN';
+    document.dispatchEvent(new Event('langchange'));
+  }
+  let lang=document.documentElement.lang==='en'?'en':'ru';
+  apply(lang); document.documentElement.classList.remove('i18n-wait');
+  addEventListener('pageshow',()=>{ let l=lang; try{ const s=localStorage.getItem('lang'); if(s==='ru'||s==='en') l=s; }catch(e){} if(l!==lang){ lang=l; apply(lang); dispatchEvent(new Event('resize')); } });
+  function glitch(){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; const d=document.documentElement;
+    d.classList.remove('glitch'); void d.offsetWidth; d.classList.add('glitch'); clearTimeout(glitch.t); glitch.t=setTimeout(()=>d.classList.remove('glitch'),300); }
+  btn.addEventListener('click',()=>{ lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} apply(lang); dispatchEvent(new Event('resize')); glitch(); });
+})();
+</script>
+<script>/* browser chrome colour follows the theme */
+(()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(!document.body.classList.contains('dark'))?'#FFFFFF':'#0A0A0A'; };
+  const o=new MutationObserver(f); o.observe(document.body,{attributes:true,attributeFilter:['class']}); f(); })();</script>
