@@ -139,7 +139,8 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 body:not(.dark) .sw .k{transform:translateX(22px)}
 body:not(.dark) .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
 body:not(.dark) .sw .sun{opacity:1;transform:none}
-.hpin .track figure .ph{--w:clamp(180px,22vw,320px)}
+.hpin .track figure{--fw:clamp(180px,22vw,320px)}
+.hpin .track figure .ph{--w:var(--fw)}
 .hpin .track img{filter:none}
 .ph.big{--w:clamp(200px,24vw,400px)}
 
@@ -225,9 +226,9 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .hpin{position:relative;height:300vh}
 .hpin .sticky{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:center}
 .hpin .track{display:flex;gap:0;padding-inline:var(--gutter);will-change:transform;align-items:center}
-.hpin .track figure{margin:0;flex:none;width:calc(clamp(180px,22vw,320px)*1.3)} /* = mockup width, so captions centre under the phone */
+.hpin .track figure{margin:0;flex:none;width:calc(var(--fw)*1.3)} /* = mockup width, so captions centre under the phone */
 .hpin .track figure:nth-child(even){transform:translateY(8%)}
-.hpin .track figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:-4px;text-align:center}
+.hpin .track figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:calc(10px - var(--fw)*.2267);text-align:center} /* = 10 px under the phone body: the png's bottom 95/991 is shadow */
 .hpin .track img{filter:drop-shadow(0 30px 50px rgba(0,0,0,.16))}
 .hpin .big{margin-left:clamp(36px,4.5vw,90px);flex:none;width:clamp(260px,34vw,560px);font-family:var(--display);font-weight:200;font-size:clamp(40px,7vw,120px);letter-spacing:-.05em;line-height:.9;padding-right:var(--gutter)}
 
@@ -263,10 +264,13 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .rules{grid-template-columns:repeat(3,auto);justify-content:space-between;gap:12px} /* phones: 24×24 · 1 px · 16 → 48 in one row */
   .rules b{font-size:clamp(20px,6.6vw,28px);white-space:nowrap}
   /* phones: an even tile grid — two per row, phone bodies 16 px from the screen edges and 12 px apart both ways; an odd last phone is centred */
-  .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 2px);padding-inline:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;align-items:start}
+  .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 4px);padding-inline:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;align-items:start}
   .stage > .fl:not(.phone),.stage .cap{display:none}
   .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
   .stage > .fl.phone:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
+  .hpin .track figure{--fw:min(62vw,calc((100svh - 150px)/2.364))}
+  .hpin .sticky{align-items:flex-start;padding-top:68px}
+  .hpin .big{align-self:flex-start} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
   .stage .pcap{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
   .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{width:123.03%;margin:-3.61% 0 -22.8% -15.35%} /* the mockup png has transparent margins and a shadow: the phone body (x 68–511, y 16–890 of 545×991) fills the column exactly */
 }
@@ -604,7 +608,13 @@ function frame(t){
     for(const f of fls){
       const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; const d=(c-vh/2);
       if(c<-vh||c>vh*2) continue;
-      const lim=f.stage?(innerWidth<=860?2:64):(innerWidth<=860&&f.el.classList.contains('hero-ph'))?0:Math.min(120,vh*.12); /* phones: the hero phone does not drift up over the hero facts */ /* stage phones: small drift, and .stage keeps exactly this much extra room above — a phone never reaches the text */ f.y=Math.max(-lim,Math.min(lim,-d*f.sp)); /* capped so floating items never drift into the next section */
+      if(f.stage){ /* section phones: the drift grows evenly over the whole pass through the screen (no snap at the cap) and is eased in time; level at the screen centre */
+        const lim=innerWidth<=860?4:64, t=Math.max(-1,Math.min(1,d/(vh*.75))), k=Math.max(-1,Math.min(1,f.sp/.28));
+        f.y+=(-lim*t*k-f.y)*.12;
+      } else {
+        const lim=(innerWidth<=860&&f.el.classList.contains('hero-ph'))?0:Math.min(120,vh*.12); /* phones: the hero phone does not drift up over the hero facts */
+        f.y=Math.max(-lim,Math.min(lim,-d*f.sp)); /* capped so floating items never drift into the next section */
+      }
       const rot=f.rot?(d*0.03*f.rot):0;
       f.el.style.transform=(f.base||'')+` translate3d(${f.y*f.dx}px,${f.y}px,0) rotate(${rot}deg)`;
     }
@@ -612,7 +622,7 @@ function frame(t){
     for(const r of rows){ r.x+= r.dir*(0.6+Math.min(Math.abs(smv),40)*.12); if(r.x>0) r.x-=r.w; if(r.x<-r.w) r.x+=r.w; r.el.style.transform=`translate3d(${r.x}px,0,0)`}
     if(hpin){const r=hpin.getBoundingClientRect(); const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))); const max=track.scrollWidth-innerWidth+parseFloat(getComputedStyle(track).paddingLeft)*2; track.style.transform=`translate3d(${-p*max}px,0,0)`;
       /* light parallax: each phone lifts and tilts a little depending on where it is across the screen */
-      if(!rm) trackPh.forEach(el=>{const q=el.getBoundingClientRect(); const d=Math.max(-1,Math.min(1,((q.left+q.width/2)/innerWidth-.5)*2)); el.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0) rotate(${(d*2.2).toFixed(2)}deg)`;});}
+      if(!rm) trackPh.forEach(el=>{const q=el.getBoundingClientRect(); const d=Math.max(-1,Math.min(1,((q.left+q.width/2)/innerWidth-.5)*2)); el.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0) rotate(${(d*2.2).toFixed(2)}deg)`; const cap=el.nextElementSibling; if(cap) cap.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0)`; /* the caption dips with its phone */});}
   }
   if(darksec){const r=darksec.getBoundingClientRect(); const inDark=r.top<vh*.55 && r.bottom>vh*.6; const on=manual===null?inDark:manual; document.body.classList.toggle('dark',on)}
   requestAnimationFrame(frame);
