@@ -276,6 +276,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .hpin .track{--fw:min(62vw,calc((100svh - 150px)/2.364))}
   .hpin .track figure:nth-child(even){transform:none} /* phones: all phones of the track on one line */
   .hpin .sticky{align-items:flex-start;padding-top:68px} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
+  .sec{padding-block:calc(var(--gutter)*2.5)}.sec:has(.hpin){padding-bottom:calc(var(--gutter)*1.25)}.sec:has(.hpin)+.sec{padding-top:calc(var(--gutter)*1.25)} /* phones: sections twice as far apart (40 + 40 px), except after the horizontal track — its own space is enough */
   .pal{display:flex;flex-wrap:wrap;gap:10px}.pal .row{display:contents} /* phones: the chips run one after another in their order, without a break between the colour groups */
   .stage .pcap{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
   .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{width:123.03%;margin:-3.61% 0 -22.8% -15.35%} /* the mockup png has transparent margins and a shadow: the phone body (x 68–511, y 16–890 of 545×991) fills the column exactly */
