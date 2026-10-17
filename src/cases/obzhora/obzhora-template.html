@@ -139,7 +139,7 @@ body:not(.dark) .tgl i::after{transform:translateX(14px)}
 body:not(.dark) .sw .k{transform:translateX(22px)}
 body:not(.dark) .sw .moon{opacity:0;transform:rotate(90deg) scale(.6)}
 body:not(.dark) .sw .sun{opacity:1;transform:none}
-.hpin .track figure{--fw:clamp(180px,22vw,320px)}
+.hpin .track{--fw:clamp(180px,22vw,320px)} /* phone size in the horizontal track (shared by the figures and the titles) */
 .hpin .track figure .ph{--w:var(--fw)}
 .hpin .track img{filter:none}
 .ph.big{--w:clamp(200px,24vw,400px)}
@@ -249,7 +249,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .nav .ctr{gap:14px}
   .nav .c i{display:none}
   .tgl span{display:none}
-  .hero{padding-top:124px}
+  .hero{padding-top:89px} /* 35 px from the header to «Обжора» (was 70) */
   .intro .g{grid-template-columns:1fr}
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
@@ -268,9 +268,9 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
   .stage > .fl:not(.phone),.stage .cap{display:none}
   .stage > .fl.phone{position:relative;left:auto!important;top:auto!important;width:auto}
   .stage > .fl.phone:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
-  .hpin .track figure{--fw:min(62vw,calc((100svh - 150px)/2.364))}
-  .hpin .sticky{align-items:flex-start;padding-top:68px}
-  .hpin .big{align-self:flex-start} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
+  .hpin .track{--fw:min(62vw,calc((100svh - 150px)/2.364))}
+  .hpin .track figure:nth-child(even){transform:none} /* phones: all phones of the track on one line */
+  .hpin .sticky{align-items:flex-start;padding-top:68px} /* phones: the track sits under the header instead of the screen centre — no empty screen between the text and the track */ /* phones: bigger phones in the horizontal track, still fitting the screen height */
   .stage .pcap{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
   .stage .fl.phone .ph,.darksec .stage .fl.phone .ph{width:123.03%;margin:-3.61% 0 -22.8% -15.35%} /* the mockup png has transparent margins and a shadow: the phone body (x 68–511, y 16–890 of 545×991) fills the column exactly */
 }
@@ -622,7 +622,7 @@ function frame(t){
     for(const r of rows){ r.x+= r.dir*(0.6+Math.min(Math.abs(smv),40)*.12); if(r.x>0) r.x-=r.w; if(r.x<-r.w) r.x+=r.w; r.el.style.transform=`translate3d(${r.x}px,0,0)`}
     if(hpin){const r=hpin.getBoundingClientRect(); const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))); const max=track.scrollWidth-innerWidth+parseFloat(getComputedStyle(track).paddingLeft)*2; track.style.transform=`translate3d(${-p*max}px,0,0)`;
       /* light parallax: each phone lifts and tilts a little depending on where it is across the screen */
-      if(!rm) trackPh.forEach(el=>{const q=el.getBoundingClientRect(); const d=Math.max(-1,Math.min(1,((q.left+q.width/2)/innerWidth-.5)*2)); el.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0) rotate(${(d*2.2).toFixed(2)}deg)`; const cap=el.nextElementSibling; if(cap) cap.style.transform=`translate3d(0,${(d*d*28).toFixed(1)}px,0)`; /* the caption dips with its phone */});}
+      if(!rm) trackPh.forEach(el=>{const q=el.getBoundingClientRect(); const d=Math.max(-1,Math.min(1,((q.left+q.width/2)/innerWidth-.5)*2)); const dip=(d*d*(innerWidth<=860?12:28)).toFixed(1); el.style.transform=`translate3d(0,${dip}px,0) rotate(${(d*2.2).toFixed(2)}deg)`; const cap=el.nextElementSibling; if(cap) cap.style.transform=`translate3d(0,${dip}px,0)`; /* the caption dips with its phone */});}
   }
   if(darksec){const r=darksec.getBoundingClientRect(); const inDark=r.top<vh*.55 && r.bottom>vh*.6; const on=manual===null?inDark:manual; document.body.classList.toggle('dark',on)}
   requestAnimationFrame(frame);
