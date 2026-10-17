@@ -240,9 +240,9 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .icq .row{display:flex;gap:46px;will-change:transform;width:max-content}
 .icq img{width:clamp(34px,4vw,64px);height:auto;flex:none}
 .rules{display:grid;grid-template-columns:repeat(3,1fr);margin-top:calc(var(--gutter)*1.2);position:relative} /* same frame as the metrics block: lines edge to edge, dividers between the cells */
-.rules > div{padding:22px 20px 26px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
+.rules > div{padding:22px 20px 18px clamp(16px,2vw,32px);border-right:1px solid var(--line)} /* the visible gap under the caption = the gap above the number */
 .rules .rdiv{display:none} /* divider elements for the phone layout */.rules > div:first-child{padding-left:0}.rules > div:last-child{border-right:0}
-.rules b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3.4vw,56px);letter-spacing:-.04em;line-height:1;margin-bottom:8px}
+.rules b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3.4vw,56px);letter-spacing:-.04em;line-height:1;margin-bottom:2px} /* the caption sits a little closer under the number */
 .rules span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 
 /* wide strip (fan / uikit) with scroll-x drift */
@@ -292,7 +292,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .rules{display:flex;justify-content:space-between} /* phones: the three values spread over the full width — first at the left edge, last ending at the right edge, dividers exactly midway between them */
   .rules .rdiv{display:block;flex:none;width:1px;background:var(--line)}
   .rules span{white-space:nowrap}
-  .rules > div{padding:18px 0 20px;border-right:0}
+  .rules > div{padding:18px 0 13.5px;border-right:0}
   .rules b{font-size:clamp(17px,5.3vw,26px);white-space:nowrap}
   /* phones: an even tile grid — two per row, phone bodies 16 px from the screen edges and 12 px apart both ways; an odd last phone is centred */
   .stage,.darksec .stage{height:auto!important;width:auto;margin-left:0!important;margin-top:calc(var(--gutter)*1.5 + 4px);padding-inline:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;align-items:start}
