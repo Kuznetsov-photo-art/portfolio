@@ -171,12 +171,14 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .pal span.g b{font-weight:500;color:inherit}
 
 /* ---------- intro ---------- */
-.intro{padding:calc(var(--gutter)*2) 0;border-top:1px solid var(--line)}
+.intro{padding:calc(var(--gutter)*2) 0}
 .intro .g{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--gutter)}
 .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch}
 .intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
-.specs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.5)}
-.specs div{padding:22px 20px 26px clamp(16px,2vw,32px);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.5);position:relative}
+.specs::before,.specs::after,.rules::before{content:'';position:absolute;left:calc(50% - 50vw);width:100vw;height:1px;background:var(--line);pointer-events:none} /* the block's lines run edge to edge */
+.specs::before,.rules::before{top:0}.specs::after{bottom:0}
+.specs div{padding:22px 20px 26px clamp(16px,2vw,32px);border-right:1px solid var(--line)}
 .specs div:first-child{padding-left:0} /* first cell lines up with the text above; others keep air from the divider */
 .specs div:last-child{border-right:0}
 .specs b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(34px,4.6vw,72px);letter-spacing:-.05em;line-height:1}
@@ -190,7 +192,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .specs b.go .sf{opacity:1;transform:none}
 
 /* ---------- sections ---------- */
-.sec{position:relative;padding:calc(var(--gutter)*2.5) 0;border-top:1px solid var(--line)}
+.sec{position:relative;padding:calc(var(--gutter)*2.5) 0} /* no divider lines between sections (14.10: tried without, roll back to iter-245-before-dividers) */
 .sec-head{position:relative;z-index:3;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;column-gap:var(--gutter);row-gap:6px;align-items:end;margin-bottom:calc(var(--gutter)*1.2)}
 /* title aligned with the text below; section number big on the right with its label under it */
 .sec-head h2{grid-column:1;grid-row:1/3}
@@ -214,7 +216,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .icq{overflow:hidden;display:grid;gap:22px;margin-top:calc(var(--gutter)*1.2);padding-block:12px;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .icq .row{display:flex;gap:46px;will-change:transform;width:max-content}
 .icq img{width:clamp(34px,4vw,64px);height:auto;flex:none}
-.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.2);border-top:1px solid var(--line);padding-block:clamp(32px,4.5vw,64px)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.2);padding-block:clamp(32px,4.5vw,64px);position:relative}
 .sec:has(> .rules:last-child){padding-bottom:0} /* centre the specs between the rule above and the next section's line */
 .rules b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(28px,3.4vw,56px);letter-spacing:-.04em;line-height:1;margin-bottom:8px}
 .rules span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
@@ -239,7 +241,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .darksec .stage{--phw:calc(clamp(120px,14vw,240px)*1.3)} .darksec .stage .fl.phone .ph{--w:clamp(120px,14vw,240px)} /* five phones in a row need a smaller size to keep air between them */
 
 /* outro */
-.outro{padding:calc(var(--gutter)*3) 0 calc(var(--gutter)*2);border-top:1px solid var(--line)}
+.outro{padding:calc(var(--gutter)*3) 0 calc(var(--gutter)*2)}
 .outro h2{font-size:clamp(44px,10vw,180px);font-weight:200;letter-spacing:-.06em;line-height:.9}
 .outro .nx{display:flex;justify-content:space-between;gap:24px;margin-top:calc(var(--gutter)*1.5);border-top:1px solid var(--line);padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
 .outro .nx a:hover{color:var(--ink)}
@@ -255,7 +257,8 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
   .wrap[style*="1.2fr 1fr"]{grid-template-columns:1fr!important}
   .specs{grid-template-columns:repeat(2,1fr)}
   .specs div:nth-child(odd){padding-left:0}
-  .specs div:nth-child(even){border-right:0}.specs div:nth-child(n+3){border-bottom:0}.intro{padding-bottom:0} /* phones 2×2: no line at the screen edge, no second line under the last row — the section's full-width line sits right under the numbers */
+  .specs div:nth-child(even){border-right:0}.intro{padding-bottom:0}
+  .specs div:first-child{position:relative}.specs div:first-child::after{content:'';position:absolute;left:calc(-1*var(--gutter));bottom:0;width:100vw;height:1px;background:var(--line)} /* phones: the line between the two rows, edge to edge */ /* phones 2×2: no line at the screen edge, no second line under the last row — the section's full-width line sits right under the numbers */
   .h-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px} /* spread across the width instead of a left column */
   .h-copy>.mono{display:none}
   .rl-r{display:none}
@@ -483,7 +486,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
     <div class="sec-head"><span class="n">09</span><h2 class="r">Профиль<br> и настройки</h2><span class="m">Profile</span></div>
     <p class="t r">Параметры тела, цели, уведомления, единицы измерения — всё в одном месте и без лишних экранов</p>
   </div>
-  <div class="wrap stage" style="height:clamp(520px,90vh,900px)">
+  <div class="wrap stage trio" style="height:clamp(520px,90vh,900px)">
     <div class="fl phone" style="left:10%;top:6%" data-sp="-.16"><div class="ph "><img class="l" src="{{mock:profile_l}}" alt=""><img class="d" src="{{mock:profile_d}}" alt=""></div><span class="pcap">Профиль</span></div>
     <div class="fl phone" style="left:38%;top:18%" data-sp=".22"><div class="ph "><img class="l" src="{{mock:goals_l}}" alt=""><img class="d" src="{{mock:goals_d}}" alt=""></div><span class="pcap">Мои цели</span></div>
     <div class="fl phone" style="left:66%;top:0" data-sp="-.08"><div class="ph "><img class="l" src="{{mock:reminders_l}}" alt=""><img class="d" src="{{mock:reminders_d}}" alt=""></div><span class="pcap">Напоминания</span></div>
@@ -634,6 +637,15 @@ const period=r=>{ const k=r.el.children, n=k.length/2; return k[n].offsetLeft-k[
 rows.forEach(r=>{r.el.innerHTML+=r.el.innerHTML; r.w=period(r); if(r.dir<0) r.x=-r.w/2});
 addEventListener('resize',()=>rows.forEach(r=>{ const w=period(r); if(w>0&&w!==r.w){ r.x=r.x/r.w*w; r.w=w; } }));
 requestAnimationFrame(frame);
+})();
+
+/* section 09 on desktop: three phones centred on the screen with a small even gap between the phone bodies (the % positions gave 32 px on a laptop and 221 px on 1920) */
+(()=>{const st=document.querySelector('.stage.trio'); if(!st) return; const fls=[...st.querySelectorAll('.fl.phone')];
+  const place=()=>{ if(innerWidth<=860){ fls.forEach(f=>f.style.left=''); return; }
+    const P=fls[0].querySelector('.ph').offsetWidth, B=P*443/545, L0=P*68/545, G=Math.max(24,Math.min(40,innerWidth*.02)); // body = x 68–511 of the 545 px mockup
+    const x0=(innerWidth-(fls.length*B+(fls.length-1)*G))/2 - st.getBoundingClientRect().left;
+    fls.forEach((f,i)=>f.style.setProperty('left',(x0+i*(B+G)-L0)+'px','important')); };
+  place(); addEventListener('resize',place); (document.fonts&&document.fonts.ready||Promise.resolve()).then(place);
 })();
 
 /* back to top */
