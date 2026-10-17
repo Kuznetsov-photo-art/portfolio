@@ -207,6 +207,34 @@ section{padding-block:clamp(80px,10vw,160px)}
 .row .th img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);transition:filter .4s}
 .row:hover .th img{filter:none}
 .row:hover .th{transform:scale(1.03)}
+.row .th.lg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;background:none;border-color:transparent;border-radius:0} /* company logos without a tile: monochrome at rest, brand colours on hover */
+.row .th.lg img{width:72%;height:auto;max-width:100%;object-fit:contain;filter:brightness(0) invert(1);opacity:.55;transition:filter .45s,opacity .45s}
+:root[data-theme="light"] .row .th.lg img{filter:brightness(0);opacity:.5}
+.row .th.lg img.l{display:none}:root[data-theme="light"] .row .th.lg img.l{display:block}:root[data-theme="light"] .row .th.lg img.d{display:none}
+.row .th.lg img.lg-lab4u{width:74%}.row .th.lg img.lg-yougile{width:74%}.row .th.lg img.lg-vtb{width:64%}.row .th.lg img.lg-sber{width:76%} /* widths balance the visual mass of each logo (VTB is tall and narrow, LAB4U wide and heavy) */
+.row .th.lg img.lg-finamx{width:80%}.row .th.lg img.lg-limex{width:44%;margin-top:-4px} /* Limex is the sub-brand: smaller, close under FinamX (viewBoxes cropped to the artwork) */ /* DS «Logo/finam-x» 88×24 and «Logo/limex» 73×24 */
+.row:hover .th.lg img,:root[data-theme="light"] .row:hover .th.lg img{filter:none;opacity:1}
+.row:hover .th.lg img{animation:lgG .42s steps(1,end) 1} /* the logo flips to its colours through a short glitch — RGB split, slices and jitter, like the language switch */
+@keyframes lgG{
+  0%{filter:brightness(0) invert(1) drop-shadow(3px 0 rgba(255,40,80,.9)) drop-shadow(-3px 0 rgba(0,220,255,.9));transform:translateX(-3px);clip-path:inset(0 0 55% 0)}
+  14%{filter:drop-shadow(-4px 0 rgba(255,40,80,.85)) drop-shadow(4px 0 rgba(0,220,255,.85));transform:translateX(4px) skewX(-8deg);clip-path:inset(40% 0 20% 0)}
+  28%{filter:brightness(0) invert(1) drop-shadow(2px 0 rgba(255,40,80,.8));transform:translateX(-2px);clip-path:inset(10% 0 60% 0)}
+  42%{filter:drop-shadow(3px 0 rgba(0,220,255,.8)) drop-shadow(-2px 0 rgba(255,40,80,.7));transform:translateX(2px) skewX(5deg);clip-path:inset(60% 0 0 0)}
+  56%{filter:drop-shadow(-2px 0 rgba(255,40,80,.6)) drop-shadow(2px 0 rgba(0,220,255,.6));transform:translateX(-1px);clip-path:none}
+  72%{filter:drop-shadow(1px 0 rgba(0,220,255,.5));transform:translateX(1px)}
+  86%,100%{filter:none;transform:none;clip-path:none}
+}
+:root[data-theme="light"] .row:hover .th.lg img{animation-name:lgGl}
+@keyframes lgGl{
+  0%{filter:brightness(0) drop-shadow(3px 0 rgba(255,40,80,.9)) drop-shadow(-3px 0 rgba(0,190,230,.9));transform:translateX(-3px);clip-path:inset(0 0 55% 0)}
+  14%{filter:drop-shadow(-4px 0 rgba(255,40,80,.85)) drop-shadow(4px 0 rgba(0,190,230,.85));transform:translateX(4px) skewX(-8deg);clip-path:inset(40% 0 20% 0)}
+  28%{filter:brightness(0) drop-shadow(2px 0 rgba(255,40,80,.8));transform:translateX(-2px);clip-path:inset(10% 0 60% 0)}
+  42%{filter:drop-shadow(3px 0 rgba(0,190,230,.8)) drop-shadow(-2px 0 rgba(255,40,80,.7));transform:translateX(2px) skewX(5deg);clip-path:inset(60% 0 0 0)}
+  56%{filter:drop-shadow(-2px 0 rgba(255,40,80,.6)) drop-shadow(2px 0 rgba(0,190,230,.6));transform:translateX(-1px);clip-path:none}
+  72%{filter:drop-shadow(1px 0 rgba(0,190,230,.5));transform:translateX(1px)}
+  86%,100%{filter:none;transform:none;clip-path:none}
+}
+@media(prefers-reduced-motion:reduce){.row:hover .th.lg img{animation:none}}
 @media(max-width:760px){.row{grid-template-columns:minmax(0,1fr) 80px;column-gap:16px}.row .meta{gap:6px 16px;margin-top:8px}.row .th{grid-column:2;grid-row:1/5;width:80px;align-self:start;font-size:9px}.row:hover{padding-left:0}}
 
 /* ---------- focus (pinned): kinetic type ---------- */
@@ -558,12 +586,13 @@ const I18N = {
  }
 };
 const NAME={ru:['Андрей','Кузнецов'],en:['Andrew','Kuznetsov']};
+const LGL=['finamx','limex','vtb']; // logos with a separate version for the light theme (dark ink); the base file is for the dark theme
 const CASES = [
- {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025'}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
- {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25'},
- {ru:{t:'Lab4U — AI-расшифровка анализов',r:'первый в России сервис'},en:{t:'Lab4U — AI lab-results interpretation',r:'first in Russia'},tags:['AI','Healthtech'],y:'2023'},
- {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb'},
- {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp'},
+ {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025',lg:['finamx','limex']}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
+ {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25',lg:['yougile']},
+ {ru:{t:'Lab4U — AI-расшифровка анализов, приложение 2.0 и DS с нуля',r:'первый в России сервис · №6 в рейтинге Forbes · web + iOS + Android · 820 000+ клиентов'},en:{t:'Lab4U — AI lab-results interpretation, app 2.0 and a DS from scratch',r:'first in Russia · #6 in the Forbes ranking · web + iOS + Android · 820,000+ clients'},tags:['AI','Healthtech'],y:{ru:'2023 — н. в.',en:'2023 — now'},h:'/cases/lab4u/',draft:1,lg:['lab4u']}, // has a case page: the row is a link, no «soon» modal
+ {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb',lg:['vtb']},
+ {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp',lg:['sber']},
 ];
 const ARCH = [
  {k:'sber',ru:'Сбер — sCommerce',en:'Sber — sCommerce',y:'2020',u:'https://www.behance.net/gallery/161837373/SBER',i:'/assets/archive/sber.webp'},
@@ -655,7 +684,7 @@ const root=document.documentElement;
 let focusUpdate=null, focusBuild=null;
 
 /* typography: glue 1–2 letter words to the next word and keep dashes off the line start — no hanging «и», «в», «—» */
-const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
+const NB=s=>{ for(let k=0;k<3;k++) s=s.replace(/(^|[\s(«>])([а-яёА-ЯЁ]{1,2}|[Aa]|I) /g,'$1$2\u00a0'); return s.replace(/ ([—–])/g,'\u00a0$1'); };
 /* case titles: NB glue and the separator never starts a line (hyphens may still break: a no-break «AI-расшифровка» is wider than the phone column and ran under the cover) */
 const caseT=t=>NB(t).replace(/ ([•·])/g,'\u00a0$1').replace(/ → /g,'\u00a0→\u00a0').replace(/DS с /,'DS\u00a0с '); // «Sketch → Figma» and «DS с нуля» never split
 function render(){
@@ -672,12 +701,13 @@ function render(){
   const hn=document.getElementById('hname'); const rls=[...hn.querySelectorAll('.rl')].map(e=>e.outerHTML).join('');
   hn.innerHTML = rls + NAME[lang].map((w,i)=>`<span class="ln ${i?'b':'a'}">${[...w].map(c=>`<span class="ch">${c}</span>`).join('')}</span>`).join('');
   // work index
-  document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
-    <a class="row soon rv" tabindex="0" role="button" data-k="${c.k||''}" data-cur="${d.wip}">
+  const isStage=/^(stage\.|localhost$|127\.0\.0\.1$)/.test(location.hostname); // a case still in the works (draft) links only on the stage and locally; on the live site its row stays «soon»
+  document.getElementById('cases').innerHTML = CASES.map((c,i)=>{ const h=c.h&&(!c.draft||isStage)?c.h:''; return `
+    <a class="row${h?'':' soon'} rv" ${h?`href="${h}"`:'tabindex="0" role="button"'} data-k="${c.k||''}" data-cur="${h?d.case:d.wip}">
       <h3>${caseT(c[lang].t)}</h3>
-      <span class="meta"><span class="res"><span class="yr">${c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
-      <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
-    </a>`).join('');
+      <span class="meta"><span class="res"><span class="yr">${typeof c.y==="object"?c.y[lang]:c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
+      ${c.lg?`<span class="th lg">${c.lg.map(n=>LGL.includes(n)?`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n} d"><img src="/assets/logos/${n}-l.svg" alt="" loading="lazy" class="lg-${n} l">`:`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n}">`).join('')}</span>`:`<span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>`}
+    </a>`; }).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
       <span class="cap"><b>${NB(a[lang])}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>

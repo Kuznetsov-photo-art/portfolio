@@ -38,6 +38,10 @@ if os.path.exists(J(R,'src','index-src.html')):
      og_title='Портфолио продуктового дизайнера', og_desc='14 лет в дизайне: дизайн-системы, финтех, медтех и AI-продукты. Сбер, ВТБ, VK, YouGile, Lab4U, Финам')
 wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','index.html'),desc='Кейс «Обжора» — счётчик калорий для iOS: 60+ экранов, 83+ иконок, тёмная тема. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/obzhora/', image='https://andrewkuznetsov.com/assets/og/og-obzhora.jpg',
      og_title='Кейс «Обжора» — счётчик калорий для iOS', og_desc='60+ экранов, 83+ иконок, светлая и тёмная тема — от концепции до UI-кита')
+if os.path.exists(J(R,'src','cases','lab4u','lab4u-case.html')):
+    os.makedirs(J(R,'cases','lab4u'),exist_ok=True)
+    wrap(J(R,'src','cases','lab4u','lab4u-case.html'),J(R,'cases','lab4u','index.html'),desc='Кейс Lab4U — онлайн-лаборатория с AI-расшифровкой анализов: приложение 2.0, сайт на трёх брейкпоинтах, дизайн-система. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/lab4u/', image='https://andrewkuznetsov.com/assets/og/og-lab4u.jpg',
+     og_title='Кейс Lab4U — AI-расшифровка анализов', og_desc='Приложение 2.0, новый сайт, AI-сервисы и дизайн-система на две темы')
 if os.path.exists(J(R,'src','cases','finam','finam-case.html')):
     os.makedirs(J(R,'cases','finam'),exist_ok=True)
     wrap(J(R,'src','cases','finam','finam-case.html'),J(R,'cases','finam','index.html'),desc='Кейс FinamX & Limex — AI-платформа для трейдеров на два рынка: веб, мобильное приложение и мультибрендовая дизайн-система. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/finam/', image='https://andrewkuznetsov.com/assets/og/og-finam.jpg',

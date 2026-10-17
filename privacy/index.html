@@ -238,7 +238,7 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
 
 <script>
 /* typography: glue 1–2 letter words to the next word and keep dashes off the line start (same rule as the home page) */
-const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2}|[Aa]|I)\s/g,'$1$2 '); return s.replace(/ ([—–])/g,' $1'); };
+const NB=s=>{ for(let k=0;k<3;k++) s=s.replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2}|[Aa]|I) /g,'$1$2 '); return s.replace(/ ([—–])/g,' $1'); };
 (function walk(n){ for(const c of n.childNodes){ if(c.nodeType===3) c.nodeValue=NB(c.nodeValue); else if(c.nodeType===1&&!/^(SCRIPT|STYLE)$/.test(c.tagName)) walk(c); } })(document.querySelector('main'));
 /* RU / EN */
 const root=document.documentElement, lb=document.getElementById('lang');
