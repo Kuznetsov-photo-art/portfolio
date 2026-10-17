@@ -118,7 +118,7 @@ body.dark .hero{--h-bg:#03121B;--h-ink:#E9F8FC;--h-ink2:rgba(233,248,252,.7);--h
 .h-eye i::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--h-acc);animation:hping 2.2s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes hping{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.6);opacity:0}}
 .h-logo{position:relative;display:block;margin:26px 0 0;width:min(100%,600px);aspect-ratio:637/145.44;clip-path:inset(-60% 100% -60% -20%);animation:hwipe 1.3s cubic-bezier(.65,0,.35,1) .35s forwards}
-.h-logo svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 18px 50px rgba(0,182,211,.32))}
+.h-logo svg{width:100%;height:auto;display:block;overflow:visible} /* no glow under the logo (Andrey, 18.10) */
 .h-logo .sh{transform:translateX(-220px) skewX(-18deg);animation:hshine 6s ease-in-out 2s infinite}
 @keyframes hwipe{to{clip-path:inset(-60% -20% -60% -20%)}} /* the reveal box is wider than the logo so its glow stays round */
 @keyframes hshine{0%,62%{transform:translateX(-220px) skewX(-18deg)}100%{transform:translateX(720px) skewX(-18deg)}}
