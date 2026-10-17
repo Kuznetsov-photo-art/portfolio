@@ -584,7 +584,7 @@ const fitPhones=()=>{
     const tops=[...st.querySelectorAll(':scope > .fl.phone')].map(f=>{ const t=f.style.top||'0'; return t.endsWith('%')?parseFloat(t)/100:0; });
     const bodyH=P*991/545*.898, H=Math.round((bodyH+108)/(1-Math.max(...tops)));
     st.style.setProperty('height',H+'px','important');
-    const dn=st.querySelector(':scope > .fl.donut'); if(dn){ const i2=1, t2=tops[i2]*H; dn.style.top=Math.round(t2+bodyH+31+28)+'px'; } /* dark section: the donut sits under the 2nd phone's caption */
+    const dn=st.querySelector(':scope > .fl.donut'); if(dn){ const k=3, t4=tops[k]*H; dn.style.top=Math.round(t4+bodyH+31+44)+'px'; dn.style.left=`calc(${(k/(n-1)*100).toFixed(2)}% + ${Math.round(P*.53-dn.offsetWidth/2)}px)`; } /* dark section: the donut sits centred under the 4th phone («Блюдо»), below its caption */
   });
 };
 fitPhones(); addEventListener('resize',fitPhones);
