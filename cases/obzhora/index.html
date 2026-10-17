@@ -194,7 +194,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .pal span.g b{font-weight:500;color:inherit}
 
 /* ---------- intro ---------- */
-.intro{padding:calc(var(--gutter)*2) 0}
+.intro{padding:calc(var(--gutter)*2) 0;border-top:1px solid var(--line)} /* the hero's bottom edge (the donuts are clipped there) keeps its line */
 .intro .g{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--gutter)}
 .lead{font-family:var(--display);font-weight:300;font-size:clamp(22px,2.6vw,38px);line-height:1.25;letter-spacing:-.02em;max-width:22ch}
 .intro p{color:var(--ink-2);max-width:60ch;margin:0 0 16px}
