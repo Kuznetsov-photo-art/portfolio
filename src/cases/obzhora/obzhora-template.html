@@ -58,7 +58,7 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .nav .c .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
 .nav .ctr{display:flex;gap:22px;align-items:center}
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:inherit;cursor:pointer;white-space:nowrap}.lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px} /* same RU / EN switch as on the home page */
-.nav .pager{gap:16px}
+.nav .pager{gap:16px;position:absolute;left:50%;transform:translateX(-50%)} /* «← Кейс · Обжора →» centred on the screen, not between the unequal side groups */
 .nav .pn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;opacity:.7;transition:opacity .3s,transform .3s}
 .nav .pn:hover{opacity:1}
 .nav .pn:first-child:hover{transform:translateX(-3px)}.nav .pn:last-child:hover{transform:translateX(3px)}
