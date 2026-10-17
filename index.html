@@ -590,7 +590,7 @@ const LGL=['finamx','limex','vtb']; // logos with a separate version for the lig
 const CASES = [
  {ru:{t:'FinamX & Limex — AI-трейдинг, мультибрендовая дизайн-система',r:'RU + US · два рынка · 2 бренда × 2 темы · одна библиотека'},en:{t:'FinamX & Limex — AI trading, multi-brand design system',r:'RU + US · two markets · 2 brands × 2 themes · one library'},tags:['AI','Design System','Fintech'],y:'2025',lg:['finamx','limex']}, // one case for both FinamX rows (14.10); short wordings kept in STATUS
  {ru:{t:'YouGile — редизайн платформы, DS с нуля',r:'DAU ×4 за два года · фичи и R&D-процессы · AI-расшифровка голосовых в чате'},en:{t:'YouGile — platform redesign, DS from scratch',r:'DAU ×4 in two years · features & R&D processes · AI transcription of voice messages in chat'},tags:['B2B','SaaS','AI'],y:'2023–25',lg:['yougile']},
- {ru:{t:'Lab4U — AI-расшифровка анализов, приложение 2.0 и DS с нуля',r:'первый в России сервис · №6 в рейтинге Forbes · web + iOS + Android · 820 000+ клиентов'},en:{t:'Lab4U — AI lab-results interpretation, app 2.0 and a DS from scratch',r:'first in Russia · #6 in the Forbes ranking · web + iOS + Android · 820,000+ clients'},tags:['AI','Healthtech'],y:{ru:'2023 — н. в.',en:'2023 — now'},h:'/cases/lab4u/',lg:['lab4u']}, // has a case page: the row is a link, no «soon» modal
+ {ru:{t:'Lab4U — AI-расшифровка анализов, приложение 2.0 и DS с нуля',r:'первый в России сервис · №6 в рейтинге Forbes · web + iOS + Android · 820 000+ клиентов'},en:{t:'Lab4U — AI lab-results interpretation, app 2.0 and a DS from scratch',r:'first in Russia · #6 in the Forbes ranking · web + iOS + Android · 820,000+ clients'},tags:['AI','Healthtech'],y:{ru:'2023 — н. в.',en:'2023 — now'},h:'/cases/lab4u/',draft:1,lg:['lab4u']}, // has a case page: the row is a link, no «soon» modal
  {ru:{t:'ВТБ Бизнес — дизайн-система и UX-паттерны',r:'8 продуктовых команд'},en:{t:'VTB Business — design system & UX patterns',r:'8 product teams'},tags:['Design System','Banking'],y:'2020–23',k:'vtb',lg:['vtb']},
  {ru:{t:'Сбер — СберСпасибо для Бизнеса, Sketch → Figma',r:'0 → 1 · миграция всех DS'},en:{t:'Sber — SberSpasibo for Business, Sketch → Figma',r:'0 → 1 · full DS migration'},tags:['Fintech','Design Ops'],y:'2019–20',i:'/assets/archive/sber.webp',lg:['sber']},
 ];
@@ -701,12 +701,13 @@ function render(){
   const hn=document.getElementById('hname'); const rls=[...hn.querySelectorAll('.rl')].map(e=>e.outerHTML).join('');
   hn.innerHTML = rls + NAME[lang].map((w,i)=>`<span class="ln ${i?'b':'a'}">${[...w].map(c=>`<span class="ch">${c}</span>`).join('')}</span>`).join('');
   // work index
-  document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
-    <a class="row${c.h?'':' soon'} rv" ${c.h?`href="${c.h}"`:'tabindex="0" role="button"'} data-k="${c.k||''}" data-cur="${c.h?d.case:d.wip}">
+  const isStage=/^(stage\.|localhost$|127\.0\.0\.1$)/.test(location.hostname); // a case still in the works (draft) links only on the stage and locally; on the live site its row stays «soon»
+  document.getElementById('cases').innerHTML = CASES.map((c,i)=>{ const h=c.h&&(!c.draft||isStage)?c.h:''; return `
+    <a class="row${h?'':' soon'} rv" ${h?`href="${h}"`:'tabindex="0" role="button"'} data-k="${c.k||''}" data-cur="${h?d.case:d.wip}">
       <h3>${caseT(c[lang].t)}</h3>
       <span class="meta"><span class="res"><span class="yr">${typeof c.y==="object"?c.y[lang]:c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
       ${c.lg?`<span class="th lg">${c.lg.map(n=>LGL.includes(n)?`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n} d"><img src="/assets/logos/${n}-l.svg" alt="" loading="lazy" class="lg-${n} l">`:`<img src="/assets/logos/${n}.svg" alt="" loading="lazy" class="lg-${n}">`).join('')}</span>`:`<span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>`}
-    </a>`).join('');
+    </a>`; }).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
       <span class="cap"><b>${NB(a[lang])}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>
