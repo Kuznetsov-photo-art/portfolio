@@ -234,7 +234,6 @@
 "активных клиентов": "active clients",
 "заказов": "orders",
 "Цифры — Lab4U, 2026": "Figures — Lab4U, 2026",
-"37% клиентов Lab4U сдают анализы, ни разу не побывав у врача, — им особенно важно понять результаты. Сервис запустили в апреле 2024 года на собственной LLM, обученной на 15+ млн обезличенных анализов: Lab4U — одни из первых в России с такой расшифровкой, а в 2025 году Forbes поставил её на 6‑е место среди российских ИИ‑решений для здравоохранения": "37% of Lab4U clients get tested without ever seeing a doctor — understanding the results matters to them most. The service launched in April 2024 on Lab4U's own LLM trained on 15M+ anonymized tests: Lab4U was among the first in Russia with this kind of interpretation, and in 2025 Forbes ranked it 6th among Russian AI solutions for healthcare",
 "вовлечённость пациентов за квартал": "patient engagement in a quarter",
 "Forbes · ИИ в здравоохранении": "Forbes · AI in healthcare",
 "Smart Ranking, I кв. 2025 · lab4u.ru · Forbes, 2025": "Smart Ranking, Q1 2025 · lab4u.ru · Forbes, 2025",
@@ -250,5 +249,6 @@
 "+43% продаж": "+43% sales",
 "продажи подарочных сертификатов за квартал": "gift certificate sales in a quarter",
 "клиник‑партнёров в 117 городах": "partner clinics in 117 cities",
-"9,5 млн+": "9.5M+"
+"9,5 млн+": "9.5M+",
+"37% клиентов Lab4U сдают анализы, ни разу не побывав у врача, — им особенно важно понять результаты. Сервис запустили в апреле 2024 года на собственной LLM, обученной на 15+ млн обезличенных анализов, — это первый в России сервис AI‑расшифровки анализов из любой лаборатории. В 2025 году Forbes поставил его на 6‑е место среди российских ИИ‑решений для здравоохранения": "37% of Lab4U clients get tested without ever seeing a doctor — understanding the results matters to them most. The service launched in April 2024 on Lab4U's own LLM trained on 15M+ anonymized tests — the first service in Russia to interpret results from any lab with AI. In 2025 Forbes ranked it 6th among Russian AI solutions for healthcare"
 }
