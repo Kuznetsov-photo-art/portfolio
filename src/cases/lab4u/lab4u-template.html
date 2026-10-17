@@ -110,7 +110,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .hero{--hx:max(var(--gutter),calc((100% - 1560px)/2 + var(--gutter)));--h-bg:#EEF6F8;--h-ink:#05222D;--h-ink2:rgba(5,34,45,.66);--h-ink3:rgba(5,34,45,.44);--h-line:rgba(5,34,45,.12);--h-card:rgba(255,255,255,.66);--h-ok:#00A878;--h-warn:#E58A00;--h-acc:#00B6D3;
   position:relative;min-height:100svh;overflow:hidden;isolation:isolate;background:var(--h-bg);color:var(--h-ink);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);align-items:center;gap:var(--gutter);padding:calc(62px + var(--gutter)) var(--hx) calc(var(--gutter)*1.6);transition:background .8s}
 body.dark .hero{--h-bg:#03121B;--h-ink:#E9F8FC;--h-ink2:rgba(233,248,252,.7);--h-ink3:rgba(233,248,252,.46);--h-line:rgba(233,248,252,.12);--h-card:rgba(8,30,42,.58);--h-ok:#2FE0A8;--h-warn:#FFB443;--h-acc:#19C6E2}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2;display:block}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2;display:block;opacity:.38;-webkit-mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 72% 68% at 56% 50%,#000 35%,transparent 100%)} /* strongly translucent; the plate runs past every edge and melts away before it, so no edge or corner shows when it turns */
 .hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 75% at 22% 52%,var(--h-bg) 18%,color-mix(in srgb,var(--h-bg) 70%,transparent) 45%,transparent 75%)} /* a soft veil keeps the copy readable over the plate */
 .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18%;z-index:-1;pointer-events:none;background:linear-gradient(transparent,var(--bg))} /* the hero melts into the page */
 .h-copy{position:relative;z-index:2;max-width:680px}
@@ -1006,7 +1006,7 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
 /* hero: a 384-well plate (24 × 16) in perspective; an AI beam sweeps across it, read wells light up in result colours,
    the result cards appear as the beam passes and the summary card closes the pass. Pauses off-screen, static with reduced motion */
 (()=>{ const hero=$('#hero'), cv=$('#plate'); if(!cv) return; const x=cv.getContext('2d');
-  const COLS=24, ROWS=16, cards=[...hero.querySelectorAll('.rc')];
+  const COLS=52, ROWS=34, cards=[...hero.querySelectorAll('.rc')]; /* a plate larger than the screen on every side, with room for the turn */
   const wells=[]; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) wells.push({X:c-(COLS-1)/2,Z:(ROWS-1)/2-r,lit:0,k:0,hov:0});
   let W=1,H=1,dpr=1,mx=-1e4,my=-1e4,yaw=0,yawT=0,col={};
   const theme=()=>{ const d=document.body.classList.contains('dark');
@@ -1022,7 +1022,7 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
   const proj=(X,Z)=>{ const cy=Math.cos(yaw), sy=Math.sin(yaw), X1=X*cy+Z*sy, Z1=-X*sy+Z*cy, P=1.02, Y2=Z1*Math.sin(P), Z2=Z1*Math.cos(P)+20;
     const f=mob()?W*1.35:Math.min(W*.82,H*1.5), cx=mob()?W*.5:W*.6, cyy=mob()?H*.7:H*.56;
     return [cx+f*X1/Z2, cyy-f*Y2/Z2, f/Z2]; };
-  let scan=-16, pass=0, hold=0, shown=new Set(), last=performance.now(); const TH=[-6,0,6];
+  const XS=COLS/2+3; let scan=-XS, pass=0, hold=0, last=performance.now(); const TH=[-8,0,8];
   const reveal=(i)=>{ const c=cards[i]; if(!c) return; if(!c.classList.contains('on')){ c.classList.add('on'); const b=c.querySelector('.rc-v b'), bar=c.querySelector('.rc-bar'); if(b){ const to=+b.dataset.to, t0=performance.now(); const tick=t=>{ const k=Math.min(1,(t-t0)/1100); b.textContent=Math.round(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); } if(bar){ const lo=+bar.style.getPropertyValue('--lo'), hi=+bar.style.getPropertyValue('--hi'), w=bar.classList.contains('w'); bar.style.setProperty('--v', w? Math.max(.04,lo-.08) : (lo+hi)/2+.04 ); } }
     else { c.classList.add('ping'); setTimeout(()=>c.classList.remove('ping'),900); } };
   const draw=(dt)=>{
@@ -1041,18 +1041,18 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
       w.lit*=Math.pow(.62,dt);
     }
     // the beam: a lit line across the plate with a soft trailing curtain
-    if(scan>-13&&scan<13){
-      const a=proj(scan,-8.4), b=proj(scan,8.4), a2=proj(scan-2.2,-8.4), b2=proj(scan-2.2,8.4);
+    if(scan>-XS&&scan<XS){ const ZE=ROWS/2+1;
+      const a=proj(scan,-ZE), b=proj(scan,ZE), a2=proj(scan-2.6,-ZE), b2=proj(scan-2.6,ZE);
       const g=x.createLinearGradient(a2[0],0,a[0],0); g.addColorStop(0,`rgba(${col.beam},0)`); g.addColorStop(1,`rgba(${col.beam},.16)`);
       x.beginPath(); x.moveTo(a2[0],a2[1]); x.lineTo(a[0],a[1]); x.lineTo(b[0],b[1]); x.lineTo(b2[0],b2[1]); x.closePath(); x.fillStyle=g; x.fill();
       for(const [lw,al] of [[10,.08],[4,.25],[1.5,.95]]){ x.beginPath(); x.moveTo(a[0],a[1]); x.lineTo(b[0],b[1]); x.lineWidth=lw; x.strokeStyle=`rgba(${col.beam},${al})`; x.stroke(); }
     }
   };
   const step=(t)=>{ const dt=Math.min(.05,(t-last)/1000); last=t;
-    if(hold>0) hold-=dt; else { const prev=scan; scan+=dt*5.2;
+    if(hold>0) hold-=dt; else { const prev=scan; scan+=dt*9;
       for(const w of wells) if(w.X>prev&&w.X<=scan){ w.lit=1; const r=Math.random(); w.k=r<.06?0:r<.17?2:1; }
       TH.forEach((th,i)=>{ if(prev<th&&scan>=th) reveal(i); });
-      if(scan>13){ reveal(3); scan=-16; hold=1.6; pass++; } }
+      if(scan>XS){ reveal(3); scan=-XS; hold=1.2; pass++; } }
     draw(dt); };
   let run=false, raf=0; const loop=t=>{ step(t); raf=requestAnimationFrame(loop); };
   if(rm){ wells.forEach(w=>{ w.lit=.85; const r=Math.random(); w.k=r<.06?0:r<.17?2:1; }); cards.forEach((c,i)=>reveal(i)); draw(0); addEventListener('resize',()=>draw(0)); return; }
