@@ -79,7 +79,7 @@ html[lang="ru"] [lang="en"], html[lang="en"] [lang="ru"]{display:none!important}
 
 main{max-width:880px;padding:clamp(56px,9vw,128px) var(--gutter) clamp(72px,10vw,140px)}
 @media(min-width:1000px){main{margin-left:max(var(--gutter),calc((100vw - 1560px)/2 + var(--gutter)));padding-left:0}}
-h1{font-family:var(--display);font-weight:300;font-size:clamp(24px,6.8vw,96px);letter-spacing:-.05em;line-height:.95;margin:16px 0 0}
+h1{font-family:var(--display);font-weight:300;font-size:clamp(21px,6.8vw,96px);letter-spacing:-.05em;line-height:.95;margin:16px 0 0}
 .upd{margin-top:28px}
 .lead{font-size:clamp(19px,1.8vw,22px);color:var(--ink);margin:40px 0 0;max-width:40em}
 section{border-top:1px solid var(--line);margin-top:56px;padding-top:28px;display:grid;grid-template-columns:56px 1fr;gap:0 24px}
@@ -192,7 +192,7 @@ html.glitch main :is(h1,h2,h3,p,a,b,span,li,em,strong,figcaption),html.glitch fo
     <div lang="ru">
       <h2>Если вы мне пишете</h2>
       <p>В Telegram или на почту <a href="mailto:kuznetsov-photo.art@yandex.ru">kuznetsov-photo.art@yandex.ru</a> я получаю только то, что вы отправили сами: имя, контакт и текст. Использую это, чтобы ответить и обсудить задачу, и никому не передаю. Напишите — и я удалю переписку</p>
-      <p>Behance, LinkedIn, Хабр Карьера и Telegram открываются на своих сайтах и работают по своим правилам</p>
+      <p>Behance, LinkedIn, Habr Career и Telegram открываются на своих сайтах и работают по своим правилам</p>
     </div>
     <div lang="en">
       <h2>If you write to me</h2>
@@ -242,7 +242,7 @@ const NB=s=>{ for(let k=0;k<2;k++) s=s.replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2
 (function walk(n){ for(const c of n.childNodes){ if(c.nodeType===3) c.nodeValue=NB(c.nodeValue); else if(c.nodeType===1&&!/^(SCRIPT|STYLE)$/.test(c.tagName)) walk(c); } })(document.querySelector('main'));
 /* RU / EN */
 const root=document.documentElement, lb=document.getElementById('lang');
-const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>EN</b>'; document.title=l==='ru'?'Конфиденциальность • Andrew Kuznetsov':'Privacy • Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='ru'?'Наверх':'Back to top'); };
+const setLang=l=>{ root.lang=l; lb.innerHTML=l==='ru'?'<b>RU</b> / EN':'RU / <b>EN</b>'; document.title=l==='ru'?'Конфиденциальность • Andrew Kuznetsov':'Privacy • Andrew Kuznetsov'; document.getElementById('totop').setAttribute('aria-label',l==='ru'?'Наверх':'Back to top'); document.getElementById('theme').setAttribute('aria-label',l==='ru'?'Переключить тему':'Toggle theme'); };
 setLang(root.lang==='en'?'en':'ru');
 function glitch(){ /* language glitch: instant switch, then ~0.28 s RGB split + jitter (same as the home page) */
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; const d=document.documentElement;

@@ -663,6 +663,9 @@ function render(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(d[k]!=null) el.textContent=NB(d[k]);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml; if(d[k]!=null) el.innerHTML=NB(d[k]);});
   root.lang=lang; root.classList.remove('i18n-wait');
+  { const L=lang==='ru'; const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.setAttribute('aria-label',v); }; /* screen-reader labels follow the language */
+    set('lang',L?'Сменить язык':'Switch language'); set('theme',L?'Переключить тему':'Toggle theme'); set('totop',L?'Наверх':'Back to top'); set('focus',L?'Направления':'What I do'); set('ht',L?'Андрей Кузнецов':'Andrew Kuznetsov');
+    const im=document.querySelector('.ht-src'); if(im) im.alt=L?'Андрей Кузнецов':'Andrew Kuznetsov'; }
   { const cp=document.getElementById('copy'); if(cp){ cp.setAttribute('aria-label',d['c.copy']); cp.title=d['c.copy']; } }
   document.getElementById('lang').innerHTML = lang==='ru' ? '<b>RU</b> / EN' : 'RU / <b>EN</b>';
   // name
@@ -672,12 +675,12 @@ function render(){
   document.getElementById('cases').innerHTML = CASES.map((c,i)=>`
     <a class="row soon rv" tabindex="0" role="button" data-k="${c.k||''}" data-cur="${d.wip}">
       <h3>${caseT(c[lang].t)}</h3>
-      <span class="meta"><span class="res"><span class="yr">${c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${x}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
+      <span class="meta"><span class="res"><span class="yr">${c.y}</span>${c[lang].r.split(' · ').map(x=>`<span>${NB(x)}</span>`).join('')}</span><span class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</span></span>
       <span class="th">${c.i||(c.k&&COVERS[c.k])?`<img src="${c.i||COVERS[c.k]}" alt="" loading="lazy">`:d.soon}</span>
     </a>`).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
-      <span class="cap"><b>${a[lang]}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>
+      <span class="cap"><b>${NB(a[lang])}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>
     </a>`;
   const per=Math.ceil(ARCH.length/AROWS);
   document.getElementById('arch').innerHTML = Array.from({length:AROWS},(_,r)=>{const items=ARCH.slice(r*per,(r+1)*per);
