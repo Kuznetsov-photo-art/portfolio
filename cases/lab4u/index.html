@@ -283,7 +283,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .panel img{width:100%;filter:var(--shot);transition:filter .8s}
 
 /* design system: tokens that flip with the page theme */
-.dsg{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,72px);align-items:start}
+.dsg{display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,72px);align-items:start} /* tokens only: the lone input demo and the Filter panel are out for now (Andrey, 18.10) */
 .toks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .tok{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;min-width:0}
 .tok i{display:block;height:58px;border-radius:7px;background:var(--l);box-shadow:inset 0 0 0 1px var(--line);transition:background .8s}
@@ -834,15 +834,6 @@ body{font-optical-sizing:auto}
         <div class="tok"><i style="--l:#EF5350;--d:#D64A48"></i><b>Status/Negative</b><span><em class="l x">#EF5350</em><em class="d">#D64A48</em></span></div>
       </div>
     </div>
-    <div class="r">
-      <div class="lbl"><span>inputLG · 13 состояний</span><span>Нажмите на точку</span></div>
-      <div class="inp" id="inp" data-s="default">
-        <div class="fld"><svg class="il" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.3 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/></svg><span class="tx"><span class="lb">Город</span><span class="v"></span></span><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A1.5 1.5 0 0 1 19 11.5v8a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-8A1.5 1.5 0 0 1 6.5 10H7zm2 0h6V8a3 3 0 0 0-6 0v2z"/></svg></div>
-        <div class="hint"></div>
-        <div class="now"><span>state</span><b id="inpS">default</b></div>
-        <div class="dots" id="inpD"></div>
-      </div>
-    </div>
   </div>
   <div class="wrap tscale r">
     <div><span>Title/8XL · 48/64 · Bold</span><p style="font-size:clamp(28px,3.4vw,48px);line-height:1.33;font-weight:700">Анализы со скидкой до 50%</p></div>
@@ -850,10 +841,6 @@ body{font-optical-sizing:auto}
     <div><span>Title/L · 14/20 · SemiBold</span><p style="font-size:14px;line-height:20px;font-weight:600">Клинический анализ крови с лейкоцитарной формулой</p></div>
     <div><span>Body/XL · 16/24</span><p style="font-size:16px;line-height:24px">Результаты придут в личный кабинет и приложение</p></div>
     <div><span>Body/M · 12/16</span><p style="font-size:12px;line-height:16px;color:var(--ink-2)">Результаты с 30.05 по 08.06 · 3–5 дней</p></div>
-  </div>
-  <div class="wrap blk">
-    <figure class="panel r"><img src="/cases/lab4u/img/ds_tiles.webp" width="1600" height="642" alt="" loading="lazy" decoding="async"></figure>
-    <span class="cap">15 категорий анализов с 3D‑иллюстрациями · фильтры на фоне и на карте</span>
   </div>
   <div class="wrap feats r">
     <div><span class="k">01</span><b>Тёмная тема на токенах</b><p>Black Inverse — #030204 в светлой теме и #FFFFFF в тёмной, Fixed не меняется</p></div>
