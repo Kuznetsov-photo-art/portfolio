@@ -123,14 +123,29 @@ own(lathe('Eyepiece', [(0, 0), (.17, 0), (.17, .12), (.13, .17), (.13, .6), (.16
           ['body', 'body', 'body', 'body', 'chrome', 'dark', 'dark', 'dark'], ep))
 own(lathe('EyeLens', [(0, .881), (.1, .881), (.1, .886), (0, .886)], 48, ['lamp'] * 3, ep, bevel=0))
 
-# nosepiece: a pivot (empty) on the vertical axis; three objectives hang .2 off it and turn with it, the one over the slide is active
-pivot = bpy.data.objects.new('Nosepiece', None); sc.collection.objects.link(pivot); pivot.parent = root; pivot.location = J((0, 0, 0))
-lathe('Turret', [(0, 2.3), (.33, 2.3), (.38, 2.38), (.36, 2.48), (0, 2.48)], 72, ['chrome'] * 4, parent=pivot)
-OBJ = [(0, 1.82), (.045, 1.82), (.06, 1.86), (.072, 1.92), (.072, 2.03), (.082, 2.05), (.082, 2.09), (.082, 2.2), (.094, 2.23), (.094, 2.3), (0, 2.3)]
-for o in range(3):
+# nosepiece, as on a real microscope: the turret turns round an axis tilted by NB from the optical axis; the objectives sit on a cone
+# round it, their axes meeting at the apex NA above (on the optical axis). So whichever objective is turned in stands vertical
+# over the slide and aims at the same point. Hierarchy: Nosepiece (tilted, at the turret face centre) → NosepieceSpin (the site
+# turns it round its local up axis) → Turret + Objective1–3. Objective lengths differ like 4×, 10×, 40×
+NB, NA, NH = radians(20), (0, 2.95, .2), .58                   # tilt, apex, apex → face distance along the axis
+C0 = (0, NA[1] - NH * cos(NB), NA[2] - NH * sin(NB))           # turret face centre (behind the optical axis, toward the arm)
+RM = NH * math.tan(NB)                                        # objective seat radius on the face
+pivot = bpy.data.objects.new('Nosepiece', None); sc.collection.objects.link(pivot); pivot.parent = root
+pivot.location = J(C0); pivot.rotation_euler = (NB, 0, 0)     # local up = (0, cos NB, sin NB) in canvas coords
+spin = bpy.data.objects.new('NosepieceSpin', None); sc.collection.objects.link(spin); spin.parent = pivot
+lathe('Turret', [(0, -.03), (.26, -.03), (.34, .02), (.4, .1), (.41, .13), (.41, .21), (.38, .25), (.31, .33), (.23, .4), (.2, .44), (.2, .56), (0, .56)], 72,
+      ['chrome', 'chrome', 'chrome', 'chrome', 'dark', 'chrome', 'chrome', 'chrome', 'chrome', 'body', 'body'], parent=spin)  # a dome with a knurled grip ring
+W = (0, cos(NB), -sin(NB)); E2 = (0, sin(NB), cos(NB))       # the working objective's axis (tip → seat) in the turret frame, and a normal to it
+for o, Lo in enumerate((.5, .42, .56)):
     A = o * 2 * pi / 3; band = 'acc' if o == 0 else 'band'
-    turn = lambda q, A=A: (q[0] * cos(A) + (q[2] + .2) * sin(A), q[1], -q[0] * sin(A) + (q[2] + .2) * cos(A))
-    lathe('Objective%d' % (o + 1), OBJ, 48, ['chrome', 'chrome', 'dark', 'dark', 'chrome', band, 'dark', 'dark', 'chrome', 'chrome'], turn, parent=pivot)
+    prof = [(0, 0), (.035, 0), (.048, .025), (.055, .07), (.068, .11), (.072, Lo - .24), (.082, Lo - .22), (.082, Lo - .18), (.078, Lo - .16),
+            (.09, Lo - .13), (.09, Lo - .05), (.096, Lo - .035), (.096, Lo), (0, Lo)]
+    mats = ['chrome', 'chrome', 'chrome', 'dark', 'dark', 'dark', band, 'dark', 'dark', 'dark', 'chrome', 'chrome', 'chrome']
+    def place(q, A=A, Lo=Lo):                                    # lathe frame (axis = y, tip at 0) → turret frame
+        t = q[1] - Lo; x = q[0]; z = q[2]
+        p = (x + W[0] * t + E2[0] * z, W[1] * t + E2[1] * z, RM + W[2] * t + E2[2] * z)
+        return (p[0] * cos(A) + p[2] * sin(A), p[1], -p[0] * sin(A) + p[2] * cos(A))
+    lathe('Objective%d' % (o + 1), prof, 48, mats, place, parent=spin)
 
 # a floor that only catches the shadow (the render stays transparent, so it sits on either theme)
 bpy.ops.mesh.primitive_plane_add(size=14, location=(0, 0, 0)); fl = bpy.context.active_object; fl.name = 'ShadowCatcher'; fl.is_shadow_catcher = True

@@ -1,9 +1,10 @@
 /* Lab4U hero v22 — the microscope from Blender as live 3D (three.js), loaded only with ?hero=microscope.
    The page's hero loop drives it: window.__m3d(p, dt, yaw, pit) each frame, p = the scan pass 0…1.
-   The model turns slowly and leans toward the pointer, the nosepiece swaps objectives each pass; the slide is real glass;
+   The model turns slowly and leans toward the pointer; the tilted nosepiece swaps objectives each pass and the working one sends
+   a blue beam to one fixed point on the slide (every objective turned in aims at the same point, as on a real microscope); the slide is real glass;
    in the dark theme the body is gloss black; everything is glossy and lit like a product shot (Andrey, 18.10). Build: npm run build → cases/lab4u/3d/m3d.min.js */
 import { WebGLRenderer, Scene, PerspectiveCamera, DirectionalLight, Mesh, PlaneGeometry, BoxGeometry, ShadowMaterial, PMREMGenerator, Group,
-  MeshBasicMaterial, MeshPhysicalMaterial, Color, AgXToneMapping, SRGBColorSpace, PCFShadowMap, BackSide, DoubleSide, Vector3 } from 'three';
+  MeshBasicMaterial, MeshPhysicalMaterial, CylinderGeometry, CircleGeometry, Color, AgXToneMapping, SRGBColorSpace, VSMShadowMap, BackSide, DoubleSide, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
@@ -15,7 +16,7 @@ if (!cv || !box) fail(); else init().catch(fail);
 
 async function init() {
   const R = new WebGLRenderer({ canvas: cv, alpha: true, antialias: true, powerPreference: 'high-performance' });
-  R.toneMapping = AgXToneMapping; R.outputColorSpace = SRGBColorSpace; R.shadowMap.enabled = true; R.shadowMap.type = PCFShadowMap;
+  R.toneMapping = AgXToneMapping; R.outputColorSpace = SRGBColorSpace; R.shadowMap.enabled = true; R.shadowMap.type = VSMShadowMap; /* soft, well-diffused shadows */
   const S = new Scene(), pm = new PMREMGenerator(R);
   /* a photo studio for the reflections: a dark (or light grey) room with softboxes — gloss shows as crisp highlights, not a grey film */
   const studio = light => { const e = new Scene();
@@ -32,7 +33,7 @@ async function init() {
 
   /* light as in the Blender scene: a key from the upper left, a cool rim from behind, a soft fill */
   const key = new DirectionalLight(0xffffff, 2.6); key.position.set(-5, 7, 6); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
-  Object.assign(key.shadow.camera, { left: -3.2, right: 3.2, top: 3.2, bottom: -3.2, near: 2, far: 22 }); key.shadow.radius = 7; key.shadow.bias = -.0004; key.shadow.normalBias = .02;
+  Object.assign(key.shadow.camera, { left: -3.2, right: 3.2, top: 3.2, bottom: -3.2, near: 2, far: 22 }); key.shadow.radius = 18; key.shadow.blurSamples = 24; key.shadow.bias = -.0006; key.shadow.normalBias = .03;
   const rim = new DirectionalLight(0xbfe5ff, 2); rim.position.set(5, 5, -6);
   const fill = new DirectionalLight(0xffffff, .5); fill.position.set(7, 1.5, 3);
   S.add(key, rim, fill);
@@ -54,14 +55,23 @@ async function init() {
   M.traverse(o => { if (!o.isMesh) return; o.castShadow = o.material.name !== 'Slide'; o.receiveShadow = true; o.material = phys(o.material); });
   /* body colour by theme: light grey lacquer in the light theme, gloss black in the dark one */
   const EN = [...made.values()].filter(m => m.name === 'Enamel').map(m => ({ m, c: m.color.clone() }));
-  const BLACK = new Color(0x0e0f11); let themeDark = null; /* a lifted black: the lacquer must read lighter than the #0A0A0A page (Andrey, 18.10) */
-  const theme = dark => { themeDark = dark; EN.forEach(e => e.m.color.copy(dark ? BLACK : e.c));
+  const BLACK = new Color(0x0e0f11), WHITE = new Color(0xf3f4f5); let themeDark = null; /* light theme: a white microscope (Andrey, 18.10) */ /* a lifted black: the lacquer must read lighter than the #0A0A0A page (Andrey, 18.10) */
+  const theme = dark => { themeDark = dark; EN.forEach(e => e.m.color.copy(dark ? BLACK : WHITE)); beamM.color.set(dark ? 0x19c6e2 : 0x00a0c4); spotM.color.copy(beamM.color);
     S.environment = dark ? ENV.dark : ENV.light; S.environmentIntensity = 1;
-    R.toneMappingExposure = dark ? 1.3 : 1.12; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : .5; floorM.opacity = dark ? .6 : .2; };
+    R.toneMappingExposure = dark ? 1.3 : 1.16; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : .6; floorM.opacity = dark ? .45 : .11;
+    if ('intensity' in key.shadow) key.shadow.intensity = dark ? .75 : .55; };
   const spin = new Group(); spin.add(M); S.add(spin);
 
   /* the nosepiece turns round its own axis; each objective's band is lit by how close it is to the working position */
-  const nose = M.getObjectByName('Nosepiece');
+  const nose = M.getObjectByName('NosepieceSpin');
+  /* the beam: from the working objective's tip straight down to one point on the slide (F); a soft spot where it lands.
+     Tip height = apex 2.95 − seat distance .617 − objective length (4×/10×/40×: .5, .42, .56 — as built in microscope.py) */
+  const F = new Vector3(0, 1.247, .2), LO = [.5, .42, .56];
+  const beamM = new MeshBasicMaterial({ color: 0x19c6e2, transparent: true, depthWrite: false }), glowM = beamM.clone(), spotM = beamM.clone();
+  const rod = new CylinderGeometry(1, 1, 1, 20, 1, true); rod.translate(0, .5, 0);
+  const beam = new Mesh(rod, beamM), glow = new Mesh(rod, glowM), spot = new Mesh(new CircleGeometry(1, 40), spotM), core = new Mesh(new CircleGeometry(1, 32), beamM);
+  for (const m of [spot, core]) { m.rotation.x = -Math.PI / 2; m.position.copy(F); m.position.y += .002; }
+  spot.scale.setScalar(.075); core.scale.setScalar(.022); beam.position.copy(F); glow.position.copy(F); M.add(beam, glow, spot, core);
   const CY = new Color(0x00b6d3), DK = new Color(0x0b0c0d);
   const bands = [1, 2, 3].map(i => { let b = null; const o = M.getObjectByName('Objective' + i);
     o && o.traverse(m => { if (m.isMesh && /^Band/.test(m.material.name)) { m.material = m.material.clone(); b = m.material; } }); return b; });
@@ -83,7 +93,11 @@ async function init() {
     spin.rotation.y = -1.08 + t * .22 + yaw * .6; /* starts at the Blender hero angle (the right side toward the viewer) */
     const el = .26 + pit * .35; cam.position.set(0, T.y + Math.sin(el) * D, Math.cos(el) * D); cam.lookAt(T);
     const dark = document.body.classList.contains('dark'); if (dark !== themeDark) theme(dark);
-    bands.forEach((b, i) => { if (!b) return; const a = act(i); b.color.copy(DK).lerp(CY, a); b.emissive.copy(CY).multiplyScalar(a * .35); });
+    let wi = 0; bands.forEach((b, i) => { const a = act(i); if (a > act(wi)) wi = i; if (!b) return; b.color.copy(DK).lerp(CY, a); b.emissive.copy(CY).multiplyScalar(a * .35); });
+    /* the beam shows only while an objective stands in place; it goes out while the nosepiece turns */
+    const on = Math.max(0, Math.min(1, (act(wi) - .85) / .15)), L = 2.95 - .617 - LO[wi] - F.y, pl = .8 + .2 * Math.sin(t * 5);
+    beam.scale.set(.007, L, .007); glow.scale.set(.03, L, .03);
+    beamM.opacity = .95 * on; glowM.opacity = .22 * on * pl; spotM.opacity = .35 * on * pl; for (const m of [beam, glow, spot, core]) m.visible = on > .01;
     R.render(S, cam);
     if (!cv.classList.contains('on')) cv.classList.add('on'); };
 
