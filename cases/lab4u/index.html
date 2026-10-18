@@ -1093,8 +1093,9 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
       gx.lineWidth=1.4; gx.strokeStyle=`rgba(${acc},.85)`; gx.stroke(); }
     gN.textContent=n; };
   const newRead=()=>{ hit=hit.map(()=>false); tgt=VAL.map(v=>v[3]?.08+Math.random()*.06:Math.max(B0+.03,Math.min(B1-.03,v[2]+(Math.random()-.5)*.12))); rdText(); };
-  /* ---- hero variants for the right-hand visual, picked by the address: ?hero=conveyor (v19), ?hero=microscope (v26, 3D); no parameter → the sphere (v16) ---- */
-  const HV=(new URLSearchParams(location.search).get('hero')||'').toLowerCase();
+  /* ---- the right-hand visual: the 3D microscope by default (v26, Andrey 18.10); others by the address: ?hero=sphere (v16), ?hero=conveyor (v19).
+     Without WebGL the microscope falls back to the sphere ---- */
+  const HV=(new URLSearchParams(location.search).get('hero')||'microscope').toLowerCase();
   const pal=()=>{ const dk=document.body.classList.contains('dark'); return {dk,ink:dk?'255,255,255':'10,10,10',acc:dk?'25,198,226':'0,160,196',wrn:dk?'255,180,67':'229,138,0',bg:dk?'#0A0A0A':'#FFFFFF'}; };
   /* camera: yaw around the vertical, pitch toward the viewer, perspective distance D, scale S, screen centre cx/cy */
   const cam=(yaw,pitch,D,S,cx,cy)=>{ const cyw=Math.cos(yaw), syw=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
