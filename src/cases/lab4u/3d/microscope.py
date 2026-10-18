@@ -27,12 +27,12 @@ def mat(name, color, rough=.4, metal=0., coat=0., emit=None, estr=0., trans=0., 
     if trans: I['Transmission Weight'].default_value = trans; I['IOR'].default_value = ior
     return m
 M = {
-    'body':  mat('Enamel', (.44, .46, .48), rough=.34, coat=.45),          # painted cast body
-    'dark':  mat('Anodized', (.035, .037, .04), rough=.38, metal=.4),      # stage, knobs, objective barrels
-    'chrome': mat('Chrome', (.86, .88, .9), rough=.12, metal=1.),          # rings and objective tips
+    'body':  mat('Enamel', (.44, .46, .48), rough=.14, coat=1.),           # lacquered cast body (on the site: gloss black in the dark theme)
+    'dark':  mat('Anodized', (.035, .037, .04), rough=.2, metal=.55, coat=.8),  # stage, knobs, objective barrels
+    'chrome': mat('Chrome', (.86, .88, .9), rough=.03, metal=1.),          # rings and objective tips
     'acc':   mat('BandActive', (0., .55, .72), rough=.15, coat=.6),        # the band on the active objective (the site recolours bands by name)
     'band':  mat('Band', (.035, .037, .04), rough=.3, metal=.4),            # the band on the others
-    'glass': mat('Slide', (.2, .75, .9), rough=.05, trans=.55, ior=1.5, emit=(0., .55, .75), estr=.9),  # the glass slide, lit from below
+    'glass': mat('Slide', (.93, 1., .97), rough=.02, trans=1., ior=1.52),  # the glass slide: clear soda-lime glass
     'lamp':  mat('Lamp', (0., .7, .85), emit=(0., .62, .9), estr=2.2),     # the illuminator and the eye lens
 }
 
