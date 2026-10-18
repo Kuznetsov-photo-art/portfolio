@@ -19,7 +19,7 @@ async function init() {
   const S = new Scene(), pm = new PMREMGenerator(R);
   /* a photo studio for the reflections: a dark (or light grey) room with softboxes — gloss shows as crisp highlights, not a grey film */
   const studio = light => { const e = new Scene();
-    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: light ? 0x3f4246 : 0x030304, side: BackSide })));
+    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: light ? 0x4a4d52 : 0x1c1d21, side: BackSide })));
     const box = (w, h, c, k, pos) => { const m = new Mesh(new PlaneGeometry(w, h), new MeshBasicMaterial({ color: new Color(c).multiplyScalar(k), side: DoubleSide }));
       m.position.set(...pos); m.lookAt(0, 2, 0); e.add(m); };
     box(12, 5, 0xffffff, light ? 3 : 4, [0, 11, 1]);         /* the big top softbox */
@@ -54,10 +54,10 @@ async function init() {
   M.traverse(o => { if (!o.isMesh) return; o.castShadow = o.material.name !== 'Slide'; o.receiveShadow = true; o.material = phys(o.material); });
   /* body colour by theme: light grey lacquer in the light theme, gloss black in the dark one */
   const EN = [...made.values()].filter(m => m.name === 'Enamel').map(m => ({ m, c: m.color.clone() }));
-  const BLACK = new Color(0x020203); let themeDark = null;
+  const BLACK = new Color(0x0e0f11); let themeDark = null; /* a lifted black: the lacquer must read lighter than the #0A0A0A page (Andrey, 18.10) */
   const theme = dark => { themeDark = dark; EN.forEach(e => e.m.color.copy(dark ? BLACK : e.c));
     S.environment = dark ? ENV.dark : ENV.light; S.environmentIntensity = 1;
-    rim.intensity = dark ? 2.6 : 1.4; key.intensity = dark ? 2.2 : 2.2; fill.intensity = dark ? .3 : .4; floorM.opacity = dark ? .6 : .2; };
+    R.toneMappingExposure = dark ? 1.3 : 1.12; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : .5; floorM.opacity = dark ? .6 : .2; };
   const spin = new Group(); spin.add(M); S.add(spin);
 
   /* the nosepiece turns round its own axis; each objective's band is lit by how close it is to the working position */

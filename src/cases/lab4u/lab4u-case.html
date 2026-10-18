@@ -1068,7 +1068,7 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
       gx.lineWidth=1.4; gx.strokeStyle=`rgba(${acc},.85)`; gx.stroke(); }
     gN.textContent=n; };
   const newRead=()=>{ hit=hit.map(()=>false); tgt=VAL.map(v=>v[3]?.08+Math.random()*.06:Math.max(B0+.03,Math.min(B1-.03,v[2]+(Math.random()-.5)*.12))); rdText(); };
-  /* ---- hero variants for the right-hand visual, picked by the address: ?hero=conveyor (v19), ?hero=microscope (v22, 3D); no parameter → the sphere (v16) ---- */
+  /* ---- hero variants for the right-hand visual, picked by the address: ?hero=conveyor (v19), ?hero=microscope (v23, 3D); no parameter → the sphere (v16) ---- */
   const HV=(new URLSearchParams(location.search).get('hero')||'').toLowerCase();
   const pal=()=>{ const dk=document.body.classList.contains('dark'); return {dk,ink:dk?'255,255,255':'10,10,10',acc:dk?'25,198,226':'0,160,196',wrn:dk?'255,180,67':'229,138,0',bg:dk?'#0A0A0A':'#FFFFFF'}; };
   /* camera: yaw around the vertical, pitch toward the viewer, perspective distance D, scale S, screen centre cx/cy */
@@ -1173,7 +1173,7 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
     }
   };
 
-  /* v21–v22 — the microscope: the 3D module (cases/lab4u/3d/m3d.min.js) draws it; here only the scan pass, the pointer and the counter */
+  /* v21–v23 — the microscope: the 3D module (cases/lab4u/3d/m3d.min.js) draws it; here only the scan pass, the pointer and the counter */
   const micro=(p,dt)=>{ if(window.__m3d) window.__m3d(p,dt,yaw,pit); const n=Math.min(12,Math.floor(p*12)); setCount(p>=1?12:n, n>1||p>=1); };
   const draw=(dt)=>{
     yaw+=(yawT-yaw)*.04; pit+=(pitT-pit)*.04;
