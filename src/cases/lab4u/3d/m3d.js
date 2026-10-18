@@ -20,7 +20,7 @@ async function init() {
   const S = new Scene(), pm = new PMREMGenerator(R);
   /* a photo studio for the reflections: a dark (or light grey) room with softboxes — gloss shows as crisp highlights, not a grey film */
   const studio = light => { const e = new Scene();
-    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: light ? 0x4a4d52 : 0x1c1d21, side: BackSide })));
+    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: light ? 0x8d9095 : 0x1c1d21, side: BackSide })));
     const box = (w, h, c, k, pos) => { const m = new Mesh(new PlaneGeometry(w, h), new MeshBasicMaterial({ color: new Color(c).multiplyScalar(k), side: DoubleSide }));
       m.position.set(...pos); m.lookAt(0, 2, 0); e.add(m); };
     box(12, 5, 0xffffff, light ? 3 : 4, [0, 11, 1]);         /* the big top softbox */
@@ -58,14 +58,14 @@ async function init() {
   const BLACK = new Color(0x0e0f11), WHITE = new Color(0xf3f4f5); let themeDark = null; /* light theme: a white microscope (Andrey, 18.10) */ /* a lifted black: the lacquer must read lighter than the #0A0A0A page (Andrey, 18.10) */
   const theme = dark => { themeDark = dark; EN.forEach(e => e.m.color.copy(dark ? BLACK : WHITE)); beamM.color.set(dark ? 0x19c6e2 : 0x00a0c4); spotM.color.copy(beamM.color);
     S.environment = dark ? ENV.dark : ENV.light; S.environmentIntensity = 1;
-    R.toneMappingExposure = dark ? 1.3 : 1.16; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : .6; floorM.opacity = dark ? .45 : .11;
+    R.toneMappingExposure = dark ? 1.3 : 1.32; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : 1.1; floorM.opacity = dark ? .45 : .11;
     if ('intensity' in key.shadow) key.shadow.intensity = dark ? .75 : .55; };
   const spin = new Group(); spin.add(M); S.add(spin);
 
   /* the nosepiece turns round its own axis; each objective's band is lit by how close it is to the working position */
   const nose = M.getObjectByName('NosepieceSpin');
   /* the beam: from the working objective's tip straight down to one point on the slide (F); a soft spot where it lands.
-     Tip height = apex 2.95 − seat distance .617 − objective length (4×/10×/40×: .5, .42, .56 — as built in microscope.py) */
+     Tip height = apex 2.75 − seat distance .681 / cos 20° − objective length (4×/10×/40×: .5, .42, .56 — as built in microscope.py) */
   const F = new Vector3(0, 1.247, .2), LO = [.5, .42, .56];
   const beamM = new MeshBasicMaterial({ color: 0x19c6e2, transparent: true, depthWrite: false }), glowM = beamM.clone(), spotM = beamM.clone();
   const rod = new CylinderGeometry(1, 1, 1, 20, 1, true); rod.translate(0, .5, 0);
@@ -95,7 +95,7 @@ async function init() {
     const dark = document.body.classList.contains('dark'); if (dark !== themeDark) theme(dark);
     let wi = 0; bands.forEach((b, i) => { const a = act(i); if (a > act(wi)) wi = i; if (!b) return; b.color.copy(DK).lerp(CY, a); b.emissive.copy(CY).multiplyScalar(a * .35); });
     /* the beam shows only while an objective stands in place; it goes out while the nosepiece turns */
-    const on = Math.max(0, Math.min(1, (act(wi) - .85) / .15)), L = 2.95 - .617 - LO[wi] - F.y, pl = .8 + .2 * Math.sin(t * 5);
+    const on = Math.max(0, Math.min(1, (act(wi) - .85) / .15)), L = 2.75 - .681 / Math.cos(.349066) - LO[wi] - F.y, pl = .8 + .2 * Math.sin(t * 5);
     beam.scale.set(.007, L, .007); glow.scale.set(.03, L, .03);
     beamM.opacity = .95 * on; glowM.opacity = .22 * on * pl; spotM.opacity = .35 * on * pl; for (const m of [beam, glow, spot, core]) m.visible = on > .01;
     R.render(S, cam);

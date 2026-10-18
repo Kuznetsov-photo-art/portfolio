@@ -117,7 +117,7 @@ for sd, nm in ((-1, 'L'), (1, 'R')): own(slab('Clip' + nm, sd * .62, .08, .13, .
 own(lathe('Condenser', [(0, .72), (.13, .72), (.16, .76), (.16, .96), (.19, 1.0), (.19, 1.13), (0, 1.13)], 64, ['dark', 'dark', 'dark', 'chrome', 'chrome', 'chrome'], at(0, 0, .2)))
 
 # head on top of the arm, the eyepiece leaning toward the viewer, the eye lens glowing
-own(slab('Head', 0, -.02, .62, .92, .24, 2.48, 2.92, 'body', bevel=.05))
+own(slab('Head', 0, .04, .62, 1.04, .24, 2.48, 2.92, 'body', bevel=.05))  # reaches forward over the nosepiece
 ep = at(0, 2.86, .12, rotX(.62))
 own(lathe('Eyepiece', [(0, 0), (.17, 0), (.17, .12), (.13, .17), (.13, .6), (.16, .64), (.16, .86), (.13, .88), (0, .88)], 64,
           ['body', 'body', 'body', 'body', 'chrome', 'dark', 'dark', 'dark'], ep))
@@ -127,14 +127,16 @@ own(lathe('EyeLens', [(0, .881), (.1, .881), (.1, .886), (0, .886)], 48, ['lamp'
 # round it, their axes meeting at the apex NA above (on the optical axis). So whichever objective is turned in stands vertical
 # over the slide and aims at the same point. Hierarchy: Nosepiece (tilted, at the turret face centre) → NosepieceSpin (the site
 # turns it round its local up axis) → Turret + Objective1–3. Objective lengths differ like 4×, 10×, 40×
-NB, NA, NH = radians(20), (0, 2.95, .2), .58                   # tilt, apex, apex → face distance along the axis
-C0 = (0, NA[1] - NH * cos(NB), NA[2] - NH * sin(NB))           # turret face centre (behind the optical axis, toward the arm)
+# The turret leans forward: the idle objectives swing out to the front and sides, clear of the arm (Andrey, 18.10), and the dome
+# hangs under the head with a visible gap, held by a thin shaft.
+NB, NA, NH = radians(20), (0, 2.75, .2), .681                  # tilt, apex, apex → face distance along the axis (face centre at y 2.11)
+C0 = (0, NA[1] - NH * cos(NB), NA[2] + NH * sin(NB))           # turret face centre (in front of the optical axis)
 RM = NH * math.tan(NB)                                        # objective seat radius on the face
 pivot = bpy.data.objects.new('Nosepiece', None); sc.collection.objects.link(pivot); pivot.parent = root
-pivot.location = J(C0); pivot.rotation_euler = (NB, 0, 0)     # local up = (0, cos NB, sin NB) in canvas coords
+pivot.location = J(C0); pivot.rotation_euler = (NB, 0, pi)    # tilt, then a half turn round the vertical: the frame below is built leaning back and is turned to face front
 spin = bpy.data.objects.new('NosepieceSpin', None); sc.collection.objects.link(spin); spin.parent = pivot
-lathe('Turret', [(0, -.03), (.26, -.03), (.34, .02), (.4, .1), (.41, .13), (.41, .21), (.38, .25), (.31, .33), (.23, .4), (.2, .44), (.2, .56), (0, .56)], 72,
-      ['chrome', 'chrome', 'chrome', 'chrome', 'dark', 'chrome', 'chrome', 'chrome', 'chrome', 'body', 'body'], parent=spin)  # a dome with a knurled grip ring
+lathe('Turret', [(0, -.03), (.24, -.03), (.32, .03), (.36, .08), (.36, .15), (.32, .19), (.2, .25), (.1, .27), (.1, .58), (0, .58)], 72,
+      ['chrome', 'chrome', 'chrome', 'dark', 'chrome', 'chrome', 'chrome', 'dark', 'dark'], parent=spin)  # a low dome with a knurled grip ring on a thin shaft
 W = (0, cos(NB), -sin(NB)); E2 = (0, sin(NB), cos(NB))       # the working objective's axis (tip → seat) in the turret frame, and a normal to it
 for o, Lo in enumerate((.5, .42, .56)):
     A = o * 2 * pi / 3; band = 'acc' if o == 0 else 'band'
