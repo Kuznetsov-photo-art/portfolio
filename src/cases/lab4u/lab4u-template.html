@@ -138,6 +138,11 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .h-viz{position:relative;z-index:2;justify-self:end;width:min(100%,540px);aspect-ratio:1}
 .h-viz::before{content:'';position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(closest-side,var(--h-bg) 52%,color-mix(in srgb,var(--h-bg) 70%,transparent) 72%,transparent 100%);pointer-events:none} /* a calm patch of background so the helix does not run through the sphere */
 .h-viz canvas{position:absolute;inset:-18%;width:136%;height:136%;display:block} /* the canvas spills past the box: room for the needle labels */
+.hero #big{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block;pointer-events:none} /* the conveyor and the microscope (?hero=…) draw over the whole hero, under the copy */
+.hero.hv-big .h-viz::before,.hero.hv-big #globe{display:none}
+.hero.hv-big #plate{opacity:.45} /* the helix steps back behind the big visual */
+.hero.hv-big .gv-cap{bottom:-20%}
+@media(max-width:860px){.hero.hv-big .h-viz{margin-bottom:110px}.hero.hv-big .gv-cap{bottom:-28%}}
 .gv-cap{position:absolute;left:50%;bottom:-12%;transform:translateX(-50%);display:flex;align-items:baseline;gap:10px;white-space:nowrap;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--h-ink3)}
 .gv-cap b{font:600 30px/1 var(--body);letter-spacing:-.03em;color:var(--h-ink);font-variant-numeric:tabular-nums;text-transform:none}
 .gv-cap em{font-style:normal;color:var(--h-warn)}
@@ -510,7 +515,7 @@ body{font-optical-sizing:auto}
     <div class="h-meta">
       <div><b>Роль</b>Lead Product Designer</div>
       <div><b>Команда</b>Единственный дизайнер</div>
-      <div><b>Платформы</b>Web · <a href="https://apps.apple.com/ru/app/lab4u-%D1%81%D0%B4%D0%B0%D1%82%D1%8C-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D1%8B/id1599966953" target="_blank" rel="noopener">iOS</a> · <a href="https://play.google.com/store/apps/details?id=ru.lab4u.android" target="_blank" rel="noopener">Android</a></div>
+      <div><b>Платформы</b><a href="https://lab4u.ru/" target="_blank" rel="noopener">Web</a> · <a href="https://apps.apple.com/ru/app/lab4u-%D1%81%D0%B4%D0%B0%D1%82%D1%8C-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D1%8B/id1599966953" target="_blank" rel="noopener">iOS</a> · <a href="https://play.google.com/store/apps/details?id=ru.lab4u.android" target="_blank" rel="noopener">Android</a></div>
     </div>
   </div>
   <div class="h-viz" aria-hidden="true"><canvas id="globe"></canvas><div class="gv-cap"><b id="gvN">0</b><span id="gvC"></span><em id="gvD"></em></div></div>
@@ -1061,111 +1066,206 @@ addEventListener('pageshow',()=>{ try{ manual=localStorage.getItem('theme')!=='l
       gx.lineWidth=1.4; gx.strokeStyle=`rgba(${acc},.85)`; gx.stroke(); }
     gN.textContent=n; };
   const newRead=()=>{ hit=hit.map(()=>false); tgt=VAL.map(v=>v[3]?.08+Math.random()*.06:Math.max(B0+.03,Math.min(B1-.03,v[2]+(Math.random()-.5)*.12))); rdText(); };
-  /* ---- hero variants for the right-hand visual, picked by the address: ?hero=conveyor (v17), ?hero=microscope (v18); no parameter → the sphere (v16) ---- */
+  /* ---- hero variants for the right-hand visual, picked by the address: ?hero=conveyor (v19), ?hero=microscope (v20); no parameter → the sphere (v16) ---- */
   const HV=(new URLSearchParams(location.search).get('hero')||'').toLowerCase();
   const pal=()=>{ const dk=document.body.classList.contains('dark'); return {dk,ink:dk?'255,255,255':'10,10,10',acc:dk?'25,198,226':'0,160,196',wrn:dk?'255,180,67':'229,138,0',bg:dk?'#0A0A0A':'#FFFFFF'}; };
   /* camera: yaw around the vertical, pitch toward the viewer, perspective distance D, scale S, screen centre cx/cy */
   const cam=(yaw,pitch,D,S,cx,cy)=>{ const cyw=Math.cos(yaw), syw=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
     return (x,y,z)=>{ const x1=x*cyw-z*syw, z1=x*syw+z*cyw, y2=y*cp-z1*sp, z2=y*sp+z1*cp, s=D/(D-z2); return [cx+x1*S*s, cy-y2*S*s, z2, s]; }; };
-  const seg=(a,b)=>{ gx.beginPath(); gx.moveTo(a[0],a[1]); gx.lineTo(b[0],b[1]); gx.stroke(); };
-  const poly=(pts,close)=>{ gx.beginPath(); pts.forEach((q,k)=>k?gx.lineTo(q[0],q[1]):gx.moveTo(q[0],q[1])); if(close) gx.closePath(); };
-  const ringPts=(P,cx,cy,cz,r,ax,n)=>{ const out=[]; for(let k=0;k<n;k++){ const f=k/n*6.2832, a=Math.cos(f)*r, b=Math.sin(f)*r;
-      out.push(ax==='y'?P(cx+a,cy,cz+b):ax==='x'?P(cx,cy+a,cz+b):P(cx+a,cy+b,cz)); } return out; };
+  const seg=(a,b)=>{ const g=bx||gx; g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke(); };
+  const poly=(pts,close)=>{ const g=bx||gx; g.beginPath(); pts.forEach((q,k)=>k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])); if(close) g.closePath(); };
   const setCount=(n,dev)=>{ gN.textContent=n; hit[1]=dev; rdText(); };
 
-  /* v17 — a conveyor: racks of test tubes ride toward the viewer from far away, an AI scanner arch reads each tube as it passes */
-  const CV={off:0,t:0,tubes:[],next:0,read:0,dev:false};
-  for(let k=0;k<8;k++) CV.tubes.push({z:-7.2+k*1.42,v:k%12,rd:false,lt:0});
-  CV.next=8;
-  const conv=(p,dt)=>{ const c=gW/2, S=gW*.083, PL=pal(); CV.t+=dt; const sp=dt*.62; CV.off+=sp;
-    const P=cam(-.68+pit*.6,.5,15,S,c*1.02,c*1.02);
-    gx.setTransform(gdpr,0,0,gdpr,0,0); gx.clearRect(0,0,gW,gW); gx.lineCap='round';
-    const fadeZ=z=>Math.max(0,Math.min(1,(z+7.4)/2.2))*Math.max(0,Math.min(1,(4-z)/1.3));
-    /* belt: rails, plates, rollers */
-    gx.lineWidth=1.2; for(const y of [0,-.32]) for(const x of [-1.15,1.15]){ gx.strokeStyle=`rgba(${PL.ink},${y?.18:.42})`; seg(P(x,y,-7.6),P(x,y,4)); }
-    for(let z=-7.6+(CV.off%.5);z<4;z+=.5){ gx.strokeStyle=`rgba(${PL.ink},${(.22*fadeZ(z)).toFixed(3)})`; gx.lineWidth=1; seg(P(-1.15,0,z),P(1.15,0,z)); }
-    for(let z=-7+(CV.off%1.4);z<4;z+=1.4){ const f=fadeZ(z); if(f<.02) continue; for(const x of [-1.15,1.15]){ gx.strokeStyle=`rgba(${PL.ink},${(.3*f).toFixed(3)})`; poly(ringPts(P,x,-.18,z,.16,'x',16),1); gx.stroke();
-        const a=CV.off*4, q1=P(x,-.18+Math.sin(a)*.16,z+Math.cos(a)*.16), q2=P(x,-.18-Math.sin(a)*.16,z-Math.cos(a)*.16); seg(q1,q2); } }
-    /* tubes, far first */
-    const GZ=1.25;
+  /* the variants draw on their own canvas over the whole hero (under the copy): the conveyor crosses the screen, the microscope is too big for the box */
+  const big=(HV==='conveyor'||HV==='microscope')&&gv?document.createElement('canvas'):null, bx=big&&big.getContext('2d');
+  let bW=1,bH=1,bdpr=1,vb={x:0,y:0,w:1,h:1};
+  const bsize=()=>{ if(!big) return; bdpr=Math.min(2,devicePixelRatio||1); bW=hero.clientWidth; bH=hero.clientHeight; big.width=bW*bdpr; big.height=bH*bdpr;
+    const hr=hero.getBoundingClientRect(), r=gv.parentElement.getBoundingClientRect(); vb={x:r.left-hr.left,y:r.top-hr.top,w:r.width,h:r.height}; };
+  if(big){ big.id='big'; big.setAttribute('aria-hidden','true'); hero.querySelector('.dof').after(big); hero.classList.add('hv-big'); bsize(); new ResizeObserver(()=>{ bsize(); if(rm) radar(1,0); }).observe(hero); }
+  /* an opaque colour: ink laid over the background at alpha a */
+  const solid=(PL,a,rgb)=>{ const c=(rgb||PL.ink).split(',').map(Number), b=PL.dk?[10,10,10]:[255,255,255]; return `rgb(${c.map((v,i)=>Math.round(b[i]+(v-b[i])*a)).join(',')})`; };
+  /* convex hull of screen points (a tube is convex, so its silhouette is the hull of its rings) */
+  const hull=pts=>{ const p=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]), cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]), lo=[], up=[];
+    for(const q of p){ while(lo.length>1&&cr(lo[lo.length-2],lo[lo.length-1],q)<=0) lo.pop(); lo.push(q); }
+    for(let i=p.length-1;i>=0;i--){ const q=p[i]; while(up.length>1&&cr(up[up.length-2],up[up.length-1],q)<=0) up.pop(); up.push(q); }
+    lo.pop(); up.pop(); return lo.concat(up); };
+
+  /* v19 — the conveyor runs across the whole hero: test tubes come out of the dark above and left of the logo, grow toward the viewer
+     and leave past the right edge; an AI scanner gate reads each tube as it passes. Few lines: the belt is a plain band,
+     a tube is one opaque silhouette with its liquid and a solid cap */
+  const CVS=1.6, CVF=-60, CVN=5, CVE=CVN+5; /* tube spacing; far end, the point pinned to the right edge and the near end of the belt (world units along z) */
+  const CVL=Math.ceil((CVE-CVF)/CVS)*CVS;
+  const CV={t:0,tubes:[],next:0,read:0,dev:false,init:false};
+  for(let z=CVF;z<CVF+CVL-.01;z+=CVS) CV.tubes.push({z,v:CV.next++%12,rd:false,lt:0});
+  const TR=.3, TH=1.9, TC=.4; /* tube radius, glass height, cap height */
+  /* the camera is solved from the layout: the belt's centre line leaves the screen at N, passes M (desktop: just above the logo's top right corner;
+     phone: under the copy), and a tube at N stands a set share of the hero tall */
+  const cvCam=()=>{ const m=bW<=860, pc=.42+pit*.1, D=8;
+    const N=m?[bW*1.04,vb.y+vb.h*.95]:[bW,bH*.74], M=m?[0,vb.y+vb.h*.4]:[bW*.47,bH*.23], k=(N[1]-M[1])/(N[0]-M[0]);
+    const yw=-Math.atan(Math.sin(pc)/k)+yaw*.08, u=cam(yw,pc,D,1,0,0), n=u(0,0,CVN), t=u(0,TH,CVN), S=(m?vb.h*.55:bH*.4)/Math.hypot(t[0]-n[0],t[1]-n[1]);
+    return cam(yw,pc,D,S,N[0]-n[0]*S,N[1]-n[1]*S); };
+  const conv=(p,dt)=>{ if(!big) return; const PL=pal(), g=bx, m=bW<=860; CV.t+=dt; const sp=dt*.8;
+    const P=cvCam();
+    /* the gate stands where the belt reaches ~70% of the width */
+    let lo=CVF, hi=CVN; for(let k=0;k<24;k++){ const mid=(lo+hi)/2; if(P(0,0,mid)[0]<bW*(m?.62:.7)) lo=mid; else hi=mid; } const GZ=(lo+hi)/2;
+    if(!CV.init){ CV.init=true; for(const tb of CV.tubes) if(tb.z>=GZ){ tb.rd=true; tb.lt=9; } }
+    /* where the belt comes into the screen (desktop: the top edge, phone: the left edge); tubes come out of the dark there */
+    lo=CVF; hi=GZ; for(let k=0;k<24;k++){ const mid=(lo+hi)/2, q=P(0,TH,mid); if(m?q[0]<0:q[1]<0) lo=mid; else hi=mid; } const ZI=lo, ZF=ZI-1.5, FL=m?6:9;
+    g.setTransform(bdpr,0,0,bdpr,0,0); g.clearRect(0,0,bW,bH); g.lineCap='round'; g.lineJoin='round';
+    const fade=z=>{ const t=Math.max(0,Math.min(1,(z-ZF)/FL)); return t*t*(3-2*t); };
+    /* belt: one band, its top face and the side that faces the viewer, two edges; it melts into the dark at the far end */
+    const BW=1.05, BT=.32, off=z=>[[-BW,0],[BW,0],[-BW,-BT],[BW,-BT]].every(([x,y])=>{ const q=P(x,y,z); return q[3]<0||q[3]>5||q[0]>bW+10||q[1]>bH+10; });
+    lo=GZ; hi=CVE; for(let k=0;k<20;k++){ const mid=(lo+hi)/2; if(off(mid)) hi=mid; else lo=mid; } const ZE=hi;
+    const f0=P(0,0,ZF), f1=P(0,0,ZF+FL), n0=P(0,0,ZE), L=Math.hypot(n0[0]-f0[0],n0[1]-f0[1]), tf=Math.min(.9,Math.hypot(f1[0]-f0[0],f1[1]-f0[1])/L);
+    const grad=a=>{ const gr=g.createLinearGradient(f0[0],f0[1],n0[0],n0[1]); gr.addColorStop(0,`rgba(${PL.ink},0)`); gr.addColorStop(tf,`rgba(${PL.ink},${a})`); gr.addColorStop(1,`rgba(${PL.ink},${a})`); return gr; };
+    const side=P(-1,0,0)[2]>P(1,0,0)[2]?-BW:BW; /* the long side nearer the viewer */
+    const A=P(-BW,0,ZF), B=P(BW,0,ZF), C=P(BW,0,ZE), Dd=P(-BW,0,ZE), s0=P(side,0,ZF), s1=P(side,0,ZE), s2=P(side,-BT,ZE), s3=P(side,-BT,ZF);
+    g.beginPath(); g.moveTo(s0[0],s0[1]); g.lineTo(s1[0],s1[1]); g.lineTo(s2[0],s2[1]); g.lineTo(s3[0],s3[1]); g.closePath(); g.fillStyle=grad(PL.dk?.09:.07); g.fill();
+    g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(B[0],B[1]); g.lineTo(C[0],C[1]); g.lineTo(Dd[0],Dd[1]); g.closePath(); g.fillStyle=grad(PL.dk?.045:.035); g.fill();
+    g.lineWidth=1.2; g.strokeStyle=grad(PL.dk?.42:.36); seg(A,Dd); seg(B,C);
+    /* tubes move; one crossing the gate is read */
     for(const tb of CV.tubes){ tb.z+=sp; if(!tb.rd&&tb.z>=GZ){ tb.rd=true; tb.lt=0; CV.read++; if(VAL[tb.v][3]) CV.dev=true; if(CV.read>12){ CV.read=1; CV.dev=!!VAL[tb.v][3]; } setCount(CV.read,CV.dev); }
-      if(tb.rd) tb.lt+=dt; if(tb.z>4.1){ tb.z-=11.36; tb.v=CV.next%12; CV.next++; tb.rd=false; } }
-    const order=[...CV.tubes].sort((a,b)=>a.z-b.z);
-    for(const tb of order){ const f=fadeZ(tb.z); if(f<.02) continue; const w=!!VAL[tb.v][3], col=w?PL.wrn:PL.acc, z=tb.z, H=1.7, r=.27;
-      /* rack foot */
-      gx.strokeStyle=`rgba(${PL.ink},${(.3*f).toFixed(3)})`; gx.lineWidth=1; poly([P(-.42,0,z-.42),P(.42,0,z-.42),P(.42,0,z+.42),P(-.42,0,z+.42)],1); gx.stroke();
-      const bot=ringPts(P,0,.02,z,r,'y',28), top=ringPts(P,0,H,z,r,'y',28), lvl=ringPts(P,0,H*.55,z,r*.96,'y',28);
-      const ext=a=>{ let mi=0,ma=0; a.forEach((q,k)=>{ if(q[0]<a[mi][0]) mi=k; if(q[0]>a[ma][0]) ma=k; }); return [a[mi],a[ma]]; };
-      const [bl,br]=ext(bot), [tl,tr]=ext(top), [ll,lr]=ext(lvl);
-      /* liquid */
-      gx.beginPath(); gx.moveTo(bl[0],bl[1]); gx.lineTo(ll[0],ll[1]); gx.lineTo(lr[0],lr[1]); gx.lineTo(br[0],br[1]); gx.closePath(); gx.fillStyle=`rgba(${col},${(.16*f).toFixed(3)})`; gx.fill();
-      poly(lvl,1); gx.fillStyle=`rgba(${col},${(.3*f).toFixed(3)})`; gx.fill(); gx.strokeStyle=`rgba(${col},${(.8*f).toFixed(3)})`; gx.lineWidth=1.2; gx.stroke();
-      /* glass */
-      gx.strokeStyle=`rgba(${PL.ink},${(.75*f).toFixed(3)})`; gx.lineWidth=1.2; seg(bl,tl); seg(br,tr); poly(top,1); gx.stroke();
-      gx.strokeStyle=`rgba(${PL.ink},${(.35*f).toFixed(3)})`; poly(bot,1); gx.stroke();
-      /* cap */
-      const cap=ringPts(P,0,H+.28,z,r*1.08,'y',28), [cl,cr]=ext(cap), [tl2,tr2]=ext(ringPts(P,0,H,z,r*1.08,'y',28));
-      gx.beginPath(); gx.moveTo(tl2[0],tl2[1]); gx.lineTo(cl[0],cl[1]); gx.lineTo(cr[0],cr[1]); gx.lineTo(tr2[0],tr2[1]); gx.closePath(); gx.fillStyle=`rgba(${col},${((tb.rd?.85:.35)*f).toFixed(3)})`; gx.fill();
-      poly(cap,1); gx.fillStyle=`rgba(${col},${((tb.rd?.95:.45)*f).toFixed(3)})`; gx.fill();
-      /* label once read */
-      if(tb.rd){ const a=Math.min(1,tb.lt*2.5)*f, q=P(0,H+.75,z); gx.font='500 10px "JetBrains Mono",ui-monospace,monospace'; gx.textAlign='center'; gx.textBaseline='middle';
-        gx.fillStyle=`rgba(${w?PL.wrn:PL.ink},${(a*.95).toFixed(3)})`; gx.fillText(VAL[tb.v][0]+' '+VAL[tb.v][1]+(w?' ↓':' ✓'),q[0],q[1]-Math.min(1,tb.lt*2.5)*4); }
+      if(tb.rd) tb.lt+=dt; if(tb.z>CVE){ tb.z-=CVL; tb.v=CV.next++%12; tb.rd=false; } }
+    /* everything that stands on the belt, sorted far → near */
+    const items=CV.tubes.map(tb=>({z2:P(0,1,tb.z)[2],tb}));
+    const XA=1.4, YA=TH+TC+.75, gate=(x,y)=>P(x,y,GZ), GW=.18*Math.hypot(P(0,1,GZ)[0]-P(0,0,GZ)[0],P(0,1,GZ)[1]-P(0,0,GZ)[1]); /* bar thickness: .18 units at the gate */
+    items.push({z2:gate(0,YA)[2],beam:1});
+    items.sort((a,b)=>a.z2-b.z2);
+    const ring=(y,r,z,n)=>{ const o=[]; for(let k=0;k<n;k++){ const a=k/n*6.2832; o.push(P(Math.cos(a)*r,y,z+Math.sin(a)*r)); } return o; };
+    const fillPts=(pts,st)=>{ poly(pts,1); g.fillStyle=st; g.fill(); };
+    const near=CV.tubes.reduce((a,tb)=>Math.min(a,Math.abs(tb.z-GZ)),9), glow=Math.max(0,1-near/.9);
+    for(const it of items){
+      if(it.beam){ const a=gate(-XA,YA), b=gate(XA,YA), c=gate(XA,0), d=gate(-XA,0), w=GW;
+        /* the light curtain, brighter while a tube is inside */
+        const cg=g.createLinearGradient(...gate(0,0).slice(0,2),...gate(0,YA).slice(0,2)); cg.addColorStop(0,`rgba(${PL.acc},${(.1+glow*.1).toFixed(3)})`); cg.addColorStop(1,`rgba(${PL.acc},0)`);
+        g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.lineTo(c[0],c[1]); g.lineTo(d[0],d[1]); g.closePath(); g.fillStyle=cg; g.fill();
+        g.lineWidth=1; g.strokeStyle=`rgba(${PL.acc},.35)`; seg(d,a); seg(c,b);
+        const sy=.12+(YA*.8)*(.5+.5*Math.sin(CV.t*2.6));
+        for(const [lw,al] of [[10,.07],[3.5,.22],[1.4,.9]]){ g.lineWidth=lw; g.strokeStyle=`rgba(${PL.acc},${al})`; seg(gate(-XA,sy),gate(XA,sy)); }
+        continue; }
+      const tb=it.tb, f=fade(tb.z); if(f<.01||tb.z>ZE) continue; const c0=P(0,TH,tb.z); if(c0[3]<0||c0[3]>5||c0[0]<-80||c0[0]>bW+120||c0[1]>bH+400) continue;
+      const w=!!VAL[tb.v][3], col=w?PL.wrn:PL.acc, z=tb.z, rd=tb.rd?Math.min(1,tb.lt*2.2):0, n=24;
+      /* rounded bottom: rings down the hemisphere */
+      const bot=[...ring(TR,TR,z,n),...ring(TR*.5,TR*.87,z,n),...ring(TR*.13,TR*.5,z,12),P(0,.0,z)];
+      const glass=hull([...bot,...ring(TH,TR,z,n)]);
+      /* contact shadow */
+      const sh=P(0,0,z); g.beginPath(); g.ellipse(sh[0],sh[1],TR*2.1*Math.hypot(P(1,0,z)[0]-sh[0],P(1,0,z)[1]-sh[1]),TR*.9*Math.hypot(P(0,0,z+1)[0]-sh[0],P(0,0,z+1)[1]-sh[1]),Math.atan2(P(1,0,z)[1]-sh[1],P(1,0,z)[0]-sh[0]),0,6.2832); g.fillStyle=`rgba(${PL.dk?'0,0,0':'10,10,10'},${((PL.dk?.38:.07)*f).toFixed(3)})`; g.fill();
+      g.globalAlpha=f;
+      fillPts(glass,PL.bg); fillPts(glass,`rgba(${PL.ink},.035)`);
+      /* liquid: grey until the gate reads it, then the tube lights up */
+      const LV=TH*.58, liq=hull([...bot,...ring(LV,TR*.96,z,n)]), lt=ring(LV,TR*.96,z,n);
+      const lc=rd?col:PL.ink, la=rd?.2+.16*rd:.1;
+      fillPts(liq,`rgba(${lc},${la.toFixed(3)})`); fillPts(lt,`rgba(${lc},${(la+.12).toFixed(3)})`);
+      poly(glass,1); g.lineWidth=1.25; g.strokeStyle=`rgba(${PL.ink},${PL.dk?.62:.55})`; g.stroke();
+      /* cap: solid, its top a shade lighter */
+      const capS=hull([...ring(TH-.1,TR*1.13,z,n),...ring(TH+TC,TR*1.13,z,n)]), capT=ring(TH+TC,TR*1.13,z,n);
+      fillPts(capS,rd?solid(PL,.55+.45*rd,col):solid(PL,PL.dk?.3:.24)); fillPts(capT,rd?solid(PL,.75+.25*rd,col):solid(PL,PL.dk?.42:.34));
+      g.globalAlpha=1;
+      if(tb.rd){ const a=Math.min(1,tb.lt*2.5)*f, q=P(0,TH+TC+.42,z), fs=Math.round(Math.max(9,Math.min(14,9+3*(q[3]-.6)))); g.font=`500 ${fs}px "JetBrains Mono",ui-monospace,monospace`; g.textAlign='center'; g.textBaseline='bottom';
+        const tx=VAL[tb.v][0]+' '+VAL[tb.v][1]+(w?' ↓':' ✓'), hw=g.measureText(tx).width/2+10;
+        g.fillStyle=`rgba(${w?PL.wrn:PL.ink},${(a*.92).toFixed(3)})`; g.fillText(tx,Math.max(hw,Math.min(bW-hw,q[0])),Math.max(fs+70,q[1]-Math.min(1,tb.lt*2.5)*4)); }
     }
-    /* scanner arch over the belt */
-    const yA=2.55, xA=1.45, sy=1+Math.sin(CV.t*3)*.9;
-    gx.lineWidth=1.6; gx.strokeStyle=`rgba(${PL.ink},.55)`; seg(P(-xA,0,GZ),P(-xA,yA,GZ)); seg(P(xA,0,GZ),P(xA,yA,GZ)); seg(P(-xA,yA,GZ),P(xA,yA,GZ));
-    gx.beginPath(); const q1=P(-xA,0,GZ),q2=P(xA,0,GZ),q3=P(xA,yA,GZ),q4=P(-xA,yA,GZ); gx.moveTo(q1[0],q1[1]); gx.lineTo(q2[0],q2[1]); gx.lineTo(q3[0],q3[1]); gx.lineTo(q4[0],q4[1]); gx.closePath(); gx.fillStyle=`rgba(${PL.acc},.06)`; gx.fill();
-    for(const [lw,al] of [[8,.08],[3,.25],[1.2,.9]]){ gx.lineWidth=lw; gx.strokeStyle=`rgba(${PL.acc},${al})`; seg(P(-xA,sy,GZ),P(xA,sy,GZ)); }
-    const lamp=P(0,yA,GZ); gx.beginPath(); gx.arc(lamp[0],lamp[1],3.5,0,6.2832); gx.fillStyle=`rgba(${PL.acc},${(.6+.4*Math.sin(CV.t*6)).toFixed(3)})`; gx.fill();
   };
 
-  /* v18 — a big microscope drawn in lines, turning in 3D; the beam from the objective scans the slide, the nosepiece turns each pass */
-  const MS={t:0,turret:0,tgt:0,lastP:0};
-  const msGeom=(()=>{ const L=[]; const add=(pts,close,kind)=>L.push({pts,close:!!close,kind:kind||'ink'});
-    const ring=(cx,cy,cz,r,ax,n,kind)=>{ const pts=[]; for(let k=0;k<n;k++){ const f=k/n*6.2832, a=Math.cos(f)*r, b=Math.sin(f)*r; pts.push(ax==='y'?[cx+a,cy,cz+b]:ax==='x'?[cx,cy+a,cz+b]:[cx+a,cy+b,cz]); } add(pts,1,kind); return pts; };
-    const cyl=(cx,cy,cz,r,h,ax,rings,lines,kind)=>{ const rs=[]; for(let k=0;k<=rings;k++){ const o=h*k/rings; rs.push(ring(ax==='y'?cx:ax==='x'?cx+o:cx, ax==='y'?cy+o:cy, ax==='z'?cz+o:cz, r, ax, 28, kind)); }
-      for(let l=0;l<lines;l++){ const idx=Math.round(l*28/lines)%28; add([rs[0][idx],rs[rs.length-1][idx]],0,kind); } };
-    const rrect=(cx,cz,w,d,rad,y,kind)=>{ const pts=[], hw=w/2-rad, hd=d/2-rad; for(const [qx,qz,a0] of [[hw,hd,0],[-hw,hd,90],[-hw,-hd,180],[hw,-hd,270]]) for(let k=0;k<=6;k++){ const a=(a0+k*15)*Math.PI/180; pts.push([cx+qx+Math.cos(a)*rad,y,cz+qz+Math.sin(a)*rad]); } add(pts,1,kind); return pts; };
-    /* base */
-    const b0=rrect(0,.1,2.3,1.9,.35,0), b1=rrect(0,.1,2.3,1.9,.35,.24); for(const k of [0,7,14,21]) add([b0[k],b1[k]]);
-    /* arm: two curved rails + ribs */
-    const arm=[]; for(let k=0;k<=14;k++){ const t=k/14, y=.24+t*2.55, z=-.62+Math.pow(t,2.2)*.62; arm.push([y,z]); }
-    for(const x of [-.17,.17]) add(arm.map(([y,z])=>[x,y,z]));
-    for(const x of [-.17,.17]) add(arm.map(([y,z])=>[x,y,z-.28+Math.pow((y-.24)/2.55,2.2)*.1]));
-    arm.forEach(([y,z],k)=>{ if(k%2===0) add([[-.17,y,z],[.17,y,z]]); });
-    /* stage + slide + sample */
-    const s0=rrect(0,.3,1.7,1.25,.08,1.12), s1=rrect(0,.3,1.7,1.25,.08,1.2); for(const k of [0,7,14,21]) add([s0[k],s1[k]]);
-    ring(0,1.2,.3,.16,'y',24);
-    add([[-.5,1.23,.18],[.5,1.23,.18],[.5,1.23,.42],[-.5,1.23,.42]],1,'acc');
-    add([[-.62,1.24,-.05],[-.62,1.24,.18]]); add([[.62,1.24,-.05],[.62,1.24,.18]]);
-    /* condenser + light */
-    cyl(0,.6,.3,.13,.42,'y',2,6); ring(0,.32,.3,.2,'y',24,'acc');
-    /* body tube + eyepiece */
-    cyl(0,2.05,.3,.21,.95,'y',3,8);
-    const ep=[]; for(let k=0;k<=8;k++){ const t=k/8; ep.push([0,3.0+t*.62,.3-t*.42]); }
-    for(const o of [-.12,.12]) add(ep.map(([x,y,z])=>[o,y,z])); ring(0,3.62,-.12,.14,'y',24,'acc'); ring(0,3.0,.3,.15,'y',24);
-    /* focus knobs */
-    for(const s of [-1,1]){ cyl(s*.17,1.0,-.52,.27,s*.22,'x',2,10); cyl(s*.39,1.0,-.52,.14,s*.16,'x',1,8); }
-    return L; })();
-  const micro=(p,dt)=>{ const c=gW/2, S=gW*.158, PL=pal(); MS.t+=dt;
+  /* v20 — a big microscope built from shaded 3D planes, turning slowly: base, curved arm, stage with a glowing slide, focus knobs,
+     a nosepiece whose three objectives swap each pass, an inclined eyepiece. A tiny flat-shaded renderer: back faces culled,
+     faces sorted far → near, lit from the upper left */
+  const MS={t:0,turret:0,tgt:0,lastP:0,faces:null};
+  const msBuild=()=>{ const F=[];
+    const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], nrm=v=>{ const l=Math.hypot(v[0],v[1],v[2])||1; return [v[0]/l,v[1]/l,v[2]/l]; };
+    const newell=p=>{ let x=0,y=0,z=0; for(let i=0;i<p.length;i++){ const a=p[i], b=p[(i+1)%p.length]; x+=(a[1]-b[1])*(a[2]+b[2]); y+=(a[2]-b[2])*(a[0]+b[0]); z+=(a[0]-b[0])*(a[1]+b[1]); } return nrm([x,y,z]); };
+    /* a face, turned so its normal agrees with the outward hint */
+    const face=(p,k,out,grp)=>{ let n=newell(p); if(n[0]*out[0]+n[1]*out[1]+n[2]*out[2]<0){ p=p.slice().reverse(); n=[-n[0],-n[1],-n[2]]; } F.push({p,n,k,g:grp||0}); };
+    /* lathe: profile [[r,y],…] from the bottom centre up to the top centre; xf places the local frame (axis = local y) */
+    const lathe=(prof,N,k,xf,grp)=>{ xf=xf||(q=>q); const rings=prof.map(([r,y])=>{ const o=[]; for(let i=0;i<N;i++){ const a=i/N*6.2832; o.push(xf([Math.cos(a)*r,y,Math.sin(a)*r])); } return o; });
+      const dir=(v,base)=>sub(xf([base[0]+v[0],base[1]+v[1],base[2]+v[2]]),xf(base));
+      for(let j=0;j<prof.length-1;j++){ const [r0,y0]=prof[j], [r1,y1]=prof[j+1], dr=r1-r0, dy=y1-y0, kk=Array.isArray(k)?k[j]:k;
+        if(r0<1e-6||r1<1e-6){ face((r0<1e-6?rings[j+1]:rings[j]).slice(),kk,dir([0,-dr,0],[0,y0,0]),grp); continue; } /* a flat cap */
+        for(let i=0;i<N;i++){ const a=(i+.5)/N*6.2832, out=dir([dy*Math.cos(a),-dr,dy*Math.sin(a)],[0,(y0+y1)/2,0]);
+          face([rings[j][i],rings[j][(i+1)%N],rings[j+1][(i+1)%N],rings[j+1][i]],kk,out,grp); } } };
+    /* loft between rings of equal length (each with its centre), capped at both ends */
+    const loft=(rings,cs,k,grp)=>{ const N=rings[0].length;
+      for(let j=0;j<rings.length-1;j++){ const c=[(cs[j][0]+cs[j+1][0])/2,(cs[j][1]+cs[j+1][1])/2,(cs[j][2]+cs[j+1][2])/2];
+        for(let i=0;i<N;i++){ const q=[rings[j][i],rings[j][(i+1)%N],rings[j+1][(i+1)%N],rings[j+1][i]], m=q.reduce((s,v)=>[s[0]+v[0]/4,s[1]+v[1]/4,s[2]+v[2]/4],[0,0,0]); face(q,k,sub(m,c),grp); } }
+      face(rings[0].slice(),k,sub(cs[0],cs[1]),grp); face(rings[rings.length-1].slice(),k,sub(cs[cs.length-1],cs[cs.length-2]),grp); };
+    const rr=(cx,cz,w,d,rad,y,seg)=>{ seg=seg||5; const o=[], hw=w/2-rad, hd=d/2-rad; for(const [qx,qz,a0] of [[hw,hd,0],[-hw,hd,90],[-hw,-hd,180],[hw,-hd,270]]) for(let k=0;k<=seg;k++){ const a=(a0+k*90/seg)*Math.PI/180; o.push([cx+qx+Math.cos(a)*rad,y,cz+qz+Math.sin(a)*rad]); } return o; };
+    const slab=(cx,cz,w,d,rad,y0,y1,k,bev)=>{ const R=[rr(cx,cz,w,d,rad,y0),rr(cx,cz,w,d,rad,y1-(bev||0))], C=[[cx,y0,cz],[cx,y1-(bev||0),cz]];
+      if(bev){ R.push(rr(cx,cz,w-bev*2,d-bev*2,Math.max(.01,rad-bev),y1)); C.push([cx,y1,cz]); } loft(R,C,k); };
+    const rotX=a=>q=>[q[0],q[1]*Math.cos(a)-q[2]*Math.sin(a),q[1]*Math.sin(a)+q[2]*Math.cos(a)];
+    const at=(x,y,z,f)=>q=>{ const r=f?f(q):q; return [r[0]+x,r[1]+y,r[2]+z]; };
+    /* base with a soft bevel, the illuminator on it */
+    slab(0,.12,2.4,2.0,.42,0,.3,'m',.07);
+    lathe([[0,.3],[.3,.3],[.3,.36],[.24,.4],[0,.4]],36,'m',at(0,0,.2));
+    lathe([[0,.401],[.17,.401],[0,.402]],36,'e',at(0,0,.2));
+    /* the arm: a rounded section swept up from the back of the base, bowing back and curving forward into the head */
+    const AN=40, path=[]; for(let i=0;i<=AN;i++){ const t=i/AN; path.push([0,.22+2.5*t,-.66-.2*Math.sin(Math.PI*t)+.55*Math.pow(t,3)]); }
+    const secN=24, sec=t=>{ const hw=.27-.07*t, hd=.21-.03*t, o=[]; for(let i=0;i<secN;i++){ const a=i/secN*6.2832, c=Math.cos(a), s=Math.sin(a); o.push([Math.sign(c)*Math.pow(Math.abs(c),.45)*hw,Math.sign(s)*Math.pow(Math.abs(s),.45)*hd]); } return o; };
+    const AR=[], AC=[]; path.forEach((q,i)=>{ const a=path[Math.max(0,i-1)], b=path[Math.min(path.length-1,i+1)], ty=b[1]-a[1], tz=b[2]-a[2], l=Math.hypot(ty,tz), ny=-tz/l, nz=ty/l;
+      AR.push(sec(i/AN).map(([u,v])=>[u,q[1]+ny*v,q[2]+nz*v])); AC.push(q); });
+    loft(AR,AC,'m');
+    /* focus knobs on both sides of the arm: coarse and fine */
+    const ky=.78, kz=-.8;
+    for(const sd of [-1,1]){ const xf=at(sd*.25,ky,kz,q=>[sd*q[1],q[0],q[2]]);
+      lathe([[0,0],[.3,0],[.33,.03],[.33,.13],[.3,.16],[.17,.16],[.17,.28],[.155,.31],[0,.31]],40,['d','d','d','d','d','m','m','m'],xf); }
+    /* stage on a carrier block, the slide on it, the condenser under it */
+    loft([rr(0,-.42,.5,.5,.06,1.02),rr(0,-.42,.5,.5,.06,1.16)],[[0,1.02,-.42],[0,1.16,-.42]],'m');
+    slab(0,.18,1.8,1.42,.08,1.13,1.22,'d');
+    slab(0,.2,1.06,.38,.015,1.22,1.245,'a');
+    for(const sd of [-1,1]) slab(sd*.62,.08,.13,.62,.03,1.22,1.27,'m');
+    lathe([[0,.72],[.13,.72],[.16,.76],[.16,.96],[.19,1.0],[.19,1.13],[0,1.13]],32,'m',at(0,0,.2));
+    /* head: a rounded block on top of the arm; the eyepiece leans toward the viewer */
+    slab(0,-.02,.62,.92,.24,2.48,2.92,'m',.05);
+    lathe([[0,0],[.17,0],[.17,.12],[.13,.17],[.13,.6],[.16,.64],[.16,.86],[.13,.88],[0,.88]],36,['m','m','m','m','m','d','d','d'],at(0,2.86,.12,rotX(.62)));
+    lathe([[0,.881],[.1,.881],[0,.882]],28,'a',at(0,2.86,.12,rotX(.62)));
+    /* nosepiece under the head */
+    lathe([[0,2.3],[.33,2.3],[.38,2.38],[.36,2.48],[0,2.48]],40,'m',at(0,0,.0));
+    /* three objectives (group 1–3), built at the origin; each frame turns them round the nosepiece axis */
+    for(let o=1;o<=3;o++) lathe([[0,1.82],[.045,1.82],[.06,1.86],[.072,1.92],[.072,2.03],[.082,2.05],[.082,2.09],[.082,2.2],[.094,2.23],[.094,2.3],[0,2.3]],24,['d','d','d','d','m',o===1?'b1':o===2?'b2':'b3','m','m','m','m'],null,o);
+    return F; };
+  const micro=(p,dt)=>{ if(!big) return; const PL=pal(), g=bx, m=bW<=860; MS.t+=dt; if(!MS.faces) MS.faces=msBuild();
     if(p<MS.lastP-.5) MS.tgt+=2.0944; MS.lastP=p; MS.turret+=(MS.tgt-MS.turret)*(1-Math.pow(.02,dt));
-    const yaw=MS.t*.32, P=cam(yaw,.22+pit*.6,9,S,c,c*1.0);
-    const Y=(x,y,z)=>P(x,y-1.85,z-.1);
-    gx.setTransform(gdpr,0,0,gdpr,0,0); gx.clearRect(0,0,gW,gW); gx.lineCap='round'; gx.lineJoin='round';
-    const items=msGeom.map(g=>{ const pts=g.pts.map(q=>Y(q[0],q[1],q[2])); let z=0; pts.forEach(q=>z+=q[2]); return {pts,close:g.close,kind:g.kind,z:z/pts.length}; });
-    /* nosepiece: turret disk + three objectives, turning */
-    const tur=[]; for(let k=0;k<24;k++){ const f=k/24*6.2832; tur.push(Y(Math.cos(f)*.34,1.95,.3+Math.sin(f)*.34)); } items.push({pts:tur,close:1,kind:'ink',z:0});
-    for(let o=0;o<3;o++){ const a=MS.turret+o*2.0944, ox=Math.sin(a)*.2, oz=.3+Math.cos(a)*.2, active=o===0;
-      const top=Y(ox,1.92,oz), bot=Y(ox*.6,1.5,.3+(oz-.3)*.6); items.push({pts:[top,bot],close:0,kind:active?'acc':'ink',z:(top[2]+bot[2])/2,w:active?2.2:1.4}); }
-    items.sort((a,b)=>a.z-b.z);
-    for(const it of items){ const depth=Math.max(0,Math.min(1,.5+it.z*.18)), col=it.kind==='acc'?PL.acc:PL.ink;
-      gx.lineWidth=(it.w||1.45); gx.strokeStyle=`rgba(${col},${((it.kind==='acc'?.6:.3)+depth*.6).toFixed(3)})`; poly(it.pts,it.close); gx.stroke(); }
-    /* beam from the objective onto the slide, scanning across the sample */
-    const sx=-.4+.8*p, from=Y(0,1.5,.3), to=Y(sx,1.24,.3), pulse=.6+.4*Math.sin(MS.t*7);
-    for(const [lw,al] of [[7,.1],[2.5,.35],[1,.95]]){ gx.lineWidth=lw; gx.strokeStyle=`rgba(${PL.acc},${(al*pulse).toFixed(3)})`; seg(from,to); }
-    for(let k=0;k<12;k++){ const q=Y(-.4+k*.8/11,1.24,.3+((k%3)-1)*.06), on=k/11<=p, w=k===1;
-      gx.beginPath(); gx.arc(q[0],q[1],on?3:2,0,6.2832); gx.fillStyle=on?`rgba(${w?PL.wrn:PL.acc},.95)`:`rgba(${PL.ink},.25)`; gx.fill(); }
-    const n=Math.min(12,Math.floor(p*12)+(p>=1?0:0)); setCount(p>=1?12:n, n>1||p>=1);
+    const S=m?vb.h*1.02/3.75:Math.min(bH*.74,vb.w*1.4)/3.75, cx=m?vb.x+vb.w*.5:vb.x+vb.w*.47, cy=m?vb.y+vb.h*.5:bH*.435;
+    const yw=MS.t*.26+yaw*.4, pc=.2+pit*.35, D=9, cyw=Math.cos(yw), syw=Math.sin(yw), cp=Math.cos(pc), sp=Math.sin(pc);
+    const Y0=1.86, Z0=-.05; /* the point the microscope turns round */
+    const tr=(q)=>{ const x=q[0], y=q[1]-Y0, z=q[2]-Z0, x1=x*cyw-z*syw, z1=x*syw+z*cyw; return [x1,y*cp-z1*sp,y*sp+z1*cp]; };
+    const trn=(n)=>{ const x1=n[0]*cyw-n[2]*syw, z1=n[0]*syw+n[2]*cyw; return [x1,n[1]*cp-z1*sp,n[1]*sp+z1*cp]; };
+    const pr=(v)=>{ const s=D/(D-v[2]); return [cx+v[0]*S*s,cy-v[1]*S*s,v[2],s]; };
+    /* objectives: offset .2 from the nosepiece axis, turned; the one over the slide is active */
+    const RO=.2, TZ=.0, ang=o=>MS.turret+(o-1)*2.0944, rotO=(q,o)=>{ const A=ang(o), x=q[0], z=q[2]+RO; return [x*Math.cos(A)+z*Math.sin(A),q[1],TZ-x*Math.sin(A)+z*Math.cos(A)]; };
+    const rotN=(n,o)=>{ const A=ang(o); return [n[0]*Math.cos(A)+n[2]*Math.sin(A),n[1],-n[0]*Math.sin(A)+n[2]*Math.cos(A)]; };
+    const act=o=>{ const a=((ang(o)%6.2832)+6.2832)%6.2832; return Math.max(0,1-Math.min(a,6.2832-a)/.5); };
+    g.setTransform(bdpr,0,0,bdpr,0,0); g.clearRect(0,0,bW,bH);
+    /* a soft shadow under the base */
+    const sc=pr(tr([0,0,.12])), ex=pr(tr([1.5,0,.12])), ez=pr(tr([0,0,1.4]));
+    g.save(); g.translate(sc[0],sc[1]); g.scale(1,Math.max(.18,Math.abs(ez[1]-sc[1])/Math.max(1,Math.hypot(ex[0]-sc[0],ex[1]-sc[1])))); const rs=Math.hypot(ex[0]-sc[0],ex[1]-sc[1])*1.25;
+    const sg=g.createRadialGradient(0,0,0,0,0,rs); sg.addColorStop(0,`rgba(${PL.dk?'0,0,0':'10,10,10'},${PL.dk?.55:.14})`); sg.addColorStop(1,`rgba(${PL.dk?'0,0,0':'10,10,10'},0)`); g.fillStyle=sg; g.beginPath(); g.arc(0,0,rs,0,6.2832); g.fill(); g.restore();
+    const L=(()=>{ const v=[-.5,.78,.5], l=Math.hypot(...v); return v.map(c=>c/l); })(), Hh=(()=>{ const v=[L[0],L[1],L[2]+1], l=Math.hypot(...v); return v.map(c=>c/l); })();
+    const lo=PL.dk?[20,22,25]:[78,84,90], hi=PL.dk?[226,232,236]:[244,246,248], ac=PL.acc.split(',').map(Number);
+    const out=[];
+    for(const fc of MS.faces){ const pts=fc.g?fc.p.map(q=>tr(rotO(q,fc.g))):fc.p.map(tr), n=trn(fc.g?rotN(fc.n,fc.g):fc.n);
+      let mx=0,my=0,mz=0; for(const q of pts){ mx+=q[0]; my+=q[1]; mz+=q[2]; } mx/=pts.length; my/=pts.length; mz/=pts.length;
+      if(n[0]*(0-mx)+n[1]*(0-my)+n[2]*(D-mz)<=0) continue; /* back face */
+      const dif=Math.max(0,n[0]*L[0]+n[1]*L[1]+n[2]*L[2]), spc=Math.pow(Math.max(0,n[0]*Hh[0]+n[1]*Hh[1]+n[2]*Hh[2]),28), rim=PL.dk?Math.pow(1-Math.abs(n[2]),3)*.22:0;
+      let k=fc.k; if(k[0]==='b') k=act(+k[1])>.02?'ab':'d';
+      let col;
+      if(k==='e'){ const pl=.75+.25*Math.sin(MS.t*3); col=`rgb(${ac.map(v=>Math.round(v*pl+(PL.dk?40:0)*(1-pl))).join(',')})`; }
+      else if(k==='a'||k==='ab'){ const t=Math.min(1.15,.35+.65*dif+.5*spc), a=k==='ab'?act(+fc.k[1]):1; col=`rgb(${ac.map((v,i)=>Math.round(Math.min(255,(v*t+255*spc*.4))*a+(lo[i]+(hi[i]-lo[i])*(.25+.5*dif))*(1-a))).join(',')})`; }
+      else { const t=Math.min(1,(k==='d'?.05:.12)+(k==='d'?.42:.66)*dif+(k==='d'?.35:.5)*spc+rim); col=`rgb(${lo.map((v,i)=>Math.round(v+(hi[i]-v)*t)).join(',')})`; }
+      out.push({z:mz,pts,col}); }
+    /* sample points on the slide and the beam: sorted in with the faces */
+    for(let k=0;k<12;k++){ const q=tr([-.4+k*.8/11,1.25,.2+((k%3)-1)*.07]); out.push({z:q[2]+.02,dot:q,on:k/11<=p,w:k===1}); }
+    const ob=[1,2,3].reduce((b,o)=>act(o)>act(b)?o:b,1), tip=tr(rotO([0,1.82,0],ob)), sx=-.4+.8*p, tg=tr([sx,1.25,.2]);
+    out.push({z:(tip[2]+tg[2])/2+.3,beam:[tip,tg]});
+    out.sort((a,b)=>a.z-b.z);
+    g.lineJoin='round';
+    for(const it of out){
+      if(it.dot){ const q=pr(it.dot); g.beginPath(); g.arc(q[0],q[1],(it.on?2.6:1.8)*q[3]*(S/150),0,6.2832); g.fillStyle=it.on?`rgba(${it.w?PL.wrn:'255,255,255'},${it.w?1:.95})`:`rgba(${PL.dk?'255,255,255':'255,255,255'},.35)`; g.fill(); continue; }
+      if(it.beam){ const a=pr(it.beam[0]), b=pr(it.beam[1]), pl=.6+.4*Math.sin(MS.t*7)*act(ob);
+        for(const [lw,al] of [[9,.1],[3,.35],[1.2,.95]]){ g.lineWidth=lw*S/220; g.strokeStyle=`rgba(${PL.acc},${(al*pl).toFixed(3)})`; seg(a,b); }
+        g.beginPath(); g.arc(b[0],b[1],5*S/220,0,6.2832); g.fillStyle=`rgba(${PL.acc},${(.5*pl).toFixed(3)})`; g.fill(); continue; }
+      g.beginPath(); it.pts.forEach((q,k)=>{ const s=D/(D-q[2]), X=cx+q[0]*S*s, Yv=cy-q[1]*S*s; k?g.lineTo(X,Yv):g.moveTo(X,Yv); }); g.closePath();
+      g.fillStyle=it.col; g.fill(); g.lineWidth=.8; g.strokeStyle=it.col; g.stroke(); }
+    const n=Math.min(12,Math.floor(p*12)); setCount(p>=1?12:n, n>1||p>=1);
   };
   const draw=(dt)=>{
     yaw+=(yawT-yaw)*.04; pit+=(pitT-pit)*.04;
