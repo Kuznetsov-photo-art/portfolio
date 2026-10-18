@@ -1,5 +1,6 @@
 # Lab4U hero — the microscope, built from code in Blender (same proportions as the v20 canvas model).
-# Run headless:  Blender -b -P microscope.py -- <out.blend> <render.png> [view]
+# Run headless:  Blender -b -P microscope.py -- <out.blend> <render.png> [view] [out.glb]
+# The .glb (modifiers applied, no lights, camera or floor) is what the site loads: cases/lab4u/3d/microscope.glb
 # Coordinates below are the canvas ones (x right, y up, z toward the viewer); J() turns them into Blender's (z up, front = −y).
 import bpy, bmesh, math, sys
 from math import sin, cos, pi, radians
@@ -8,6 +9,7 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 OUT_BLEND = argv[0] if len(argv) > 0 else '/tmp/microscope.blend'
 OUT_PNG = argv[1] if len(argv) > 1 else '/tmp/microscope.png'
 VIEW = argv[2] if len(argv) > 2 else 'hero'
+OUT_GLB = argv[3] if len(argv) > 3 else ''
 
 J = lambda q: (q[0], -q[2], q[1])
 
@@ -28,7 +30,8 @@ M = {
     'body':  mat('Enamel', (.44, .46, .48), rough=.34, coat=.45),          # painted cast body
     'dark':  mat('Anodized', (.035, .037, .04), rough=.38, metal=.4),      # stage, knobs, objective barrels
     'chrome': mat('Chrome', (.86, .88, .9), rough=.12, metal=1.),          # rings and objective tips
-    'acc':   mat('Lab4U cyan', (0., .55, .72), rough=.15, coat=.6),        # the band on the active objective
+    'acc':   mat('BandActive', (0., .55, .72), rough=.15, coat=.6),        # the band on the active objective (the site recolours bands by name)
+    'band':  mat('Band', (.035, .037, .04), rough=.3, metal=.4),            # the band on the others
     'glass': mat('Slide', (.2, .75, .9), rough=.05, trans=.55, ior=1.5, emit=(0., .55, .75), estr=.9),  # the glass slide, lit from below
     'lamp':  mat('Lamp', (0., .7, .85), emit=(0., .62, .9), estr=2.2),     # the illuminator and the eye lens
 }
@@ -125,7 +128,7 @@ pivot = bpy.data.objects.new('Nosepiece', None); sc.collection.objects.link(pivo
 lathe('Turret', [(0, 2.3), (.33, 2.3), (.38, 2.38), (.36, 2.48), (0, 2.48)], 72, ['chrome'] * 4, parent=pivot)
 OBJ = [(0, 1.82), (.045, 1.82), (.06, 1.86), (.072, 1.92), (.072, 2.03), (.082, 2.05), (.082, 2.09), (.082, 2.2), (.094, 2.23), (.094, 2.3), (0, 2.3)]
 for o in range(3):
-    A = o * 2 * pi / 3; band = 'acc' if o == 0 else 'dark'
+    A = o * 2 * pi / 3; band = 'acc' if o == 0 else 'band'
     turn = lambda q, A=A: (q[0] * cos(A) + (q[2] + .2) * sin(A), q[1], -q[0] * sin(A) + (q[2] + .2) * cos(A))
     lathe('Objective%d' % (o + 1), OBJ, 48, ['chrome', 'chrome', 'dark', 'dark', 'chrome', band, 'dark', 'dark', 'chrome', 'chrome'], turn, parent=pivot)
 
@@ -165,5 +168,11 @@ sc.render.film_transparent = True
 sc.render.image_settings.file_format = 'PNG'; sc.render.image_settings.color_mode = 'RGBA'
 sc.render.filepath = OUT_PNG
 bpy.ops.wm.save_as_mainfile(filepath=OUT_BLEND)
+if OUT_GLB:
+    bpy.ops.object.select_all(action='DESELECT')
+    for ob in [root] + list(root.children_recursive): ob.select_set(True)
+    bpy.ops.export_scene.gltf(filepath=OUT_GLB, export_format='GLB', use_selection=True, export_apply=True, export_yup=True,
+                              export_lights=False, export_cameras=False, export_extras=False)
+    print('GLB', OUT_GLB)
 bpy.ops.render.render(write_still=True)
 print('DONE', OUT_PNG)

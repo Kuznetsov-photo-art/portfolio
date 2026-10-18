@@ -1,0 +1,14 @@
+{
+  "name": "lab4u-hero-3d",
+  "private": true,
+  "description": "The live 3D microscope for the Lab4U hero: npm run model (Blender \u2192 microscope.glb), npm run build (\u2192 m3d.min.js)",
+  "scripts": {
+    "build": "esbuild m3d.js --bundle --minify --format=iife --target=es2020 --legal-comments=eof --outfile=../../../../cases/lab4u/3d/m3d.min.js",
+    "model": "/Applications/Blender.app/Contents/MacOS/Blender -b -P microscope.py -- \"$PWD/microscope.blend\" /tmp/microscope-render.png hero /tmp/microscope-raw.glb && gltfpack -i /tmp/microscope-raw.glb -o ../../../../cases/lab4u/3d/microscope.glb -cc -kn -km"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "gltfpack": "^1.2.0",
+    "three": "0.186.1"
+  }
+}
