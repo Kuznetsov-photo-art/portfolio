@@ -1,8 +1,9 @@
-# Lab4U — a white microscope as a standalone PNG (transparent background) for banners.
-# Opens microscope.blend (built by microscope.py): white lacquer body, black details, an orthographic camera.
+# Lab4U — the microscope as a standalone PNG (transparent background) for banners, as in the site's light or dark theme.
+# Opens microscope.blend (built by microscope.py). Light: white lacquer body, black details, a blue lamp.
+# Dark: gloss black body, the model's own details and glowing lamp. An orthographic camera.
 # Two passes: the microscope itself, then a small shadow-only pass that is blurred, faded and put under it.
 # The result is cropped to the microscope with a margin. The .blend itself is not saved.
-# Run:  Blender -b microscope.blend -P render_banner.py -- <out.png> [size] [azimuth] [elevation] [shadow 0..1]
+# Run:  Blender -b microscope.blend -P render_banner.py -- <out.png> [size] [azimuth] [elevation] [shadow 0..1] [light|dark]
 import bpy, sys, os
 import numpy as np
 from math import radians, sin, cos
@@ -13,20 +14,24 @@ SIZE = int(argv[1]) if len(argv) > 1 else 4000
 AZ = float(argv[2]) if len(argv) > 2 else 45     # degrees from the front, + = to the right
 EL = float(argv[3]) if len(argv) > 3 else 30     # degrees above the horizon
 SHADOW = float(argv[4]) if len(argv) > 4 else .6
+DARK = (argv[5] if len(argv) > 5 else 'light') == 'dark'
 sc = bpy.context.scene
 
 def bsdf(name):
     m = bpy.data.materials.get(name); return m and m.node_tree.nodes.get('Principled BSDF')
-# white lacquer body, glossy black details (Andrey, 22.10: «микроскоп прям белый, тёмные детали — чёрные»)
-b = bsdf('Enamel'); b.inputs['Base Color'].default_value = (.93, .935, .94, 1); b.inputs['Roughness'].default_value = .18
-b.inputs['Coat Weight'].default_value = 1.; b.inputs['Coat Roughness'].default_value = .04
-for n in ('Anodized', 'Band'):   # no metal and a thin lacquer: the light studio would turn black metal grey
+b = bsdf('Enamel'); b.inputs['Coat Weight'].default_value = 1.; b.inputs['Coat Roughness'].default_value = .04
+if DARK:   # gloss black, a lifted black like the site's #0E0F11: it must read on a #0A0A0A page; details and lamp stay as modelled
+    b.inputs['Base Color'].default_value = (.0045, .005, .0058, 1); b.inputs['Roughness'].default_value = .14
+else:      # white lacquer body (Andrey, 22.10: «микроскоп прям белый, тёмные детали — чёрные»)
+    b.inputs['Base Color'].default_value = (.93, .935, .94, 1); b.inputs['Roughness'].default_value = .18
+for n in () if DARK else ('Anodized', 'Band'):   # no metal and a thin lacquer: the light studio would turn black metal grey
     b = bsdf(n); b.inputs['Base Color'].default_value = (.008, .009, .01, 1); b.inputs['Metallic'].default_value = 0
     b.inputs['Roughness'].default_value = .2; b.inputs['Coat Weight'].default_value = .3; b.inputs['Coat Roughness'].default_value = .06
     b.inputs['Specular IOR Level'].default_value = .25
 # the lamp and the eyepiece lens: a saturated blue, as on the site (#006EA8 lit by #0090D0)
-b = bsdf('Lamp'); b.inputs['Base Color'].default_value = (0, .156, .39, 1)
-b.inputs['Emission Color'].default_value = (0, .28, .63, 1); b.inputs['Emission Strength'].default_value = .35
+if not DARK:
+    b = bsdf('Lamp'); b.inputs['Base Color'].default_value = (0, .156, .39, 1)
+    b.inputs['Emission Color'].default_value = (0, .28, .63, 1); b.inputs['Emission Strength'].default_value = .35
 
 # a light studio with one dark flag: a band from ~10° to ~60° above the horizon, all round. The stage (seen from 14–30°)
 # mirrors that band and stays black; the chrome sees the bright top and floor around it and reads silver, as on the site
@@ -40,9 +45,13 @@ def ramp(a, b, lo, hi, src):
 band = nt.nodes.new('ShaderNodeMath'); band.operation = 'MULTIPLY'
 nt.links.new(ramp(.14, .26, 0, 1, xyz.outputs['Z']), band.inputs[0]); nt.links.new(ramp(.8, .93, 1, 0, xyz.outputs['Z']), band.inputs[1])
 nt.links.new(ramp(0, 1, .7, .012, band.outputs['Value']), bg.inputs['Strength']); bg.inputs['Color'].default_value = (.95, .96, .97, 1)
+if DARK:   # the dark studio, as on the site: a dark room with one big softbox overhead — gloss black keeps crisp highlights, not a grey film
+    nt.links.new(ramp(.72, .9, .006, .9, xyz.outputs['Z']), bg.inputs['Strength'])
 for ob in bpy.data.objects:
     if ob.type == 'LIGHT' and ob.name != 'Top':   # only the big top light casts: a soft contact shadow, no long band to the side
         ob.data.use_shadow = False
+    if ob.type == 'LIGHT' and DARK and ob.name == 'Rim':   # a stronger cool rim, as on the site: black edges against a dark page
+        ob.data.energy *= 1.6
     if ob.type == 'LIGHT' and AZ < 0:   # a view from the left gets the mirrored light, else the rim glares in the stage
         ob.location.x *= -1
 sc.view_settings.view_transform = 'AgX'; sc.view_settings.exposure = .9
