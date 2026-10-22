@@ -309,7 +309,7 @@ html.glitch :is(section,header.hero) :is(h1,h2,h3,p,a,b,span,li,em,strong,figcap
 @keyframes gls{0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85)}30%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8)}60%{text-shadow:2px 0 rgba(255,40,80,.6),-2px 0 rgba(0,220,255,.6)}85%,100%{text-shadow:none}}
 </style>
 
-<div class="grain"></div><script>document.body.classList.add("dark")</script>
+<div class="grain"></div><script>/* theme before the first paint: the saved site-wide choice, dark by default — a reload in the light theme no longer flashes dark and rolls the switch */try{ if(localStorage.getItem('theme')!=='light') document.body.classList.add('dark'); }catch(e){ document.body.classList.add('dark'); }</script>
 <div class="cur" id="cur"></div>
 <button class="totop" id="totop" type="button" aria-label="Наверх"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg></button>
 <div class="prog"><i id="prog"></i></div>
