@@ -19,8 +19,8 @@ async function init() {
   R.toneMapping = AgXToneMapping; R.outputColorSpace = SRGBColorSpace; R.shadowMap.enabled = true; R.shadowMap.type = VSMShadowMap; /* soft, well-diffused shadows */
   const S = new Scene(), pm = new PMREMGenerator(R);
   /* a photo studio for the reflections: a dark (or light grey) room with softboxes — gloss shows as crisp highlights, not a grey film */
-  const studio = light => { const e = new Scene();
-    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: light ? 0x8d9095 : 0x1c1d21, side: BackSide })));
+  const studio = (light, room) => { const e = new Scene();
+    e.add(new Mesh(new BoxGeometry(40, 24, 40), new MeshBasicMaterial({ color: room ?? (light ? 0x8d9095 : 0x1c1d21), side: BackSide })));
     const box = (w, h, c, k, pos) => { const m = new Mesh(new PlaneGeometry(w, h), new MeshBasicMaterial({ color: new Color(c).multiplyScalar(k), side: DoubleSide }));
       m.position.set(...pos); m.lookAt(0, 2, 0); e.add(m); };
     box(12, 5, 0xffffff, light ? 3 : 4, [0, 11, 1]);         /* the big top softbox */
@@ -29,7 +29,7 @@ async function init() {
     box(10, 2, 0xffffff, light ? 1 : .7, [2, 1.5, 13]);      /* a low fill in front */
     box(16, 3.5, 0xffffff, light ? 2.6 : 1.3, [0, 2.5, -14]);  /* a wide strip behind, low: horizontal surfaces (base, stage) catch it */
     return pm.fromScene(e, .02).texture; };
-  const ENV = { light: studio(true), dark: studio(false) };
+  const ENV = { light: studio(true), dark: studio(false), chrome: studio(false, 0x5a5d63) }; /* chrome: a mid-grey room with the bright softboxes — silver with contrast */
 
   /* light as in the Blender scene: a key from the upper left, a cool rim from behind, a soft fill */
   const key = new DirectionalLight(0xffffff, 2.6); key.position.set(-5, 7, 6); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
@@ -60,11 +60,14 @@ async function init() {
   const DARK = [...made.values()].filter(m => /^(Anodized|Band)/.test(m.name)).map(m => ({ m, c: m.color.clone(), mt: m.metalness, cc: m.clearcoat, r: m.roughness })), INK = new Color(0x060708);
   const LAMP = [...made.values()].filter(m => m.name === 'Lamp').map(m => ({ m, c: m.color.clone(), e: m.emissive.clone(), k: m.emissiveIntensity }));
   const LAMP_C = new Color(0x006ea8), LAMP_E = new Color(0x0090d0);
+  /* chrome in the light theme mirrors its own studio: polished metal needs dark and bright in its reflections, the light grey room left it flat (Andrey, 22.10) */
+  const CHROME = [...made.values()].filter(m => m.name === 'Chrome');
   const theme = dark => { themeDark = dark; EN.forEach(e => e.m.color.copy(dark ? BLACK : WHITE)); beamM.color.set(dark ? 0x19c6e2 : 0x00a0c4); spotM.color.copy(beamM.color);
     DARK.forEach(d => { d.m.color.copy(dark ? d.c : INK); d.m.metalness = dark ? d.mt : 0; d.m.clearcoat = dark ? d.cc : .35; d.m.roughness = dark ? d.r : .38;
       d.m.specularIntensity = dark ? 1 : .45; d.m.envMapIntensity = dark ? 1 : .22; });
     bands.forEach(b => { if (b) { b.metalness = dark ? LOOK[b.name].metalness : 0; b.envMapIntensity = dark ? 1 : .22; } });
     LAMP.forEach(l => { l.m.color.copy(dark ? l.c : LAMP_C); l.m.emissive.copy(dark ? l.e : LAMP_E); l.m.emissiveIntensity = dark ? l.k : .16; l.m.envMapIntensity = dark ? 1 : .25; });
+    CHROME.forEach(m => { m.envMap = dark ? null : ENV.chrome; m.envMapIntensity = dark ? 1 : 1.1; m.needsUpdate = true; });
     S.environment = dark ? ENV.dark : ENV.light; S.environmentIntensity = 1;
     R.toneMappingExposure = dark ? 1.3 : 1.32; rim.intensity = dark ? 3 : 1.4; key.intensity = dark ? 2.6 : 2.3; fill.intensity = dark ? .6 : 1.1; floorM.opacity = dark ? .45 : .11;
     if ('intensity' in key.shadow) key.shadow.intensity = dark ? .75 : .55; };
