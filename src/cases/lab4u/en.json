@@ -255,7 +255,6 @@
 "AI‑расшифровка анализов": "AI lab-results interpretation",
 ", приложение 2.0 и дизайн‑система с нуля": ", app 2.0 and a design system from scratch",
 "Старая главная была некрасивой и не отвечала на главный вопрос — почему анализы дешевле без потери качества. Остальные сервисы прятались в подвале, и ориентироваться было сложно": "The old home page wasn't attractive and never answered the main question — why tests are cheaper with no loss in quality. Every other service was tucked away in the footer, so the site was hard to find your way around",
-"Новая главная — агрегатор: она быстрее ведёт пациента туда, куда ему нужно. Первые варианты блоков я собирал в Claude и ChatGPT — пять итераций и мини‑лендинг «О сервисе», — а финал доводил руками. В приложении такая главная уже работает, на сайте её внедряют поблочно": "The new home page is a hub that gets patients where they need to go faster. I drafted the first versions of its blocks in Claude and ChatGPT — five iterations and an “About the service” mini-landing — and finished them by hand. In the app this home page is already live; on the website it is rolling out block by block",
 "Сайт · новая главная": "Website · new home page",
 "Приложение · уже работает": "App · already live",
 "Почему дешевле": "Why cheaper",
@@ -266,5 +265,6 @@
 "Популярное и сданные ранее анализы, готовые чекапы под симптомы": "Popular and previously taken tests, ready-made check-ups for symptoms",
 "Уведомления и «Ещё»": "Notifications and “More”",
 "Уведомления в шапке, все разделы — во вкладке «Ещё», а не в подвале": "Notifications in the header, every section in the “More” tab instead of the footer",
-"Новая главная объясняет, почему дешевле без потери качества, и быстрее ведёт в нужный раздел": "The new home page explains why it is cheaper with no loss in quality and gets you to the right section faster"
+"Новая главная объясняет, почему дешевле без потери качества, и быстрее ведёт в нужный раздел": "The new home page explains why it is cheaper with no loss in quality and gets you to the right section faster",
+"Новая главная — агрегатор: она быстрее ведёт пациента туда, куда ему нужно. Делаем её уже около года в промежутках между задачами: очень много итераций — с ИИ, аналитикой и руками, — тестируем их и смотрим на отдачу. От мини‑лендинга «О сервисе» отказались: цифры и ответ «почему дешевле» ёмко встали прямо на главную. В приложении такая главная уже работает, на сайте её внедряют поблочно": "The new home page is a hub that gets patients where they need to go faster. We have been building it for about a year between other tasks: a great many iterations — with AI, analytics and by hand — that we test and judge by the results. We dropped the “About the service” mini-landing: the figures and the answer to “why cheaper” fit right onto the home page. In the app this home page is already live; on the website it is rolling out block by block"
 }
