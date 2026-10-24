@@ -177,9 +177,9 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .src{margin-top:14px;font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 /* the path: app 2.0 → design system → the whole product */
 .path{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.6)}
-.path > div{position:relative;padding-top:22px;border-top:1px solid var(--line-2)}
-.path > div::before{content:'';position:absolute;left:0;top:-4px;width:7px;height:7px;border-radius:50%;background:var(--acc)}
-.path > div:not(:last-child)::after{content:'→';position:absolute;right:calc(var(--gutter)/-2);top:-13px;transform:translateX(50%);font-family:var(--body);font-weight:300;font-size:20px;color:var(--ink-3);background:var(--bg);padding:0 6px;line-height:1;transition:background .8s}
+.path > div{position:relative}
+/* no rule and dots over the steps; the arrow sits in the gap, at the middle of the blocks, larger, in the DS brand colour Action/Primary (Andrey, 24.10) */
+.path > div:not(:last-child)::after{content:'→';position:absolute;right:calc(var(--gutter)/-2);top:50%;transform:translate(50%,-50%);font-family:var(--body);font-weight:300;font-size:30px;line-height:1;color:#00AACC}
 .path .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
 .path b{display:block;margin:10px 0 8px;font-family:var(--display);font-weight:400;font-size:clamp(20px,1.9vw,28px);letter-spacing:-.03em;line-height:1.1}
 .path p{margin:0;color:var(--ink-2);font-size:16px;max-width:34ch}
@@ -430,8 +430,8 @@ section[id]{scroll-margin-top:20px}
   .specs div:nth-child(odd){padding-left:0}
   .specs div:nth-child(even){border-right:0}
   .specs div:nth-child(-n+2){border-bottom:1px solid var(--line)}
-  .path{grid-template-columns:1fr;gap:28px}
-  .path > div:not(:last-child)::after{display:none}
+  .path{grid-template-columns:1fr;gap:64px}
+  .path > div:not(:last-child)::after{content:'↓';right:auto;left:0;top:calc(100% + 32px);transform:translateY(-50%)} /* stacked: the arrow between the blocks points down */
   .sec{padding-block:calc(var(--gutter)*2.5)}
   .sec-head{column-gap:16px}
   .sec-head .m{display:none}
