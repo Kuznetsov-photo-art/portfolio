@@ -458,7 +458,7 @@ section[id]{scroll-margin-top:20px}
   .path{grid-template-columns:1fr;gap:36px}
   .path > div{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:18px;align-items:center}
   .path > div:not(:last-child)::after{display:none}
-  .path .k{grid-row:1/span 2;font:200 48px/1 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#00AACC}
+  .path .k{grid-row:1/span 2;align-self:start;margin-top:-3px; /* the digits' top on the title's cap height (a try, back: iter-345-before-numbers-top) */font:200 48px/1 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#00AACC}
   .path b{grid-column:2;margin:0 0 6px;align-self:end}
   .path p{grid-column:2;align-self:start;max-width:none} /* stacked: the short descriptions run the full width — one line each on a tablet; 34ch is for the three desktop columns (Andrey, 24.10) */
   .facts{margin-top:48px} /* the gutter is 16 px here: ×1.1 left the lines stuck to «Весь продукт» (Andrey, 24.10) */
