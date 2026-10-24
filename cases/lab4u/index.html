@@ -232,7 +232,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .sec{position:relative;padding:calc(var(--gutter)*1.6) 0}
 .sec-head{position:relative;z-index:3;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;column-gap:var(--gutter);row-gap:6px;align-items:end;margin-bottom:calc(var(--gutter)*1.1)}
 .sec-head h2{grid-column:1;grid-row:1/3;min-width:0;font-size:clamp(34px,6vw,96px);font-weight:300;letter-spacing:-.05em;line-height:.95;text-wrap:balance}
-@media(min-width:1100px){.sec-head h2 br{display:none}}
+.sec-head h2 br{display:none} /* no forced break at any width: a title that fits stays on one line, a long one wraps on its own (Andrey, 24.10) */
 .sec-head .n{grid-column:2;grid-row:1;justify-self:end;align-self:end;font-family:var(--display);font-weight:200;font-size:clamp(36px,4.4vw,72px);letter-spacing:-.04em;line-height:1;color:var(--ink-3)}
 .sec-head .m{grid-column:2;grid-row:2;justify-self:end;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right}
 .txt{display:grid;grid-template-columns:1fr 1fr;gap:12px var(--gutter);align-items:start}
