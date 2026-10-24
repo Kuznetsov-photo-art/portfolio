@@ -266,6 +266,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
+.a-item .cap .y{flex:none;white-space:nowrap} /* only the year, no «case» and no arrow (Andrey, 24.10); it never wraps and stays in the bottom-right corner */
 @media(hover:none){.a-item .cap{opacity:1;padding-top:40px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6) 50%,rgba(0,0,0,.88))}} /* touch: the caption is always on — the same see-through shade as the desktop hover, a touch darker, not a solid black band (Andrey, 24.10) */
 @media(max-width:640px){.a-item{width:62vw}}
 .a-note{margin-top:22px;color:var(--ink-3);font-size:14px;max-width:70ch}
@@ -684,7 +685,7 @@ function render(){
     </a>`; }).join('');
   const tile=(a,dup)=>`<a class="a-item${a.c?' case':''}" href="${a.c||a.u}"${a.c?'':' target="_blank" rel="noopener"'} data-cur="${a.c?d.case:d.open}"${dup?' aria-hidden="true" tabindex="-1"':''}>
       <span class="a-in"><img src="${a.i||COVERS[a.k]}" alt="${dup?'':a[lang]}" loading="lazy" decoding="async" width="800" height="625">
-      <span class="cap"><b>${NB(a[lang])}</b><span>${a.c?d.case+' · '+a.y+' →':a.y+' ↗'}</span></span></span>
+      <span class="cap"><b>${NB(a[lang])}</b><span class="y">${a.y}</span></span></span>
     </a>`;
   const per=Math.ceil(ARCH.length/AROWS);
   document.getElementById('arch').innerHTML = Array.from({length:AROWS},(_,r)=>{const items=ARCH.slice(r*per,(r+1)*per);
