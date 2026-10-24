@@ -99,6 +99,9 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .pf .dev{padding:3.2%;border-radius:15.5% / 7.2%}
 .pf .scr{position:relative;overflow:hidden;aspect-ratio:375/812;border-radius:12.5% / 5.8%;background:#fff}
 .pf .scr img,.tb .scr img{width:100%;height:auto;display:block;filter:var(--shot);transition:filter .8s}
+/* theme pairs: a screen exported in both themes — only the current theme's one shows (the hidden one is not loaded); the dark one needs no dimming */
+body:not(.dark) img.on-dark,body.dark img.on-light{display:none!important}
+body.dark img.on-dark{filter:none!important}
 .tb{margin:0;position:relative;min-width:0}
 .tb .dev{padding:3%;border-radius:7% / 4.6%}
 .tb .scr{position:relative;overflow:hidden;aspect-ratio:744/1133;border-radius:4% / 2.6%;background:#fff}
@@ -603,7 +606,7 @@ body{font-optical-sizing:auto}
   </div>
   <div class="wrap combo blk">
     <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img src="/cases/lab4u/img/home_new_d.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сайт · новая главная</figcaption></figure>
-    <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img src="/cases/lab4u/img/app_home2.webp" width="640" height="1386" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · уже работает</figcaption></figure></div>
+    <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img class="on-light" src="/cases/lab4u/img/app_home_new_l.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/app_home_new_d.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · уже работает</figcaption></figure></div>
   </div>
   <div class="wrap feats r">
     <div><span class="k">01</span><b>Почему дешевле</b><p>Блок «Онлайн‑лаборатория»: своя лаборатория, медцентры‑партнёры и всё онлайн — без потери качества</p></div>
