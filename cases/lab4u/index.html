@@ -116,6 +116,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .bw .vp{border-radius:clamp(6px,.95vw,13px)} /* the bezel grows phone → tablet → desktop (Andrey, 18.10); the screen corner runs concentric with the outer one */
 .vp img{width:100%;height:auto;display:block;filter:var(--shot);transition:filter .8s}
 .vp.scroll img,.scr.scroll img{will-change:transform}
+.vp img.fix,.scr img.fix{position:absolute;left:0;top:0;width:100%;z-index:1;pointer-events:none;will-change:auto} /* a sticky header over a scrolling screen: it stays put while the page moves under it (Andrey, 24.10) */
 .vp.fit{aspect-ratio:auto}
 .pf{margin:0;position:relative;flex:none;width:var(--pw,clamp(150px,17vw,290px))}
 .pf .dev,.tb .dev{position:relative;background:#0E0F12;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 0 0 1px var(--line),0 50px 80px -40px rgba(0,0,0,.5)}
@@ -630,7 +631,7 @@ body{font-optical-sizing:auto}
     </div>
   </div>
   <div class="wrap combo blk">
-    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img src="/cases/lab4u/img/home_new_d.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сайт · новая главная</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img class="on-light" src="/cases/lab4u/img/home_web_l.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/home_web_d.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><img class="fix on-light" src="/cases/lab4u/img/home_bar_l.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"><img class="fix on-dark" src="/cases/lab4u/img/home_bar_d.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сайт · новая главная</figcaption></figure>
     <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img class="on-light" src="/cases/lab4u/img/app_home_new_l.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/app_home_new_d.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · уже работает</figcaption></figure></div>
   </div>
   <div class="wrap feats r">
@@ -1324,7 +1325,7 @@ if(matchMedia('(hover:hover) and (min-width:861px)').matches&&!rm) $$('.bw').for
 const mq=$('#mq'); let mqx=0, mqw=0; if(mq){ mq.innerHTML+=mq.innerHTML; const per=()=>{ const k=mq.children, n=k.length/2; mqw=k[n].offsetLeft-k[0].offsetLeft; }; per(); addEventListener('resize',per); (document.fonts&&document.fonts.ready||Promise.resolve()).then(per); document.addEventListener('langchange',per); }
 let lastY=scrollY, smv=0;
 /* scroll-through windows: a long screen moves inside its frame while the frame passes the screen */
-const scr=$$('.vp.scroll,.scr.scroll').map(el=>({el,img:el.querySelector('img'),y:0}));
+const scr=$$('.vp.scroll,.scr.scroll').map(el=>({el,imgs:[...el.querySelectorAll('img:not(.fix)')],y:0})); /* the page images move (both of a theme pair), a .fix header stays */
 const fls=$$('.fl').map(el=>({el,sp:+el.dataset.sp||0,hero:!!el.closest('.hero'),y:0}));
 const prog=$('#prog');
 const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
@@ -1333,8 +1334,8 @@ function frame(){
   cx+=(tx-cx)*.2; cy+=(ty-cy)*.2; cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;
   prog.style.transform=`scaleX(${y/Math.max(1,document.body.scrollHeight-vh)})`;
   for(const s of scr){ const r=s.el.getBoundingClientRect(); if(r.bottom<-200||r.top>vh+200) continue;
-    const p=Math.max(0,Math.min(1,((vh-r.top)/(vh+r.height)-.18)/.64)); const max=Math.max(0,s.img.offsetHeight-s.el.clientHeight);
-    const to=-max*ease(p); s.y+=(to-s.y)*(rm?1:.14); s.img.style.transform=`translate3d(0,${s.y.toFixed(1)}px,0)`; }
+    const p=Math.max(0,Math.min(1,((vh-r.top)/(vh+r.height)-.18)/.64)); const img=s.imgs.find(i=>i.offsetHeight)||s.imgs[0]; const max=Math.max(0,img.offsetHeight-s.el.clientHeight);
+    const to=-max*ease(p); s.y+=(to-s.y)*(rm?1:.14); for(const i of s.imgs) i.style.transform=`translate3d(0,${s.y.toFixed(1)}px,0)`; }
   const vel=y-lastY; lastY=y; smv+=(vel-smv)*.1; storyStep();
   if(mq&&mqw&&!rm){ mqx-=.5+Math.min(Math.abs(smv),40)*.15; if(mqx<-mqw) mqx+=mqw; mq.style.transform=`translate3d(${mqx.toFixed(1)}px,0,0)`; }
   if(!rm) for(const f of fls){ const r=f.el.getBoundingClientRect(); const c=r.top+r.height/2-f.y; if(c<-vh||c>vh*2) continue;
