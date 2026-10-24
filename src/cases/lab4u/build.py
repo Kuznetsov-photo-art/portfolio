@@ -34,6 +34,16 @@ def rep(m):
     raise KeyError(key)
 
 html = re.sub(r'\{\{([^}]+)\}\}', rep, t)
+
+def avif(m):
+    # an image with a lossless-sourced out/name.avif next to its WebP: AVIF 4:4:4 keeps the flat UI edges crisp where lossy WebP smeared them,
+    # at a smaller size; browsers without AVIF fall back to the WebP in <img>
+    tag, name = m.group(0), m.group(1)
+    a = os.path.join(OUT, name + '.avif')
+    if not os.path.exists(a): return tag
+    shutil.copyfile(a, os.path.join(IMG, name + '.avif'))
+    return f'<picture><source type="image/avif" srcset="{URL}{name}.avif">{tag}</picture>'
+html = re.sub(r'<img [^>]*src="' + re.escape(URL) + r'([\w-]+)\.webp"[^>]*>', avif, html)
 shutil.copyfile(os.path.join(OUT, 'cover.webp'), os.path.join(IMG, 'cover.webp'))  # the home page «Cases» row thumbnail
 dst = os.path.join(D, 'lab4u-case.html')
 open(dst, 'w', encoding='utf-8').write(html)
