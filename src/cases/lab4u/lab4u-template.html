@@ -179,7 +179,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .path{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gutter);margin-top:calc(var(--gutter)*1.6)}
 .path > div{position:relative}
 /* no rule and dots over the steps; the arrow sits in the gap, at the middle of the blocks, larger, in the DS brand colour Action/Primary (Andrey, 24.10) */
-.path > div:not(:last-child)::after{content:'→';position:absolute;right:calc(var(--gutter)/-2);top:50%;transform:translate(50%,-50%);font-family:var(--body);font-weight:300;font-size:30px;line-height:1;color:#00AACC}
+.path > div:not(:last-child)::after{content:'';position:absolute;font-size:16px; /* 16 px like .path p: its 34ch measures the text the same way */left:var(--ax,calc((min(34ch,100%) + 100% + var(--gutter))/2));top:var(--ay,calc(50% + 18px)); /* --ax/--ay from the script below: halfway between where this block's text really ends and the next block starts, at the middle of title + text; the calc()s are the fallback */width:30px;height:30px;transform:translate(-50%,-50%);background:#00AACC;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 12h17M14.5 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 12h17M14.5 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat}
 .path .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
 .path b{display:block;margin:10px 0 8px;font-family:var(--display);font-weight:400;font-size:clamp(20px,1.9vw,28px);letter-spacing:-.03em;line-height:1.1}
 .path p{margin:0;color:var(--ink-2);font-size:16px;max-width:34ch}
@@ -431,7 +431,7 @@ section[id]{scroll-margin-top:20px}
   .specs div:nth-child(even){border-right:0}
   .specs div:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .path{grid-template-columns:1fr;gap:64px}
-  .path > div:not(:last-child)::after{content:'↓';right:auto;left:0;top:calc(100% + 32px);transform:translateY(-50%)} /* stacked: the arrow between the blocks points down */
+  .path > div:not(:last-child)::after{left:-7px;top:calc(100% + 32px);transform:translateY(-50%) rotate(90deg)} /* stacked: the arrow between the blocks points down, its head flush with the text edge */
   .sec{padding-block:calc(var(--gutter)*2.5)}
   .sec-head{column-gap:16px}
   .sec-head .m{display:none}
@@ -1340,6 +1340,13 @@ requestAnimationFrame(frame);
     d.classList.remove('glitch'); void d.offsetWidth; d.classList.add('glitch'); clearTimeout(glitch.t); glitch.t=setTimeout(()=>d.classList.remove('glitch'),300); }
   btn.addEventListener('click',()=>{ lang=lang==='ru'?'en':'ru'; try{localStorage.setItem('lang',lang)}catch(e){} apply(lang); dispatchEvent(new Event('resize')); glitch(); });
 })();
+</script>
+<script>/* the arrows between the three steps (.path): measured on the real text lines — halfway between where a block's text ends and the next block starts, at the middle of its title + text (Andrey, 24.10); re-placed on resize, font load and language switch (it fires resize) */
+(()=>{ const ds=[...document.querySelectorAll('.path > div')]; if(ds.length<2) return;
+  const right=d=>{ let r=-1e9; for(const el of d.querySelectorAll('b,p')){ const rg=document.createRange(); rg.selectNodeContents(el); for(const q of rg.getClientRects()) r=Math.max(r,q.right); } return r; };
+  const place=()=>{ for(let i=0;i<ds.length-1;i++){ const d=ds[i], r=d.getBoundingClientRect(), n=ds[i+1].getBoundingClientRect(), b=d.querySelector('b').getBoundingClientRect(), p=d.querySelector('p').getBoundingClientRect();
+      d.style.setProperty('--ax',((right(d)+n.left)/2-r.left).toFixed(1)+'px'); d.style.setProperty('--ay',((b.top+p.bottom)/2-r.top).toFixed(1)+'px'); } };
+  place(); addEventListener('resize',place); document.fonts&&document.fonts.ready.then(place); new ResizeObserver(place).observe(ds[0].parentNode); })();
 </script>
 <script>/* browser chrome colour follows the theme */
 (()=>{ const m=document.querySelector('meta[name="theme-color"]'); if(!m) return; const f=()=>{ m.content=(!document.body.classList.contains('dark'))?'#FFFFFF':'#0A0A0A'; };
