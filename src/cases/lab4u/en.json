@@ -1,6 +1,5 @@
 {
 "Дешевле — значит хуже?": "Cheaper means worse?",
-"Новая главная честно объясняет, почему дешевле без потери качества": "The new home page is honest about why it is cheaper with no loss in quality",
 "Перейти к решению": "Jump to the solution",
 "Наверх": "Back to top",
 "На главную": "Home",
@@ -62,8 +61,6 @@
 "Выбор города": "City picker",
 "Новая": "New",
 "главная": "home page",
-"Главная собрана заново на трёх брейкпоинтах: поиск и загрузка назначения прямо в первом экране, чекапы, карта медцентров и честное объяснение, почему дешевле без потери качества. На живом сайте её внедряют поблочно": "The home page is rebuilt on three breakpoints: search and prescription upload right on the first screen, check-ups, the medical-center map and an honest explanation of why it's cheaper without losing quality. The live site is adopting it block by block",
-"Первые варианты блоков я собирал вместе с Claude и ChatGPT — пять итераций и мини‑лендинг «О сервисе», — а финал доводил руками": "I built the first versions of the blocks together with Claude and ChatGPT — five iterations and an “About the service” mini-landing — and polished the final by hand",
 "Каталог": "Catalog",
 "и поиск": "and search",
 "Каталог · поиск": "Catalog · search",
@@ -256,5 +253,18 @@
 "Больше трети клиентов Lab4U сдают анализы, ни разу не побывав у врача, — им особенно важно понять результаты. Сервис запустили в апреле 2024 года на собственной LLM, обученной на 15+ млн обезличенных анализов, — это первый в России сервис AI‑расшифровки анализов из любой лаборатории. В 2025 году Forbes поставил его на 6‑е место среди российских ИИ‑решений для здравоохранения": "More than a third of Lab4U clients get tested without ever seeing a doctor — understanding the results matters to them most. The service launched in April 2024 on Lab4U's own LLM trained on 15M+ anonymized tests — the first service in Russia to interpret results from any lab with AI. In 2025 Forbes ranked it 6th among Russian AI solutions for healthcare",
 "Кейс · 2023 — н. в. · Healthtech · AI": "Case · 2023 — now · Healthtech · AI",
 "AI‑расшифровка анализов": "AI lab-results interpretation",
-", приложение 2.0 и дизайн‑система с нуля": ", app\u00a02.0 and a design system from scratch"
+", приложение 2.0 и дизайн‑система с нуля": ", app 2.0 and a design system from scratch",
+"Старая главная была некрасивой и не отвечала на главный вопрос — почему анализы дешевле без потери качества. Остальные сервисы прятались в подвале, и ориентироваться было сложно": "The old home page wasn't attractive and never answered the main question — why tests are cheaper with no loss in quality. Every other service was tucked away in the footer, so the site was hard to find your way around",
+"Новая главная — агрегатор: она быстрее ведёт пациента туда, куда ему нужно. Первые варианты блоков я собирал в Claude и ChatGPT — пять итераций и мини‑лендинг «О сервисе», — а финал доводил руками. В приложении такая главная уже работает, на сайте её внедряют поблочно": "The new home page is a hub that gets patients where they need to go faster. I drafted the first versions of its blocks in Claude and ChatGPT — five iterations and an “About the service” mini-landing — and finished them by hand. In the app this home page is already live; on the website it is rolling out block by block",
+"Сайт · новая главная": "Website · new home page",
+"Приложение · уже работает": "App · already live",
+"Почему дешевле": "Why cheaper",
+"Блок «Онлайн‑лаборатория»: своя лаборатория, медцентры‑партнёры и всё онлайн — без потери качества": "The “Online laboratory” block: its own lab, partner medical centers and everything online — with no loss in quality",
+"Заказы": "Orders",
+"Ближайший визит и неоплаченный заказ видны сразу на главной": "The next visit and an unpaid order show up right on the home page",
+"Повторить и чекапы": "Repeat and check-ups",
+"Популярное и сданные ранее анализы, готовые чекапы под симптомы": "Popular and previously taken tests, ready-made check-ups for symptoms",
+"Уведомления и «Ещё»": "Notifications and “More”",
+"Уведомления в шапке, все разделы — во вкладке «Ещё», а не в подвале": "Notifications in the header, every section in the “More” tab instead of the footer",
+"Новая главная объясняет, почему дешевле без потери качества, и быстрее ведёт в нужный раздел": "The new home page explains why it is cheaper with no loss in quality and gets you to the right section faster"
 }
