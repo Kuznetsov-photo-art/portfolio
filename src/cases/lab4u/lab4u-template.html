@@ -119,7 +119,7 @@ body.dark .vp,body.dark .pf .scr,body.dark .tb .scr{background:#0E0F12} /* a dar
 .tb .dev{padding:3%;border-radius:7% / 4.6%}
 .tb .scr{position:relative;overflow:hidden;aspect-ratio:744/1133;border-radius:4% / 2.6%;background:#fff}
 .cap,figcaption{display:block;margin-top:16px;font:10px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.pf figcaption{text-align:center}
+figcaption{text-align:center} /* every caption centred under its screen, the same as under the phones (Andrey, 24.10) */
 .cap b,figcaption b{font-weight:500;color:var(--ink-2)}
 .soon{display:inline-block;vertical-align:1px;margin-left:8px;padding:3px 8px;border-radius:99px;border:1px solid var(--acc);color:var(--acc);font:500 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 
@@ -467,7 +467,6 @@ section[id]{scroll-margin-top:20px}
   .combo{grid-template-columns:1fr;gap:28px}
   .combo > .side{justify-content:center}
   .combo .pf,.sheet{--pw:min(62vw,320px);width:min(62vw,320px)} /* a lone phone is big enough to read next to the full-width desktop and tablet shots (Andrey, 24.10) */
-  figcaption{text-align:center} /* stacked: every caption centred under its screen, like the phones' (Andrey, 24.10) */
   .paper{width:min(78vw,400px);margin-inline:auto}
   .mapt .tgl{left:50%;bottom:4%;padding:6px 10px 6px 8px;gap:8px;font-size:8.5px;white-space:nowrap}.mapt .tgl i{width:24px;height:14px}.mapt .tgl i::after{width:10px;height:10px}.mapt.on .tgl i::after{transform:translateX(10px)}
   .bp{grid-template-columns:744fr 375fr;row-gap:24px}
@@ -614,7 +613,7 @@ body{font-optical-sizing:auto}
   <div class="wrap">
     <div class="sec-head"><span class="n">01</span><h2 class="r">Новая<br> главная</h2><span class="m">Web · App</span></div>
     <div class="txt r">
-      <p>Старая главная была некрасивой и не отвечала на главный вопрос — почему анализы дешевле без потери качества. Остальные сервисы прятались в подвале, и ориентироваться было сложно</p>
+      <p>Старая главная была некрасивой и не отвечала на главный вопрос — почему анализы дешевле. Остальные сервисы прятались в подвале, и ориентироваться было сложно</p>
       <p>Новая главная — агрегатор: она быстрее ведёт пациента туда, куда ему нужно. Делаем её уже около года в промежутках между задачами: очень много итераций — с ИИ, аналитикой и руками, — тестируем их и смотрим на отдачу. В приложении такая главная уже работает, на сайте её внедряют поблочно</p>
     </div>
   </div>
@@ -623,7 +622,7 @@ body{font-optical-sizing:auto}
     <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img class="on-light" {{img:app_home_new_l}} alt="" loading="lazy" decoding="async"><img class="on-dark" {{img:app_home_new_d}} alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · уже работает</figcaption></figure></div>
   </div>
   <div class="wrap feats r">
-    <div><span class="k">01</span><b>Почему дешевле</b><p>Блок «Онлайн‑лаборатория»: своя лаборатория, медцентры‑партнёры и всё онлайн — без потери качества</p></div>
+    <div><span class="k">01</span><b>Почему дешевле</b><p>Блок «Онлайн‑лаборатория»: своя лаборатория, медцентры‑партнёры и всё онлайн</p></div>
     <div><span class="k">02</span><b>Заказы</b><p>Ближайший визит и неоплаченный заказ видны сразу на главной</p></div>
     <div><span class="k">03</span><b>Повторить и чекапы</b><p>Популярное и сданные ранее анализы, готовые чекапы под симптомы</p></div>
     <div><span class="k">04</span><b>Уведомления и «Ещё»</b><p>Уведомления в шапке, все разделы — во вкладке «Ещё», а не в подвале</p></div>
