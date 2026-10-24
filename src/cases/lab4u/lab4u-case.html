@@ -333,6 +333,7 @@ body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255
 .pains{position:relative;border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.1 + 20px)}
 .pains .ph{position:absolute;right:0;bottom:100%;padding-bottom:10px;font:10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)} /* the numbers are chapter references, not a count: a caption over their column, so the gaps read naturally (Andrey, 24.10) */
 .pains a{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.4fr) 64px;gap:16px;align-items:center; /* every cell centred on the row: a wrapped description no longer leaves the title and arrow up top (Andrey, 24.10) */padding:18px 0;border-bottom:1px solid var(--line);transition:padding .4s cubic-bezier(.2,.8,.2,1),background .3s}
+.pains a:last-child{border-bottom:0} /* lines only on top and between the rows (Andrey, 24.10) */
 .pains a:hover{padding-left:12px}
 .pains .p{font-family:var(--display);font-weight:300;font-size:clamp(18px,1.9vw,28px);letter-spacing:-.03em;line-height:1.15}
 .pains .ar{font-family:var(--body);font-weight:300;font-size:22px;color:var(--acc);line-height:1;position:relative;top:1px}
