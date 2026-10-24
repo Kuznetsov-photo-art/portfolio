@@ -136,10 +136,10 @@ body.reeling .cur{opacity:0} /* the custom cursor waits at the screen centre —
 
 /* ---------- hero ---------- */
 /* hero is full-bleed (background edge to edge, under the header); content keeps the .wrap column via --hp */
-.hero{--hp:max(var(--gutter),calc((100% - 1560px)/2 + var(--gutter)));position:relative;max-width:none;margin:calc(-1*var(--nav-h)) 0 0;padding:calc(120px + var(--nav-h)) var(--hp) 48px;min-height:min(92vh,980px);display:grid;align-content:end;overflow:hidden;isolation:isolate}
+.hero{--hp:max(var(--gutter),calc((100% - 1560px)/2 + var(--gutter)));--spec-top:calc(env(safe-area-inset-top,0px) + var(--nav-h) + clamp(32px,16vh - 48px,96px));position:relative;max-width:none;margin:calc(-1*var(--nav-h)) 0 0;padding:max(calc(120px + var(--nav-h)),calc(var(--spec-top) + 124px)) var(--hp) 48px;min-height:min(92vh,980px);display:grid;align-content:end;overflow:hidden;isolation:isolate}
 .hero canvas.ink{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
 .hero .gridlines{position:absolute;inset:0 calc(var(--hp) - var(--gutter));z-index:-1;pointer-events:none;background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/12) 100%;opacity:.5;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
-.spec{position:absolute;right:var(--hp);top:calc(env(safe-area-inset-top,0px) + 96px + var(--nav-h));display:grid;gap:6px;text-align:right;z-index:1}
+.spec{position:absolute;right:var(--hp);top:var(--spec-top);display:grid;gap:6px;text-align:right;z-index:1} /* short screens (tablets in landscape, under the browser bars): the lines rise toward the header, and the hero's top padding always leaves them room above the name's dimension line — they never meet (Andrey, 24.10); from 900 px tall nothing moves */
 .spec .mono,.h-meta .mono{color:var(--ink-2);text-shadow:0 0 6px var(--bg),0 0 2px var(--bg)} /* a halo in the page colour keeps the small mono lines readable when a bright ink cloud passes behind them */
 .h-name{font-family:var(--display);font-size:min(196px,max(11.5vw,min(52px,calc((100vw - 2*var(--gutter))*.153))));font-weight:300;letter-spacing:-.05em;line-height:.86;position:relative;display:block}
 .h-name .ln{display:block;white-space:nowrap}
@@ -290,7 +290,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
-@media(hover:none){.a-item .cap{opacity:1;padding-top:40px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.93) 38%,#000 62%)}}
+@media(hover:none){.a-item .cap{opacity:1;padding-top:40px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6) 50%,rgba(0,0,0,.88))}} /* touch: the caption is always on — the same see-through shade as the desktop hover, a touch darker, not a solid black band (Andrey, 24.10) */
 @media(max-width:640px){.a-item{width:62vw}}
 .a-note{margin-top:22px;color:var(--ink-3);font-size:14px;max-width:70ch}
 
