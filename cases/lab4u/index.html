@@ -118,7 +118,7 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .vp.scroll img,.scr.scroll img{will-change:transform}
 .vp img.fix,.scr img.fix{position:absolute;left:0;top:0;width:100%;z-index:1;pointer-events:none;will-change:auto} /* a sticky header over a scrolling screen: it stays put while the page moves under it (Andrey, 24.10) */
 .vp.fit{aspect-ratio:auto}
-.vp:has(>.hfx){container-type:inline-size}
+.vp:has(>.hfx){container-type:inline-size;will-change:filter} /* its own backdrop root: under the hover 3D tilt Chrome dropped the bands' masks and smeared the full blur over the page; with this the bands keep their masks (Andrey, 24.10) */
 .vp .hfx{position:absolute;left:0;top:0;width:100%;aspect-ratio:var(--hh,1728/88);z-index:1;pointer-events:none;--r:1.157cqw;background:linear-gradient(rgba(3,2,4,.02),rgba(3,2,4,0))} /* the design's header Fade (Black A2 → A0) and progressive Blur (40 → 0, top to bottom) under the sticky bar; Figma's radius 40 ≈ CSS blur 20 at 1728, scaled with the screen (Andrey, 24.10) */
 .vp .hfx i{position:absolute;left:0;right:0;top:0;height:150%;-webkit-backdrop-filter:blur(var(--b));backdrop-filter:blur(var(--b));-webkit-mask-image:var(--m);mask-image:var(--m)} /* 8 cross-fading bands; their strengths are fitted on a stripe test so the stack (each band also blurs the bands under it) falls linearly to zero at the header bottom, like the design; the boxes reach below the header, so the blur there samples the real page instead of clamping at the edge (Andrey, 24.10) */
 .vp .hfx i:nth-child(1){--b:calc(var(--r)*0.945);--m:linear-gradient(#000 8.33%,transparent 16.67%)}
