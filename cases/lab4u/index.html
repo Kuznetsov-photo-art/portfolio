@@ -489,7 +489,8 @@ section[id]{scroll-margin-top:20px}
   .duo{grid-template-columns:1fr;gap:28px}
   .combo{grid-template-columns:1fr;gap:28px}
   .combo > .side{justify-content:center}
-  .combo .pf,.sheet{--pw:42vw;width:42vw}
+  .combo .pf,.sheet{--pw:min(62vw,320px);width:min(62vw,320px)} /* a lone phone is big enough to read next to the full-width desktop and tablet shots (Andrey, 24.10) */
+  figcaption{text-align:center} /* stacked: every caption centred under its screen, like the phones' (Andrey, 24.10) */
   .paper{width:min(78vw,400px);margin-inline:auto}
   .mapt .tgl{left:50%;bottom:4%;padding:6px 10px 6px 8px;gap:8px;font-size:8.5px;white-space:nowrap}.mapt .tgl i{width:24px;height:14px}.mapt .tgl i::after{width:10px;height:10px}.mapt.on .tgl i::after{transform:translateX(10px)}
   .bp{grid-template-columns:744fr 375fr;row-gap:24px}
