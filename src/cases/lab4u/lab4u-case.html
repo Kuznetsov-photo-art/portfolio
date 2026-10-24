@@ -97,11 +97,15 @@ body:not(.dark) .sw .sun{opacity:1;transform:none}
 .vp.fit{aspect-ratio:auto}
 .vp:has(>.hfx){container-type:inline-size}
 .vp .hfx{position:absolute;left:0;top:0;width:100%;aspect-ratio:var(--hh,1728/88);z-index:1;pointer-events:none;--r:1.157cqw;background:linear-gradient(rgba(3,2,4,.02),rgba(3,2,4,0))} /* the design's header Fade (Black A2 → A0) and progressive Blur (40 → 0, top to bottom) under the sticky bar; Figma's radius 40 ≈ CSS blur 20 at 1728, scaled with the screen (Andrey, 24.10) */
-.vp .hfx i{position:absolute;inset:0;-webkit-backdrop-filter:blur(var(--b));backdrop-filter:blur(var(--b));-webkit-mask-image:var(--m);mask-image:var(--m)}
-.vp .hfx i:nth-child(1){--b:var(--r);--m:linear-gradient(#000 25%,transparent 50%)}
-.vp .hfx i:nth-child(2){--b:calc(var(--r)*.5);--m:linear-gradient(transparent,#000 25%,#000 50%,transparent 75%)}
-.vp .hfx i:nth-child(3){--b:calc(var(--r)*.25);--m:linear-gradient(transparent 25%,#000 50%,#000 75%,transparent)}
-.vp .hfx i:nth-child(4){--b:calc(var(--r)*.1);--m:linear-gradient(transparent 50%,#000 75%,transparent)}
+.vp .hfx i{position:absolute;left:0;right:0;top:0;height:150%;-webkit-backdrop-filter:blur(var(--b));backdrop-filter:blur(var(--b));-webkit-mask-image:var(--m);mask-image:var(--m)} /* 8 cross-fading bands; their strengths are fitted on a stripe test so the stack (each band also blurs the bands under it) falls linearly to zero at the header bottom, like the design; the boxes reach below the header, so the blur there samples the real page instead of clamping at the edge (Andrey, 24.10) */
+.vp .hfx i:nth-child(1){--b:calc(var(--r)*0.945);--m:linear-gradient(#000 8.33%,transparent 16.67%)}
+.vp .hfx i:nth-child(2){--b:calc(var(--r)*0.637);--m:linear-gradient(transparent 0%,#000 8.33%,#000 16.67%,transparent 25%)}
+.vp .hfx i:nth-child(3){--b:calc(var(--r)*0.497);--m:linear-gradient(transparent 8.33%,#000 16.67%,#000 25%,transparent 33.33%)}
+.vp .hfx i:nth-child(4){--b:calc(var(--r)*0.382);--m:linear-gradient(transparent 16.67%,#000 25%,#000 33.33%,transparent 41.67%)}
+.vp .hfx i:nth-child(5){--b:calc(var(--r)*0.288);--m:linear-gradient(transparent 25%,#000 33.33%,#000 41.67%,transparent 50%)}
+.vp .hfx i:nth-child(6){--b:calc(var(--r)*0.227);--m:linear-gradient(transparent 33.33%,#000 41.67%,#000 50%,transparent 58.33%)}
+.vp .hfx i:nth-child(7){--b:calc(var(--r)*0.153);--m:linear-gradient(transparent 41.67%,#000 50%,#000 58.33%,transparent 66.67%)}
+.vp .hfx i:nth-child(8){--b:calc(var(--r)*0.016);--m:linear-gradient(transparent 50%,#000 58.33%,transparent 66.67%)}
 .pf{margin:0;position:relative;flex:none;width:var(--pw,clamp(150px,17vw,290px))}
 .pf .dev,.tb .dev{position:relative;background:#0E0F12;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 0 0 1px var(--line),0 50px 80px -40px rgba(0,0,0,.5)}
 .pf .dev{padding:3.2%;border-radius:15.5% / 7.2%}
@@ -614,7 +618,7 @@ body{font-optical-sizing:auto}
     </div>
   </div>
   <div class="wrap combo blk">
-    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img class="on-light" src="/cases/lab4u/img/home_web_l.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/home_web_d.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><i class="hfx"><i></i><i></i><i></i><i></i></i><img class="fix on-light" src="/cases/lab4u/img/home_bar_l.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"><img class="fix on-dark" src="/cases/lab4u/img/home_bar_d.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сайт · новая главная</figcaption></figure>
+    <figure class="bw r"><div class="win"><div class="vp scroll" style="--ar:1728/1080"><img class="on-light" src="/cases/lab4u/img/home_web_l.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/home_web_d.webp" width="1728" height="3582" alt="" loading="lazy" decoding="async"><i class="hfx"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></i><img class="fix on-light" src="/cases/lab4u/img/home_bar_l.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"><img class="fix on-dark" src="/cases/lab4u/img/home_bar_d.webp" width="1728" height="90" alt="" loading="lazy" decoding="async"></div></div><figcaption>Сайт · новая главная</figcaption></figure>
     <div class="side"><figure class="pf r fl" data-sp=".14"><div class="dev"><div class="scr"><img class="on-light" src="/cases/lab4u/img/app_home_new_l.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"><img class="on-dark" src="/cases/lab4u/img/app_home_new_d.webp" width="750" height="1624" alt="" loading="lazy" decoding="async"></div></div><figcaption>Приложение · уже работает</figcaption></figure></div>
   </div>
   <div class="wrap feats r">
