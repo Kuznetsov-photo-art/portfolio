@@ -36,7 +36,7 @@ J=os.path.join
 if os.path.exists(J(R,'src','index-src.html')):
     wrap(J(R,'src','index-src.html'),J(R,'index.html'),desc='Андрей Кузнецов — Lead Product Designer · AI & Design Systems. Портфолио: продуктовый дизайн, дизайн-системы, AI-инструменты', canonical='https://andrewkuznetsov.com/', image='https://andrewkuznetsov.com/assets/og/og-home.jpg',
      og_title='Портфолио продуктового дизайнера', og_desc='14 лет в дизайне: дизайн-системы, финтех, медтех и AI-продукты. Сбер, ВТБ, VK, YouGile, Lab4U, Финам')
-wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','index.html'),desc='Кейс «Обжора» — счётчик калорий для iOS: 60+ экранов, 83+ иконок, тёмная тема. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/obzhora/', image='https://andrewkuznetsov.com/assets/og/og-obzhora.jpg',
+wrap(J(R,'src','cases','obzhora','obzhora-case.html'),J(R,'cases','obzhora','index.html'),desc='Кейс «Обжора» — счётчик калорий для iOS: 60+ экранов, 83+ иконок, тёмная тема. Андрей Кузнецов', canonical='https://andrewkuznetsov.com/cases/obzhora/', image='https://andrewkuznetsov.com/assets/og/og-obzhora.jpg?v=2',
      og_title='Кейс «Обжора» — счётчик калорий для iOS', og_desc='60+ экранов, 83+ иконок, светлая и тёмная тема — от концепции до UI-кита')
 if os.path.exists(J(R,'src','cases','lab4u','lab4u-case.html')):
     os.makedirs(J(R,'cases','lab4u'),exist_ok=True)
