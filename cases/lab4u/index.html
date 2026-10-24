@@ -168,7 +168,8 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .hero #m3d.on{opacity:1}
 .hero.hv-big #plate{opacity:.45} /* the helix steps back behind the big visual */
 .hero.hv-big .gv-cap{display:none} /* no counter under the conveyor and the microscope (Andrey, 18.10) */
-@media(max-width:860px){.hero.hv-big .h-viz{margin-bottom:64px}}
+@media(max-width:860px){.hero.hv-big .h-viz{margin-bottom:44px}} /* phones and tablets: less air under the microscope; m3d centres it between the meta lines and the end of the hero (Andrey, 24.10) */
+@media(min-width:600px) and (max-width:860px){.hero.hv-big .h-viz{width:min(78vw,540px)}} /* tablets: a bigger microscope fills the tall hero instead of leaving a gap below */
 .gv-cap{position:absolute;left:50%;bottom:-12%;transform:translateX(-50%);display:flex;align-items:baseline;gap:10px;white-space:nowrap;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--h-ink3)}
 .gv-cap b{font:600 30px/1 var(--body);letter-spacing:-.03em;color:var(--h-ink);font-variant-numeric:tabular-nums;text-transform:none}
 .gv-cap em{font-style:normal;color:var(--h-warn)}

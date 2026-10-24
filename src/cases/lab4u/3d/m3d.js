@@ -8,7 +8,7 @@ import { WebGLRenderer, Scene, PerspectiveCamera, DirectionalLight, Mesh, PlaneG
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
-const hero = document.getElementById('hero'), cv = document.getElementById('m3d'), box = hero && hero.querySelector('.h-viz');
+const hero = document.getElementById('hero'), cv = document.getElementById('m3d'), box = hero && hero.querySelector('.h-viz'), meta = hero && hero.querySelector('.h-meta');
 const rm = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* no WebGL or no model → the page falls back to the sphere */
 const fail = e => { if (e) console.warn('m3d:', e); window.__m3dFail = true; hero && hero.classList.remove('hv-big'); cv && cv.remove(); };
@@ -90,7 +90,12 @@ async function init() {
   const D = 11.2, cam = new PerspectiveCamera(22, 1, .5, 60), T = new Vector3(0, 1.78, 0);
   /* the canvas covers the whole hero (nothing gets cut); the projection centre sits on the right column (cx, cy), ppu = pixels per model unit */
   const fit = () => { const hr = hero.getBoundingClientRect(), r = box.getBoundingClientRect(), m = innerWidth <= 860, W = hero.clientWidth, H = hero.clientHeight;
-    const cx = r.left - hr.left + r.width * (m ? .5 : .47), cy = m ? r.top - hr.top + r.height * .47 : H * .465, ppu = m ? r.height * .27 : H * .185;
+    /* stacked: the model's visual middle (≈ .054 box below its pivot) halfway between the meta lines and the end of the hero — equal air above and below
+       on any phone or tablet, also when the hero is stretched to the screen height (Andrey, 24.10) */
+    let mb = r.top - hr.top, e = meta, y = 0;   /* from the layout, not the screen: the meta lines may still be sliding in when this runs */
+    while (e && e !== hero) { y += e.offsetTop; e = e.offsetParent; }
+    if (e === hero) mb = y + meta.offsetHeight;
+    const cx = r.left - hr.left + r.width * (m ? .5 : .47), cy = m ? (mb + H) / 2 - r.height * .054 : H * .465, ppu = m ? r.height * .27 : H * .185;
     const FW = 2 * Math.max(cx, W - cx), FH = 2 * Math.max(cy, H - cy);
     Object.assign(cv.style, { left: 0, top: 0, width: W + 'px', height: H + 'px' });
     R.setPixelRatio(Math.min(2, devicePixelRatio || 1)); R.setSize(W, H, false);
