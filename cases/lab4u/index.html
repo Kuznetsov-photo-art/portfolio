@@ -1290,6 +1290,14 @@ $$('.mapt').forEach(m=>{ const b=m.querySelector('.tgl'), ims=[...m.querySelecto
   addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
 })();
 
+/* links to chapters on this page (the task rows, the chapter nav) scroll there smoothly instead of jumping (Andrey, 24.10);
+   with reduced motion — the usual jump; the address still gets #chapter, so «back» returns as before */
+(()=>{ const still=matchMedia('(prefers-reduced-motion: reduce)');
+  document.addEventListener('click',e=>{ const a=e.target.closest('a[href^="#"]'); if(!a||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
+    const id=decodeURIComponent(a.getAttribute('href').slice(1)), t=id&&document.getElementById(id); if(!t) return;
+    e.preventDefault(); t.scrollIntoView({behavior:still.matches?'auto':'smooth',block:'start'}); if(location.hash!=='#'+id) history.pushState(null,'','#'+id); });
+})();
+
 /* AI story: progress through the pinned block picks the step; on the report step the long page scrolls inside the window */
 const story=$('#story'); const st=story&&{li:[...story.querySelectorAll('.st-steps li')],bar:[...story.querySelectorAll('.st-bar i')],im:[...story.querySelectorAll('.st-win .vp img')],vp:story.querySelector('.st-win .vp'),ph:story.querySelector('.st-ph .scr img'),phs:story.querySelector('.st-ph .scr'),k:-1,ry:0,py:0};
 const storyStep=()=>{ if(!st) return; const r=story.getBoundingClientRect(), span=Math.max(1,r.height-innerHeight), p=Math.max(0,Math.min(.9999,-r.top/span)), f=p*4, k=Math.floor(f), sub=f-k;
