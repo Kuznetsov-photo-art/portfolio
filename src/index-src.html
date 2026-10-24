@@ -168,7 +168,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 /* ---------- work index ---------- */
 .index .row:last-child{border-bottom:0} /* dividers only between cases: no line above the first or below the last */
 .row{display:grid;grid-template-columns:minmax(0,1fr) 168px;grid-template-rows:1fr auto auto 1fr;column-gap:24px;row-gap:0;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);position:relative;transition:padding .4s cubic-bezier(.2,.8,.2,1)}
-.row:hover{padding-left:12px}
+@media(hover:hover){.row:hover{padding-left:12px}} /* hover effects only with a mouse: a tap on a phone left rows shifted, covers zoomed, links lit (Andrey, 24.10) */
 .row h3{font-size:clamp(22px,3vw,44px);font-weight:300;letter-spacing:-.035em;transition:letter-spacing .4s,font-variation-settings .4s;font-variation-settings:'wght' 300}
 .row:hover h3{font-variation-settings:'wght' 600;letter-spacing:-.02em}
 .row h3 .ln{white-space:nowrap}
@@ -181,15 +181,15 @@ section{padding-block:clamp(80px,10vw,160px)}
 .row .tags{display:flex;gap:14px;flex-wrap:wrap;color:var(--ink-3)}
 .row .th{grid-column:2;grid-row:1/5;align-self:center;justify-self:end;width:168px;aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:var(--bg-2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .row .th img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);transition:filter .4s}
-.row:hover .th img{filter:none}
-.row:hover .th{transform:scale(1.03)}
+@media(hover:hover){.row:hover .th img{filter:none}}
+@media(hover:hover){.row:hover .th{transform:scale(1.03)}}
 .row .th.lg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;background:none;border-color:transparent;border-radius:0} /* company logos without a tile: monochrome at rest, brand colours on hover */
 .row .th.lg img{width:72%;height:auto;max-width:100%;object-fit:contain;filter:brightness(0) invert(1);opacity:.55;transition:filter .45s,opacity .45s}
 :root[data-theme="light"] .row .th.lg img{filter:brightness(0);opacity:.5}
 .row .th.lg img.l{display:none}:root[data-theme="light"] .row .th.lg img.l{display:block}:root[data-theme="light"] .row .th.lg img.d{display:none}
 .row .th.lg img.lg-lab4u{width:74%}.row .th.lg img.lg-yougile{width:74%}.row .th.lg img.lg-vtb{width:64%}.row .th.lg img.lg-sber{width:76%} /* widths balance the visual mass of each logo (VTB is tall and narrow, LAB4U wide and heavy) */
 .row .th.lg img.lg-finamx{width:80%}.row .th.lg img.lg-limex{width:44%;margin-top:-4px} /* Limex is the sub-brand: smaller, close under FinamX (viewBoxes cropped to the artwork) */ /* DS «Logo/finam-x» 88×24 and «Logo/limex» 73×24 */
-.row:hover .th.lg img,:root[data-theme="light"] .row:hover .th.lg img{filter:none;opacity:1}
+@media(hover:hover){.row:hover .th.lg img,:root[data-theme="light"] .row:hover .th.lg img{filter:none;opacity:1}}
 .row:hover .th.lg img{animation:lgG .42s steps(1,end) 1} /* the logo flips to its colours through a short glitch — RGB split, slices and jitter, like the language switch */
 @keyframes lgG{
   0%{filter:brightness(0) invert(1) drop-shadow(3px 0 rgba(255,40,80,.9)) drop-shadow(-3px 0 rgba(0,220,255,.9));transform:translateX(-3px);clip-path:inset(0 0 55% 0)}
@@ -259,10 +259,10 @@ section{padding-block:clamp(80px,10vw,160px)}
 @media(prefers-reduced-motion:reduce){.arow{overflow-x:auto}}
 .a-item img,.a-item .cap{border-radius:inherit}.a-item .cap b{display:block} /* second line of defence: children carry the radius too */
 .a-item img{width:100%;height:100%;object-fit:cover;scale:1.012; /* tiny overscan hides the image edge behind the rounded clip */filter:grayscale(1) contrast(1.05);transition:filter .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-.a-item:hover img{transform:scale(1.035)}
+@media(hover:hover){.a-item:hover img{transform:scale(1.035)}}
 @media(hover:hover){.a-item:hover img{filter:none}.portrait:hover img{filter:none}}
 .a-item .cap{position:absolute;inset:auto -1px -1px -1px; /* runs 1px past the clip edge: Safari left a light seam under the caption */padding:28px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:end;gap:8px;color:#fff;opacity:0;transition:opacity .3s}
-.a-item:hover .cap{opacity:1}
+@media(hover:hover){.a-item:hover .cap{opacity:1}}
 .a-item.case .cap{opacity:1}
 .a-item .cap b{font-weight:500;font-size:14px}
 .a-item .cap span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.75}
@@ -311,7 +311,7 @@ section{padding-block:clamp(80px,10vw,160px)}
 .contact h2 em{font-style:normal;font-variation-settings:'wght' 800}
 .c-row{display:flex;flex-wrap:wrap;gap:0;margin-top:48px;border:1px solid var(--line);overflow:hidden} /* cells draw right+bottom lines and overlap by 1px; the frame clips the outer ones, so wrapped rows get a divider too */
 .c-link{display:inline-flex;align-items:baseline;gap:12px;padding:16px 20px;font-size:15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0;transition:background .25s,color .25s;flex:1 1 auto}
-.c-link:hover{background:var(--ink);color:var(--bg)}
+@media(hover:hover){.c-link:hover{background:var(--ink);color:var(--bg)}}
 .c-link .mono{color:inherit;opacity:.6} /* labels (TG, MAIL, IN…) sit on the text baseline, not on the cell centre */
 .toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:95;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:12px 20px;border-radius:999px;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
 .toast.on{opacity:1;transform:translate(-50%,0)} /* «Адрес скопирован»: bottom centre, two seconds */
@@ -348,7 +348,7 @@ html.sm-lock{overflow:hidden} /* the page under the card does not scroll; scroll
 .c-mailto{display:inline-flex;align-items:baseline;gap:12px}
 .c-mailto::after{content:'';position:absolute;inset:0}
 .c-copy{position:relative;z-index:1;align-self:center;display:grid;place-items:center;width:36px;height:36px;margin:-9px -9px -9px auto;padding:0;border:0;border-radius:6px;background:none;color:inherit;cursor:pointer;opacity:.55;transition:opacity .2s,background .2s}
-.c-copy:hover,.c-copy:focus-visible{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+.c-copy:focus-visible{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}@media(hover:hover){.c-copy:hover{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}}
 .c-copy svg{grid-area:1/1;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;transition:opacity .2s,transform .2s}
 .c-copy .i-done{opacity:0;transform:scale(.6)}
 .c-copy.done{opacity:1}.c-copy.done .i-copy{opacity:0;transform:scale(.6)}.c-copy.done .i-done{opacity:1;transform:none}
@@ -357,7 +357,7 @@ html.sm-lock{overflow:hidden} /* the page under the card does not scroll; scroll
 footer{padding:28px var(--gutter) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 footer .cp{font-family:var(--body);font-size:1.5em;line-height:0;letter-spacing:0;vertical-align:-.1em} /* © in the mono font is tiny — draw it with the body font at cap height */
 footer nav{display:flex;gap:20px;flex-wrap:wrap}
-footer a:hover{color:var(--ink)}
+@media(hover:hover){footer a:hover{color:var(--ink)}}
 
 /* ---------- reveal ---------- */
 .rv.in{animation:rv .9s cubic-bezier(.2,.8,.2,1) both}.rv.rv-wait{opacity:0;transform:translateY(22px)} /* hidden from the start, so the reveal never flashes the block first */

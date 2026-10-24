@@ -60,8 +60,8 @@ body.dark .grain{mix-blend-mode:screen;opacity:.05}
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:none;border:0;padding:0;color:inherit;cursor:pointer;white-space:nowrap}.lang b{font-weight:500;text-decoration:underline;text-underline-offset:4px} /* same RU / EN switch as on the home page */
 .nav .pager{gap:16px;position:absolute;left:50%;transform:translateX(-50%)} /* «← Кейс · Обжора →» centred on the screen, not between the unequal side groups */
 .nav .pn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;opacity:.7;transition:opacity .3s,transform .3s}
-.nav .pn:hover{opacity:1}
-.nav .pn:first-child:hover{transform:translateX(-3px)}.nav .pn:last-child:hover{transform:translateX(3px)}
+@media(hover:hover){.nav .pn:hover{opacity:1}}
+@media(hover:hover){.nav .pn:first-child:hover{transform:translateX(-3px)}}@media(hover:hover){.nav .pn:last-child:hover{transform:translateX(3px)}}
 .nav .pn::after{display:none}
 .nav .ar{font-family:var(--body);font-weight:300;font-size:20px;line-height:0;letter-spacing:0;transform:translateY(-1px)}
 .nav .ar2{display:inline-block;width:.73em;height:.73em;margin-left:6px;vertical-align:baseline;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:square} /* = cap height of the mono label */
@@ -245,7 +245,7 @@ body.dark .pal span.lo-d::before,body:not(.dark) .pal span.lo-l::before{box-shad
 .outro{padding:calc(var(--gutter)*2) 0 calc(var(--gutter)*2)} /* section spacing ÷1.5 (14.10, after the dividers went) */
 .outro h2{font-size:clamp(44px,10vw,180px);font-weight:200;letter-spacing:-.06em;line-height:.9}
 .outro .nx{display:flex;justify-content:space-between;gap:24px;margin-top:calc(var(--gutter)*1.5);border-top:1px solid var(--line);padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
-.outro .nx a:hover{color:var(--ink)}
+@media(hover:hover){.outro .nx a:hover{color:var(--ink)}}
 
 @media(max-width:860px){
   .nav{height:56px;padding:0 var(--gutter);gap:12px;font-size:10px;letter-spacing:.1em}
