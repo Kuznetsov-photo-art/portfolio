@@ -330,7 +330,8 @@ body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255
 /* windows lean a little toward the cursor */
 @media(hover:hover) and (min-width:861px){.bw .win{transition:transform .5s cubic-bezier(.2,.8,.2,1)}.tilt .win{transform:perspective(1400px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}}
 /* the task: pains → what I did, each row links to its chapter */
-.pains{border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.1)}
+.pains{position:relative;border-top:1px solid var(--line);margin-top:calc(var(--gutter)*1.1 + 20px)}
+.pains .ph{position:absolute;right:0;bottom:100%;padding-bottom:10px;font:10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)} /* the numbers are chapter references, not a count: a caption over their column, so the gaps read naturally (Andrey, 24.10) */
 .pains a{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.4fr) 64px;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .4s cubic-bezier(.2,.8,.2,1),background .3s}
 .pains a:hover{padding-left:12px}
 .pains .p{font-family:var(--display);font-weight:300;font-size:clamp(18px,1.9vw,28px);letter-spacing:-.03em;line-height:1.15}
@@ -569,9 +570,10 @@ body{font-optical-sizing:auto}
       <p>Основатель Lab4U ещё в 2019 году перечислял, что мешает людям сдавать анализы онлайн. За время работы я закрыл почти каждую из этих болей — где‑то новым сервисом, где‑то переделкой целого раздела</p>
     </div>
     <div class="pains r">
+      <span class="ph">Глава</span>
       <a href="#ai"><span class="p">Результаты непонятны</span><span class="ar">→</span><span class="s">AI‑расшифровка простым языком: что в норме и что делать дальше</span><span class="n">01</span></a>
       <a href="#ai2"><span class="p">Почерк врача не разобрать</span><span class="ar">→</span><span class="s">Назначение распознаётся по фото и сразу превращается в корзину</span><span class="n">02</span></a>
-      <a href="#app"><span class="p">Онлайн‑заказ непривычен</span><span class="ar">→</span><span class="s">Приложение 2.0 и новая главная: от поиска до оплаты — короче и понятнее</span><span class="n">03</span></a>
+      <a href="#app"><span class="p">Онлайн‑заказ непривычен</span><span class="ar">→</span><span class="s">Приложение 2.0 и новая главная: от поиска до оплаты — короче и понятнее</span><span class="n">03–05</span></a>
       <a href="#basket"><span class="p">В клиниках дорого</span><span class="ar">→</span><span class="s">Скидка до 50% видна сразу, корзина подсказывает выгодный комплекс</span><span class="n">06</span></a>
       <a href="#map"><span class="p">Привычка идти в ближайшую клинику</span><span class="ar">→</span><span class="s">900+ медцентров на карте с фильтрами по времени, цене и метро</span><span class="n">08</span></a>
       <a href="#visit"><span class="p">Анализы сдают раз в год и забывают</span><span class="ar">→</span><span class="s">Чекапы, комплексы, уведомления и чат с поддержкой</span><span class="n">09</span></a>
