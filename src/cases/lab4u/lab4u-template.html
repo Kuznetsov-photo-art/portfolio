@@ -336,7 +336,7 @@ body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255
 .pains a{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.4fr) 64px;gap:16px;align-items:center; /* every cell centred on the row: a wrapped description no longer leaves the title and arrow up top (Andrey, 24.10) */padding:18px 0;border-bottom:1px solid var(--line);transition:padding .4s cubic-bezier(.2,.8,.2,1),background .3s}
 .pains a:last-child{border-bottom:0} /* lines only on top and between the rows (Andrey, 24.10) */
 @media(hover:hover){.pains a:hover{padding-left:12px}} /* hover effects only with a mouse: a tap on a phone left rows shifted and links lit (Andrey, 24.10) */
-.pains .p{font-family:var(--display);font-weight:300;font-size:clamp(18px,1.9vw,28px);letter-spacing:-.03em;line-height:1.15}
+.pains .p{font-family:var(--display);font-weight:500; /* the pains read as headings: Medium, was Light (Andrey, 24.10) */font-size:clamp(18px,1.9vw,28px);letter-spacing:-.03em;line-height:1.15}
 .pains .ar{font-family:var(--body);font-weight:300;font-size:22px;color:var(--acc);line-height:1;position:relative;top:1px}
 .pains .s{color:var(--ink-2);font-size:16px}
 .pains .n{justify-self:end;font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3);position:relative;top:2px} /* the arrow and the small number sit 1–2 px high when boxes are centred: optical nudge */
