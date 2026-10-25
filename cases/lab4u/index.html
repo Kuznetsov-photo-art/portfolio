@@ -186,6 +186,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .hero.hv-big #plate{opacity:.45} /* the helix steps back behind the big visual */
 .hero.hv-big .gv-cap{display:none} /* no counter under the conveyor and the microscope (Andrey, 18.10) */
 @media(max-width:860px){.hero.hv-big .h-viz{margin-bottom:44px}}
+@media(max-width:599px){body .feats:not(.f3) > div{-webkit-hyphens:auto;hyphens:auto}} /* phones only: narrow tiles hyphenate long words («Онлайн‑лаборатория», «Расформировать») instead of running past the frame */
 @media(max-width:599px){body .steps{grid-template-columns:1fr}body .steps p{font-size:15px}} /* phones: the framed steps one after another, full width (Andrey, 24.10); tablets keep 2 × 2 */ /* phones and tablets: less air under the microscope; m3d centres it between the meta lines and the end of the hero (Andrey, 24.10) */
 @media(min-width:600px) and (max-width:860px){.hero.hv-big .h-viz{width:min(78vw,540px)}} /* tablets: a bigger microscope fills the tall hero instead of leaving a gap below */
 .gv-cap{position:absolute;left:50%;bottom:-12%;transform:translateX(-50%);display:flex;align-items:baseline;gap:10px;white-space:nowrap;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--h-ink3)}
@@ -505,9 +506,14 @@ section[id]{scroll-margin-top:20px}
   .rules > div:nth-child(odd){padding-left:0}.rules > div:nth-child(even){border-right:0}
   .rules > div:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .rules.r3 > div:nth-child(3){grid-column:1/-1;border-right:0}
-  .feats,.feats.f3,.next{grid-template-columns:1fr}
-  .feats > div,.feats.f3 > div,.next > div{padding:18px 0 4px!important;border-right:0!important;border-top:0;margin-top:0!important}
-  .feats > div+div,.next > div+div{border-top:1px solid var(--line)!important;margin-top:14px!important}
+  .feats.f3,.next{grid-template-columns:1fr}
+  .feats.f3 > div,.next > div{padding:18px 0 4px!important;border-right:0!important;border-top:0;margin-top:0!important}
+  .feats.f3 > div+div,.next > div+div{border-top:1px solid var(--line)!important;margin-top:14px!important}
+  .feats:not(.f3){grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;border-top:0} /* four points as 2 × 2 tiles on phones and tablets, framed like «Как я работаю» (Andrey, 25.10) */
+  .feats:not(.f3) > div{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-items:baseline;align-content:start;border:1px solid var(--line);border-radius:2px;padding:16px 16px 14px;margin-top:0;overflow-wrap:break-word}
+  .feats:not(.f3) .k{grid-column:2;grid-row:1;align-self:start;margin-right:-2px} /* the number pinned to the top-right corner on the title's line, like the «Как я работаю» cards; the title wraps in its own column, so the number never covers it (Andrey, 25.10) */
+  .feats:not(.f3) b{grid-column:1;grid-row:1;margin:0 0 6px}
+  .feats:not(.f3) p{grid-column:1/-1;font-size:14px}
   .toks{grid-template-columns:repeat(2,1fr)}
   .story{height:360vh}
   .story .sticky{grid-template-columns:1fr;align-content:center;gap:18px;padding-top:66px}
