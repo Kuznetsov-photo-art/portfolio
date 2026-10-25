@@ -262,7 +262,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .mapt .tgl i::after{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .mapt.on .tgl i{background:#00AACC}.mapt.on .tgl i::after{transform:translateX(12px)}
 .stores{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.store{display:inline-flex;align-items:center;gap:12px;height:58px;padding:0 18px 0 16px;border:1px solid var(--line-2);border-radius:14px;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
+.store{display:inline-flex;align-items:center;gap:12px;height:58px;padding:0 18px 0 16px;border:1px solid var(--line-2);border-radius:2px;color:var(--ink);transition:background .3s,color .3s,border-color .3s} /* buttons are square like the segment controls: 2 px corners (Andrey, 25.10) */
 .store .si{width:24px;height:24px;fill:currentColor;flex:none}
 .store span{display:grid;gap:4px;line-height:1}
 .store small{font:10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);transition:color .3s}
@@ -409,7 +409,7 @@ section[id]{scroll-margin-top:20px}
 @media(prefers-reduced-motion:reduce){.scan.in .vp::after{animation:none}}
 @media(prefers-reduced-motion:reduce){.h-eye,.h-sub,.h-meta{animation:none;opacity:1}.h-logo{animation:none;clip-path:none}.h-logo.gl svg,.h-logo.gl::before,.h-logo.gl::after{animation:none}}
 /* theme flip button in the dark-theme chapter */
-.flip{display:inline-flex;align-items:center;gap:12px;margin-top:28px;height:52px;padding:0 20px 0 8px;border-radius:99px;border:1px solid var(--line-2);background:none;color:var(--ink);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+.flip{display:inline-flex;align-items:center;gap:12px;margin-top:28px;height:52px;padding:0 20px 0 8px;border-radius:2px;border:1px solid var(--line-2);background:none;color:var(--ink);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
 .flip i{width:36px;height:36px;border-radius:50%;background:var(--accg);display:grid;place-items:center}
 .flip i svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round}
 @media(hover:hover){.flip:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
