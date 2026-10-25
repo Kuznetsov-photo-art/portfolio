@@ -257,7 +257,7 @@ body.dark .hero{--h-bg:var(--bg);--h-ink:#F2F2F2;--h-ink2:rgba(242,242,242,.7);-
 .prow .pf{--pw:auto;flex:1 1 0;max-width:290px}
 .prow .pf:nth-child(even){margin-top:clamp(24px,5vw,80px)}
 /* feature cells */
-.feats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.2);border-top:1px solid var(--line)}
+.feats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:calc(var(--gutter)*1.2)} /* no rule over the points, only the dividers between them (Andrey, 25.10 — a try, back: iter-391-before-feats-no-top-line) */
 .feats > div{padding:22px clamp(16px,2vw,28px) 6px;border-right:1px solid var(--line)}
 .feats > div:first-child{padding-left:0}.feats > div:last-child{border-right:0}
 .feats .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--acc)}
