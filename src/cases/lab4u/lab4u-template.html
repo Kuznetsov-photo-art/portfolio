@@ -359,6 +359,17 @@ body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255
 .pains .s{color:var(--ink-2);font-size:16px}
 .pains .n{justify-self:end;font:10px/1 var(--mono);letter-spacing:.12em;color:#00AACC; /* the caption and the chapter numbers in the brand blue: they are links (Andrey, 24.10) */position:relative;top:2px} /* the arrow and the small number sit 1–2 px high when boxes are centred: optical nudge */
 @media(hover:hover){.pains a:hover .n{color:var(--ink)}}
+@media(hover:hover){.pains a:hover .p{animation:pgl .42s steps(1,end) 1}.pains a:hover .s{animation:gls .28s steps(1,end) 1}} /* a short glitch on hover: the title gets RGB split, slices and jitter like the logos on the home page, the description only the split (Andrey, 25.10 — a try, back: iter-389-before-pains-glitch) */
+@keyframes pgl{
+  0%{text-shadow:3px 0 rgba(255,40,80,.85),-3px 0 rgba(0,220,255,.85);transform:translateX(-3px);clip-path:inset(0 -12px 55% -12px)}
+  14%{text-shadow:-4px 0 rgba(255,40,80,.8),4px 0 rgba(0,220,255,.8);transform:translateX(4px) skewX(-8deg);clip-path:inset(40% -12px 20% -12px)}
+  28%{text-shadow:2px 0 rgba(255,40,80,.8);transform:translateX(-2px);clip-path:inset(10% -12px 60% -12px)}
+  42%{text-shadow:3px 0 rgba(0,220,255,.8),-2px 0 rgba(255,40,80,.7);transform:translateX(2px) skewX(5deg);clip-path:inset(60% -12px 0 -12px)}
+  56%{text-shadow:-2px 0 rgba(255,40,80,.6),2px 0 rgba(0,220,255,.6);transform:translateX(-1px);clip-path:none}
+  72%{text-shadow:1px 0 rgba(0,220,255,.5);transform:translateX(1px)}
+  86%,100%{text-shadow:none;transform:none;clip-path:none}
+}
+@media(prefers-reduced-motion:reduce){.pains a:hover .p,.pains a:hover .s{animation:none}}
 .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(16px,2vw,28px);margin-top:calc(var(--gutter)*.6)}
 .steps > div{border-top:1px solid var(--line-2);padding-top:16px}
 .steps .k{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--acc)}
