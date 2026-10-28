@@ -232,9 +232,9 @@ section{padding-block:clamp(80px,10vw,160px)}
 .kw.past .ch{transform:translateY(-170%)} /* 170%: clears descenders and й with the taller clip box */
 .kbottom{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,6vw,120px);align-items:end}
 .kcount{font-family:var(--display);font-weight:200;font-size:clamp(56px,8vw,128px);line-height:.85;letter-spacing:-.05em;display:flex;align-items:flex-start}
-.kcount .d{display:inline-block;height:.85em;overflow:hidden}
+.kcount .d{display:inline-block;--p:.35em;--st:1.5em;box-sizing:border-box;height:calc(.85em + var(--p)*2);padding:var(--p) .12em;margin:calc(var(--p)*-1) -.12em;-webkit-mask-image:linear-gradient(transparent,#000 .25em,#000 calc(100% - .25em),transparent);mask-image:linear-gradient(transparent,#000 .25em,#000 calc(100% - .25em),transparent)} /* a soft window, one rule for every rolling counter on the site: digits fade in and out at the top and bottom instead of a hard clip, glyph edges are never cut, negative margins keep the layout (Andrey, 25.10) */
 .kcount .d i{display:block;font-style:normal;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-.kcount .d i span{display:block;height:.85em}
+.kcount .d i span{display:block;height:var(--st)} /* digits 1.5em apart: at rest no neighbour shows in the faded edges */
 .kcount small{font-size:.24em;letter-spacing:.02em;color:var(--ink-3);margin:.4em 0 0 .4em}
 .kdesc{max-width:520px;justify-self:end}
 .kdesc h3{font-size:clamp(20px,1.9vw,28px);font-weight:500;letter-spacing:-.02em;line-height:1.2;margin:0}
@@ -927,7 +927,7 @@ if(FINE){ let curEl=null;
   const N=FOCUS.length; let lastI=-1;
   /* odometer counter: two digit columns */
   function counter(){idx.innerHTML=`<span class="d"><i>${[0,1].map(n=>`<span>${n}</span>`).join('')}</i></span><span class="d"><i>${Array.from({length:10},(_,n)=>`<span>${n}</span>`).join('')}</i></span><small>/${String(N).padStart(2,'0')}</small>`;}
-  function setCount(i){const n=String(i+1).padStart(2,'0'); const cols=idx.querySelectorAll('.d i'); if(cols.length<2) return; cols[0].style.transform=`translateY(-${+n[0]*.85}em)`; cols[1].style.transform=`translateY(-${+n[1]*.85}em)`;}
+  function setCount(i){const n=String(i+1).padStart(2,'0'); const cols=idx.querySelectorAll('.d i'); if(cols.length<2) return; cols[0].style.transform=`translateY(calc(var(--st) * -${n[0]}))`; cols[1].style.transform=`translateY(calc(var(--st) * -${n[1]}))`;}
   function setDesc(i){const f=FOCUS[i][lang]; card.innerHTML=`<h3>${NB(f.t)}</h3><p>${NB(f.p)}</p><div class="m">${f.m}</div>`; card.classList.remove('swap'); void card.offsetWidth; card.classList.add('swap');}
   /* words: split into letters for the weight wave and the staggered slide */
   focusBuild=function(){
