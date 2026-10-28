@@ -24,7 +24,7 @@
 "Forbes · ИИ в медицине": "Forbes · AI in healthcare",
 "Листайте": "Scroll",
 "Онлайн‑лаборатория, где анализы дешевле до 50%, а результаты объясняет ИИ": "An online lab where tests cost up to 50% less and AI explains the results",
-"Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров в 117 городах. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение": "Lab4U has been running since 2012: its own laboratory plus a network of partner medical centers in 117 cities. Patients order and pay for tests online, give samples at the nearest center, and the tubes travel to the Lab4U lab. No clinics of its own means lower prices. Results arrive in the personal account and the app",
+"Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров в 127 городах. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение": "Lab4U has been running since 2012: its own laboratory plus a network of partner medical centers in 127 cities. Patients order and pay for tests online, give samples at the nearest center, and the tubes travel to the Lab4U lab. No clinics of its own means lower prices. Results arrive in the personal account and the app",
 "Меня позвали сделать приложение 2.0 — прежнее было неудобным и устаревшим. Потом я собрал с нуля дизайн‑систему, одну на веб и приложение, и меня подключили ко всему продукту. Я единственный дизайнер в компании: задачи веду вместе с продактом, многое решаю напрямую с разработкой": "I was brought in to build app 2.0 — the old one was clumsy and dated. Then I built a design system from scratch, one for web and app, and took on the whole product. I'm the only designer in the company: I plan the work with the product manager and settle a lot directly with the developers",
 "к ценам клиник": "vs clinic prices",
 "медцентров‑партнёров": "partner medical centers",
@@ -243,8 +243,8 @@
 "вовлечённость после AI‑расшифровки": "engagement after AI interpretation",
 "Компания": "Company",
 "CSI — удовлетворённость клиентов": "CSI — customer satisfaction",
-"выручка за год · 1,7 млрд ₽": "revenue in a year · ₽1.7 billion",
-"Lab4U, 2026 · Smart Ranking, I кв. 2025": "Lab4U, 2026 · Smart Ranking, Q1 2025",
+"выручка за 2023–2025 · 1,7 млрд ₽": "revenue over 2023–2025 · ₽1.7 billion",
+"Lab4U, 2026 · Smart Ranking, I кв. 2025 · Smart 500, 2026": "Lab4U, 2026 · Smart Ranking, Q1 2025 · Smart 500, 2026",
 "Подарочных сертификатов в Lab4U раньше не было — я спроектировал их целиком: покупка, активация, список и PDF. В I квартале 2025 года продажи сертификатов выросли на 43%": "Lab4U had no gift certificates before — I designed the whole feature: purchase, activation, the list and the PDF. In Q1 2025 certificate sales grew 43%",
 "+43% продаж": "+43% sales",
 "продажи подарочных сертификатов за квартал": "gift certificate sales in a quarter",
@@ -266,5 +266,6 @@
 "Уведомления и «Ещё»": "Notifications and “More”",
 "Уведомления в шапке, все разделы — во вкладке «Ещё», а не в подвале": "Notifications in the header, every section in the “More” tab instead of the footer",
 "Новая главная объясняет, почему дешевле, и быстрее ведёт в нужный раздел": "The new home page explains why it is cheaper and gets you to the right section faster",
-"Новая главная — агрегатор: с неё пациент быстрее попадает в нужный раздел. Я веду её итерациями: гипотеза, прототип с ИИ, тест и решение по метрикам. В приложении главная уже работает, на сайте выходит поблочно": "The new home page is an aggregator: from it, patients get to the right section faster. I run it in iterations: a hypothesis, an AI prototype, a test and a decision based on metrics. In the app the new home page is already live; on the website it rolls out block by block"
+"Новая главная — агрегатор: с неё пациент быстрее попадает в нужный раздел. Я веду её итерациями: гипотеза, прототип с ИИ, тест и решение по метрикам. В приложении главная уже работает, на сайте выходит поблочно": "The new home page is an aggregator: from it, patients get to the right section faster. I run it in iterations: a hypothesis, an AI prototype, a test and a decision based on metrics. In the app the new home page is already live; on the website it rolls out block by block",
+"Снова в рейтинге быстрорастущих компаний": "Back in the ranking of fast-growing companies"
 }

@@ -378,7 +378,7 @@ body.dark .inp{--srf:#1B1D23;--t:#FFFFFF;--t2:rgba(255,255,255,.6);--t3:rgba(255
 .steps p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
 .sub{margin-top:calc(var(--gutter)*1.4);font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 /* awards timeline */
-.awards{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:calc(var(--gutter)*.6);border-top:1px solid var(--line)}
+.awards{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:calc(var(--gutter)*.6);border-top:1px solid var(--line)}
 .awards > div{padding:20px clamp(16px,2vw,28px) 4px;border-right:1px solid var(--line)}
 .awards > div:first-child{padding-left:0}.awards > div:last-child{border-right:0}
 .awards time{font:10px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3)}
@@ -444,7 +444,7 @@ section[id]{scroll-margin-top:20px}
   .next > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}
   .dsg{grid-template-columns:1fr}
   .steps{grid-template-columns:repeat(3,1fr)}
-  .awards{grid-template-columns:repeat(2,1fr)}.awards > div:nth-child(2){border-right:0}.awards > div:nth-child(3){padding-left:0}.awards > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}
+  .awards{grid-template-columns:repeat(2,1fr)}.awards > div:nth-child(even){border-right:0}.awards > div:nth-child(odd){padding-left:0}.awards > div:nth-child(n+3){border-top:1px solid var(--line);margin-top:16px}.awards > div:last-child:nth-child(odd){grid-column:1/-1} /* any count: two per row, an odd last award runs the full width */
 }
 @media(max-width:860px){
   .nav{height:56px;gap:12px;font-size:10px;letter-spacing:.1em}
@@ -578,7 +578,7 @@ body{font-optical-sizing:auto}
   <div class="wrap g">
     <p class="lead r">Онлайн‑лаборатория, где анализы дешевле до 50%, а результаты объясняет ИИ</p>
     <div class="r">
-      <p>Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров в 117 городах. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение</p>
+      <p>Lab4U работает с 2012 года: своя лаборатория и сеть медцентров‑партнёров в 127 городах. Пациент заказывает и оплачивает анализы онлайн, сдаёт их в ближайшем медцентре, а пробирки едут в лабораторию Lab4U. Своих клиник нет, поэтому дешевле. Результаты приходят в личный кабинет и приложение</p>
       <p>Меня позвали сделать приложение 2.0 — прежнее было неудобным и устаревшим. Потом я собрал с нуля дизайн‑систему, одну на веб и приложение, и меня подключили ко всему продукту. Я единственный дизайнер в компании: задачи веду вместе с продактом, многое решаю напрямую с разработкой</p>
     </div>
   </div>
@@ -927,9 +927,9 @@ body{font-optical-sizing:auto}
     <div><b>820 000+</b><span>активных клиентов</span></div>
     <div><b data-en="9.5M+">9,5 млн+</b><span>заказов</span></div>
     <div><b data-en="4.9">4,9</b><span>CSI — удовлетворённость клиентов</span></div>
-    <div><b>+43%</b><span>выручка за год · 1,7 млрд ₽</span></div>
+    <div><b>×2</b><span>выручка за 2023–2025 · 1,7 млрд ₽</span></div>
   </div>
-  <div class="wrap src">Lab4U, 2026 · Smart Ranking, I кв. 2025</div>
+  <div class="wrap src">Lab4U, 2026 · Smart Ranking, I кв. 2025 · Smart 500, 2026</div>
   <div class="wrap">
     <div class="sub r">Награды Lab4U за время моей работы</div>
     <div class="awards r">
@@ -937,6 +937,7 @@ body{font-optical-sizing:auto}
       <div><time>07.08.2025</time><b>«Марка №1»</b><p>Диагностическая лаборатория, народное голосование</p></div>
       <div><time>12.12.2025</time><b>Forbes</b><p>6‑е место среди российских ИИ‑решений для здравоохранения</p></div>
       <div><time>27.07.2026</time><b>Smart Ranking MedTech 2025</b><p>Лидер сегмента исследований</p></div>
+      <div><time>2026</time><b>Smart 500</b><p>Снова в рейтинге быстрорастущих компаний</p></div>
     </div>
   </div>
 </section>
